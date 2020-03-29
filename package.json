@@ -1,0 +1,53 @@
+{
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "eject": "expo eject",
+    "lint": "eslint 'src/**/*.js'",
+    "format": "prettier --single-quote --jsx-bracket-same-line --write 'src/**/*.{css,js}'"
+  },
+  "dependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react-hooks": "^3.0.0",
+    "eslint-plugin-react-native": "^3.8.1",
+    "expo": "~36.0.0",
+    "react": "~16.9.0",
+    "react-dom": "~16.9.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
+    "react-native-gesture-handler": "^1.6.1",
+    "react-native-reanimated": "^1.7.1",
+    "react-native-screens": "^2.4.0",
+    "react-native-web": "~0.11.7",
+    "react-navigation": "^4.3.5",
+    "react-navigation-drawer": "^2.4.9",
+    "react-navigation-tabs": "^2.8.9"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "babel-preset-expo": "~8.0.0"
+  },
+  "jest": {
+    "preset": "react-native"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --single-quote --jsx-bracket-same-line --write",
+      "eslint",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "private": true
+}
