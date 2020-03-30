@@ -8,8 +8,8 @@
 import { createStackNavigator } from 'react-navigation-stack';
 
 // local imports
-import Login from '../pages/Login';
-import OTPValidation from '../pages/OTPValidation';
+import Login from '../screens/Login';
+import OTPValidation from '../screens/OTPValidation';
 
 const noHeader = () => ({ header: null });
 

@@ -12,3 +12,12 @@ web-report/
 
 # macOS
 .DS_Store
+
+# android
+android/.gradle/**/*
+android/app/build/generated/**/*
+android/app/build/intermediates/**/*
+android/app/build/outputs/**/*
+android/app/build_defs.bzl
+android/app/proguard-rules.pro
+android/app/debug.keystore

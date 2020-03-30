@@ -4,7 +4,7 @@ import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 // local imports
 import authorizedStack from './authorized';
 import unAuthorizedStack from './unauthorizedStack';
-import SplashScreen from '../pages/SplashScreen';
+import SplashScreen from '../screens/SplashScreen';
 
 const MainRoute = createSwitchNavigator(
   {

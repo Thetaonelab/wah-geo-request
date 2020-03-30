@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 
-import { createStackNavigator } from "react-navigation-stack";
+import { createStackNavigator } from 'react-navigation-stack';
 
-import About from "../pages/About";
-import Home from "../pages/Home";
-import Profile from "../pages/Profile";
-import Header from "../Components/Header";
+import About from '../screens/About';
+import Home from '../screens/Home';
+import Profile from '../screens/Profile';
+import Header from '../components/Header';
 
 const Stack = createStackNavigator(
   {
@@ -27,14 +27,12 @@ const Stack = createStackNavigator(
     about: {
       screen: About,
       navigationOptions: ({ navigation }) => ({
-        header: (
-          <Header pageName="About" navigation={navigation} />
-        )
+        header: <Header pageName="About" navigation={navigation} />
       })
     }
   },
   {
-    initialRouteName: "home"
+    initialRouteName: 'home'
   }
 );
 

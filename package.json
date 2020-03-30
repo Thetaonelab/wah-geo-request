@@ -10,6 +10,7 @@
     "format": "prettier --single-quote --jsx-bracket-same-line --write 'src/**/*.{css,js}'"
   },
   "dependencies": {
+    "@react-native-community/masked-view": "^0.1.7",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.1.0",
@@ -19,15 +20,21 @@
     "eslint-plugin-react-hooks": "^3.0.0",
     "eslint-plugin-react-native": "^3.8.1",
     "expo": "~36.0.0",
-    "react": "~16.9.0",
+    "prop-types": "^15.7.2",
+    "react": "16.11.0",
     "react-dom": "~16.9.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
+    "react-native": "0.62.0",
+    "react-native-eject": "^0.1.2",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-reanimated": "^1.7.1",
+    "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.4.0",
+    "react-native-snackbar-component": "^1.1.8",
+    "react-native-vector-icons": "^6.6.0",
     "react-native-web": "~0.11.7",
     "react-navigation": "^4.3.5",
     "react-navigation-drawer": "^2.4.9",
+    "react-navigation-stack": "^2.3.9",
     "react-navigation-tabs": "^2.8.9"
   },
   "devDependencies": {
