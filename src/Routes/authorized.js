@@ -15,8 +15,8 @@ const authorized = createDrawerNavigator(
   {
     drawerWidth: screenWidth * 0.9,
     initialRouteName: 'homeStack',
-    drawerPosition: 'right',
-    useNativeAnimations: false,
+    drawerPosition: 'left',
+    useNativeAnimations: true,
     contentComponent: props => <Drawer {...props} />
   }
 );

@@ -1,10 +1,8 @@
 /* eslint-disable react/no-unused-state */
 import React from 'react';
-import { View, Keyboard, StatusBar } from 'react-native';
+import { Keyboard, StatusBar } from 'react-native';
 import SnackBar from 'react-native-snackbar-component';
 import colors from './styles/color';
-import styles from './styles/style';
-// import text from './styles/text';
 import Navigator from './routes';
 
 export default class App extends React.Component {
@@ -19,6 +17,8 @@ export default class App extends React.Component {
   }
 
   onNavigate = (prevState, newState, action) => {
+    // eslint-disable-next-line no-console
+    console.log('ROUTE CHANGE');
     // Dismissing the keyboard on every Route change
     Keyboard.dismiss();
     if (action.type === 'Navigation/MARK_DRAWER_SETTLING') {
@@ -41,9 +41,15 @@ export default class App extends React.Component {
     } // eslint-disable-line
 
     //  setting up current Route
-    this.setState({
-      currentRoute: this.getRoute(newState)
-    });
+    this.setState(
+      {
+        currentRoute: this.getRoute(newState)
+      },
+      () => {
+        // eslint-disable-next-line no-console
+        console.log('CURRENT ROUTE::', this.state.currentRoute);
+      }
+    );
   };
 
   getRoute = prevState => {
@@ -103,12 +109,9 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <View style={styles.parentContainer}>
+      <>
         <StatusBar hidden={this.state.statusBarHidden} />
         <Navigator
-          ref={r => {
-            this.topLevelNavigator = r;
-          }}
           screenProps={{
             drawerStatus: this.state.drawerStatus,
             isKeyboardOpen: this.state.isKeyboardOpen,
@@ -130,7 +133,7 @@ export default class App extends React.Component {
           messageColor={colors.white}
           textMessage={this.state.snackbar?.message}
         />
-      </View>
+      </>
     );
   }
 }

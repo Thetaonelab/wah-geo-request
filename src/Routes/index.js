@@ -8,15 +8,11 @@ import SplashScreen from '../screens/SplashScreen';
 
 const MainRoute = createSwitchNavigator(
   {
-    authorized: {
-      screen: authorizedStack
-    },
+    authorized: authorizedStack,
     common: {
       screen: SplashScreen
     },
-    unAuthorized: {
-      screen: unAuthorizedStack
-    }
+    unAuthorized: unAuthorizedStack
   },
   {
     initialRouteName: 'common'

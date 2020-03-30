@@ -1,23 +1,28 @@
 import React from 'react';
-import { View, ActivityIndicator, Image } from 'react-native';
+import { View, ActivityIndicator, Image, Dimensions } from 'react-native';
+import PropTypes from 'prop-types';
 import colors from '../../styles/color';
 import styles from '../../styles/style';
 // import text from '../../styles/text';
 import wah from '../../../assets/wah.png';
 
-export default function SplashScreen() {
+const { width, height } = Dimensions.get('window');
+
+export default function SplashScreen(props) {
+  setTimeout(() => {
+    props.navigation.navigate('authorized');
+  }, 5000);
+
   return (
     <View style={[styles.parentContainer, { backgroundColor: colors.white }]}>
       <View style={{ flex: 8, justifyContent: 'center' }}>
-        {/* <Text style={[text.heroText, { color: colors.white, fontSize: 40 }]}>
-          WAH!
-        </Text>
-        <Text style={[text.secondaryText, { color: colors.white }]}>
-          we are humans
-        </Text> */}
         <Image
           source={wah}
-          style={{ resizeMode: 'cover', height: 300, width: 300 }}
+          style={{
+            resizeMode: 'cover',
+            height: parseInt(height / 8),
+            width: parseInt(width / 3)
+          }}
         />
       </View>
       <View style={{ flex: 1 }}>
@@ -26,3 +31,9 @@ export default function SplashScreen() {
     </View>
   );
 }
+
+SplashScreen.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired
+  }).isRequired
+};

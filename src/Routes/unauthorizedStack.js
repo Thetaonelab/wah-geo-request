@@ -11,9 +11,9 @@ import { createStackNavigator } from 'react-navigation-stack';
 import Login from '../screens/Login';
 import OTPValidation from '../screens/OTPValidation';
 
-const noHeader = () => ({ header: null });
+const noHeader = () => ({ headerShown: false });
 
-const unauthorized = createStackNavigator(
+export default createStackNavigator(
   {
     login: {
       screen: Login,
@@ -28,5 +28,3 @@ const unauthorized = createStackNavigator(
     initialRouteName: 'login'
   }
 );
-
-export default unauthorized;

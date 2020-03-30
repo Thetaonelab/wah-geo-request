@@ -65,7 +65,7 @@ const style = StyleSheet.create({
   },
 
   logoImage: {
-    width: 40,
+    width: 60,
     height: 40,
     resizeMode: 'cover'
   },

@@ -3,7 +3,7 @@ import { View, Image, Text, TouchableOpacity } from 'react-native';
 
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import LogoImage from '../../../assets/icon.png';
+import LogoImage from '../../../assets/wah.png';
 
 import colors from '../../styles/color';
 import text from '../../styles/text';

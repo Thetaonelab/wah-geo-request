@@ -8,7 +8,7 @@ import colors from '../../styles/color';
 
 const { width, height } = Dimensions.get('window');
 
-export default class Login extends React.Component {
+export default class MapOverlay extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};

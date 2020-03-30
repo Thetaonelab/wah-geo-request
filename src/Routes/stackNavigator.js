@@ -6,48 +6,40 @@ import About from '../screens/About';
 import Home from '../screens/Home';
 import Profile from '../screens/Profile';
 import Header from '../components/Header';
+import MapOverlay from '../screens/MapOverlay';
 
-const Stack = createStackNavigator(
+const header = (navigation, title) => (
+  <Header isDashboard={true} pageName={title} navigation={navigation} />
+);
+export default createStackNavigator(
   {
     home: {
       screen: Home,
       navigationOptions: ({ navigation }) => ({
-        header: (
-          <Header isDashboard={true} pageName="WAH!" navigation={navigation} />
-        )
+        header: header(navigation, 'WAH!')
       })
     },
     profile: {
       screen: Profile,
       navigationOptions: ({ navigation }) => ({
-        header: <Header pageName="Profile" navigation={navigation} />
+        header: header(navigation, 'Profile')
       })
     },
 
     about: {
       screen: About,
       navigationOptions: ({ navigation }) => ({
-        header: <Header pageName="About" navigation={navigation} />
+        header: header(navigation, 'About')
+      })
+    },
+    mapOverlay: {
+      screen: MapOverlay,
+      navigationOptions: ({ navigation }) => ({
+        header: header(navigation, 'MapOverlay')
       })
     }
   },
   {
-    initialRouteName: 'home'
+    initialRouteName: 'mapOverlay'
   }
 );
-
-/* Stack.navigationOptions = ({ navigation }) => {
-  const { index, routes } = navigation.state;
-  let tabBarVisible = true;
-  if (
-    routes[index].routeName === "profileCamera" ||
-    routes[index].routeName === "barCode"
-  ) {
-    tabBarVisible = false;
-  }
-  return {
-    tabBarVisible
-  };
-}; */
-
-export default Stack;
