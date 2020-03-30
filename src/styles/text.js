@@ -2,6 +2,12 @@ import { StyleSheet, Platform } from 'react-native';
 import colors from './color';
 
 export default StyleSheet.create({
+  headerText: {
+    fontSize: 35,
+    color: 'white',
+    // fontFamily: Platform.OS === "ios" ? "Varela Round" : "varelaround",
+    fontWeight: '800'
+  },
   heroText: {
     fontSize: 25,
     color: 'white',

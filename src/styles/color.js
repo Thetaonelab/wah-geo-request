@@ -18,5 +18,10 @@ export default {
   grey4: '#fbfbfb',
   grey5: '#575757',
   black: '#000000',
-  white: '#ffffff'
+  white: '#ffffff',
+  truckinBlue: '#0099cc',
+  truckinYellow: '#ffbf80',
+  transparent: 'rgba(0, 0, 0, 0)',
+  red: '#FF0000',
+  buttonGreen: '#00AA00'
 };

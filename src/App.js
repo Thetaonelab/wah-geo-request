@@ -5,7 +5,7 @@ import SnackBar from 'react-native-snackbar-component';
 import colors from './styles/color';
 import styles from './styles/style';
 // import text from './styles/text';
-import Navigator from './routes';
+import Navigator from './Routes/index';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -103,7 +103,7 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <View style={styles.parentContainer}>
+      <View style={styles.appContainer}>
         <StatusBar hidden={this.state.statusBarHidden} />
         <Navigator
           ref={r => {

@@ -10,6 +10,9 @@ import { createStackNavigator } from 'react-navigation-stack';
 // local imports
 import Login from '../screens/Login';
 import OTPValidation from '../screens/OTPValidation';
+import FoodTruckRegistration from '../screens/FoodtruckRegistration';
+import DriverRegistration from '../screens/DriverRegistration';
+import colors from '../styles/color';
 
 const noHeader = () => ({ header: null });
 
@@ -22,6 +25,26 @@ const unauthorized = createStackNavigator(
     otp: {
       screen: OTPValidation,
       navigationOptions: noHeader
+    },
+    foodTruckRegistration: {
+      screen: FoodTruckRegistration,
+      navigationOptions: {
+        title: 'Register to supply food',
+        headerStyle: {
+          backgroundColor: colors.truckinBlue
+        },
+        headerTintColor: colors.white
+      }
+    },
+    driverRegistration: {
+      screen: DriverRegistration,
+      navigationOptions: {
+        title: 'Driver registration',
+        headerStyle: {
+          backgroundColor: colors.truckinBlue
+        },
+        headerTintColor: colors.white
+      }
     }
   },
   {

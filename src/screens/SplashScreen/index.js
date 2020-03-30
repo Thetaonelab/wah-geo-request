@@ -5,7 +5,10 @@ import styles from '../../styles/style';
 // import text from '../../styles/text';
 import wah from '../../../assets/wah.png';
 
-export default function SplashScreen() {
+export default function SplashScreen(props) {
+  setTimeout(() => {
+    props.navigation.navigate('unAuthorized');
+  }, 3000);
   return (
     <View style={[styles.parentContainer, { backgroundColor: colors.white }]}>
       <View style={{ flex: 8, justifyContent: 'center' }}>

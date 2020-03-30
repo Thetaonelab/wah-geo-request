@@ -1,15 +1,16 @@
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet, Platform, Dimensions } from 'react-native';
 import colors from './color';
 
 // export var { height, width } = Dimensions.get('window');
+export const { width, height, fontScale, scale } = Dimensions.get('window');
 
 const flatStyles = {
   scrollableParentContainer: {
     backgroundColor: colors.grey2,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
     padding: 10
+  },
+  appContainer: {
+    flex: 1
   },
   parentContainer: {
     flex: 1,
@@ -22,6 +23,13 @@ const flatStyles = {
   subContainer: {
     alignSelf: 'stretch',
     textAlign: 'center'
+  },
+  textbox: {
+    height: 40,
+    width: parseInt(width * 0.8),
+    borderWidth: 1,
+    borderColor: colors.grey1,
+    fontFamily: 'Nunito'
   },
   buttonStyle: {
     padding: 8,
