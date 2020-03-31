@@ -9,6 +9,9 @@ import Header from '../components/Header';
 import DriverMapView from '../screens/DriverMapView';
 import CommentsAndRatings from '../screens/Rating';
 import ReportAgainstFoodProvider from '../screens/ReportAgainstFoodProvider';
+import ReportAgainstDriver from '../screens/ReportAgainstDriver';
+import FoodProviderMapView from '../screens/FoodProviderMapView';
+import LocationSettings from '../screens/FoodProviderLocationSettings';
 import colors from '../styles/color';
 
 const Stack = createStackNavigator(
@@ -64,6 +67,45 @@ const Stack = createStackNavigator(
       screen: ReportAgainstFoodProvider,
       navigationOptions: {
         title: 'Report Misuse',
+        headerStyle: {
+          backgroundColor: colors.truckinBlue
+        },
+        headerTintColor: colors.white
+      }
+      // navigationOptions: ({ navigation }) => ({
+      //   header: <Header pageName="DriverMapView" navigation={navigation} />
+      // })
+    },
+    reportAgainstDriver: {
+      screen: ReportAgainstDriver,
+      navigationOptions: {
+        title: 'Report Misuse',
+        headerStyle: {
+          backgroundColor: colors.truckinBlue
+        },
+        headerTintColor: colors.white
+      }
+      // navigationOptions: ({ navigation }) => ({
+      //   header: <Header pageName="DriverMapView" navigation={navigation} />
+      // })
+    },
+    foodProviderMapView: {
+      screen: FoodProviderMapView,
+      navigationOptions: {
+        title: 'Food Provider Dashboard',
+        headerStyle: {
+          backgroundColor: colors.truckinBlue
+        },
+        headerTintColor: colors.white
+      }
+      // navigationOptions: ({ navigation }) => ({
+      //   header: <Header pageName="DriverMapView" navigation={navigation} />
+      // })
+    },
+    locationSettings: {
+      screen: LocationSettings,
+      navigationOptions: {
+        title: 'Locaton Settings',
         headerStyle: {
           backgroundColor: colors.truckinBlue
         },

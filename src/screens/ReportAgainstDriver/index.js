@@ -26,17 +26,11 @@ const stylesheet = StyleSheet.create({
   }
 });
 
-class ReportAgainstFoodProvider extends PureComponent {
+class ReportAgainstDriver extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      options: [
-        { label: "I'm hyngry and stopped, put me on the map", value: 1 },
-        { label: "I'm OTR, tell me about up comming food truk", value: 2 }
-      ],
-      types: ['AAAAAAA', 'FFFFFFF'],
-      selectedIndex: null,
-      hungrtButtonClicked: false
+      types: ['AAAAAAA', 'FFFFFFF']
     };
   }
 
@@ -55,7 +49,7 @@ class ReportAgainstFoodProvider extends PureComponent {
               textAlign: 'center'
             }
           ]}>
-          Food Provider not playing by the rules?
+          Drivers not playing by the rules?
         </Text>
         <Text
           style={[
@@ -158,4 +152,4 @@ class ReportAgainstFoodProvider extends PureComponent {
   }
 }
 
-export default ReportAgainstFoodProvider;
+export default ReportAgainstDriver;

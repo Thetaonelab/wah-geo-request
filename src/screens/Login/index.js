@@ -106,7 +106,6 @@ class Login extends PureComponent {
             // disabledTextStyle={{ color: color.black }}
             buttonStyle={[stylesheet.buttonStyle]}
             onPress={() => {
-              console.log("LLLLLLLLLLLL")
               this.props.navigation.navigate('driverMapView');
             }}
           />
@@ -116,7 +115,9 @@ class Login extends PureComponent {
             titleStyle={[text.secondaryText]}
             // disabledTextStyle={{ color: color.black }}
             buttonStyle={[stylesheet.buttonStyle]}
-            onPress={() => {}}
+            onPress={() => {
+              this.props.navigation.navigate('foodProviderMapView');
+            }}
           />
         </View>
 
