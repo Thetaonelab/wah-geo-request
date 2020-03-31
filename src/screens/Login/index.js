@@ -105,7 +105,10 @@ class Login extends PureComponent {
             titleStyle={[text.secondaryText]}
             // disabledTextStyle={{ color: color.black }}
             buttonStyle={[stylesheet.buttonStyle]}
-            onPress={() => {}}
+            onPress={() => {
+              console.log("LLLLLLLLLLLL")
+              this.props.navigation.navigate('driverMapView');
+            }}
           />
           <Button
             title="Login Food Provider"

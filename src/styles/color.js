@@ -20,6 +20,7 @@ export default {
   black: '#000000',
   white: '#ffffff',
   truckinBlue: '#0099cc',
+  truckinBlueLight: 'rgba(0, 153, 204, 0.7)',
   truckinYellow: '#ffbf80',
   transparent: 'rgba(0, 0, 0, 0)',
   red: '#FF0000',
