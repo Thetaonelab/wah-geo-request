@@ -55,13 +55,11 @@ const style = StyleSheet.create({
     position: 'absolute',
     left: 10,
     top: 0,
+    bottom: 0,
+    width: 80,
     height: 60,
-    width: 'auto',
-
     display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center'
+    flexDirection: 'row'
   },
 
   logoImage: {

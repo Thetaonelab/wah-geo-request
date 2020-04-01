@@ -18,5 +18,8 @@ export default {
   grey4: '#fbfbfb',
   grey5: '#575757',
   black: '#000000',
-  white: '#ffffff'
+  white: '#ffffff',
+  green: '#00ff00',
+  red: '#ff0000',
+  transparent: 'rgba(0,0,0,0)'
 };

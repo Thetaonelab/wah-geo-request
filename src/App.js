@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unused-state */
 import React from 'react';
-import { Keyboard, StatusBar } from 'react-native';
+import { Keyboard, StatusBar, NativeModules } from 'react-native';
 import SnackBar from 'react-native-snackbar-component';
 import colors from './styles/color';
 import Navigator from './routes';
@@ -14,6 +14,8 @@ export default class App extends React.Component {
       isLoggedIn: false,
       statusBarHidden: true
     };
+
+    console.log('NativeModules', NativeModules);
   }
 
   onNavigate = (prevState, newState, action) => {

@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Image, Text, TouchableOpacity } from 'react-native';
 
 import PropTypes from 'prop-types';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LogoImage from '../../../assets/wah.png';
 
 import colors from '../../styles/color';
@@ -33,17 +32,17 @@ class Header extends React.Component {
   };
 
   render() {
-    const { deviceConnected } = this.context;
+    const a = '\uF10D';
     return (
       <View style={styles.container}>
-        <TouchableOpacity onPress={this.goBack} style={styles.leftSide}>
+        <View style={styles.leftSide}>
           {!this.props.isDashboard && (
-            <>
-              <Icon name="less-than" size={20} />
-              <Text style={[text.normalText, styles.backText]}>Back</Text>
-            </>
+            <TouchableOpacity onPress={this.goBack} style={styles.menuIconLeft}>
+              {/* <Text style={text.appbarText}>BACK</Text> */}
+              <Icon name="align-justify" size={30} />
+            </TouchableOpacity>
           )}
-        </TouchableOpacity>
+        </View>
 
         {!this.props.isDashboard ? (
           <Text style={[text.normalBoldText]}>{this.props.pageName}</Text>
@@ -53,25 +52,10 @@ class Header extends React.Component {
 
         {this.props.drawerMode && (
           <View style={styles.menuIconBox}>
-            <View style={styles.menuIconLeft}>
-              {!this.props.isDashboard && (
-                <Icon
-                  style={styles.connectIcon}
-                  name="watch"
-                  size={30}
-                  color={
-                    deviceConnected
-                      ? colors.colorprimary0
-                      : colors.colorsecondary10
-                  }
-                />
-              )}
-            </View>
-
             <TouchableOpacity
-              style={styles.menuIconRight}
+              style={styles.menuIconLeft}
               onPress={this.toogleDrawer}>
-              <Icon name="menu" size={40} />
+              <Text style={[text.appbarText]}>☰</Text>
             </TouchableOpacity>
           </View>
         )}

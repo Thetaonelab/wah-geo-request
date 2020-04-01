@@ -10,8 +10,8 @@ const { width, height } = Dimensions.get('window');
 
 export default function SplashScreen(props) {
   setTimeout(() => {
-    props.navigation.navigate('authorized');
-  }, 5000);
+    props.navigation.navigate('unAuthorized');
+  }, 1000);
 
   return (
     <View style={[styles.parentContainer, { backgroundColor: colors.white }]}>
