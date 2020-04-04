@@ -21,5 +21,13 @@ export default {
   white: '#ffffff',
   green: '#00ff00',
   red: '#ff0000',
-  transparent: 'rgba(0,0,0,0)'
+  transparent: 'rgba(0,0,0,0)',
+  colorred0: 'rgba(220, 10, 10, 1)',
+  colorred1: 'rgba(220, 10, 10, 0.7)',
+  colorred2: 'rgba(220, 10, 10, 0.6)',
+  colorred3: 'rgba(220, 10, 10, 0.2)',
+  colorgreen0: 'rgba(10, 210, 20, 1)',
+  colorgreen1: 'rgba(10, 210, 20, 0.7)',
+  colorgreen2: 'rgba(10, 210, 20, 0.6)',
+  colorgreen3: 'rgba(10, 210, 20, 0.2)'
 };

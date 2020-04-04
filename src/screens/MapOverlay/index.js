@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-restricted-properties */
 import React from 'react';
@@ -6,13 +7,15 @@ import MapView, {
   Marker,
   PROVIDER_GOOGLE,
   Heatmap,
-  Circle
+  Circle,
+  Polygon
 } from 'react-native-maps';
 import { Switch } from 'react-native-ui-lib';
 import styles from '../../styles/style';
 import colors from '../../styles/color';
 import text from '../../styles/text';
 import styleJson from './styleJson';
+import dat from './data.json';
 
 const { width, height } = Dimensions.get('window');
 
@@ -24,53 +27,34 @@ export default class MapOverlay extends React.Component {
 
   componentDidMount() {}
 
+  numberToColor = (n) => {
+    if (n > 5) {
+      return colors.colorgreen0;
+    }
+    if (n > 3) {
+      return colors.colorgreen1;
+    }
+    if (n > 1) {
+      return colors.colorgreen2;
+    }
+    if (n === 0) {
+      return colors.colorgreen3;
+    }
+    if (n > -2) {
+      return colors.colorred3;
+    }
+    if (n > -3) {
+      return colors.colorred2;
+    }
+    if (n > -4) {
+      return colors.colorred1;
+    }
+    return colors.colorred0;
+  };
+
   render() {
     const baseLat = 22.3;
     const baseLong = 88.3;
-
-    const baseLatRed = 22.3;
-    const baseLongRed = 88.3;
-    const redPoints = [];
-    for (let i = 0; i < 10; i++) {
-      redPoints.push({
-        latitude:
-          baseLatRed +
-          (Math.pow(-1, parseInt(Math.random() * 100)) *
-            Math.random() *
-            Math.random()) /
-            100,
-        longitude:
-          baseLongRed +
-          (Math.pow(-1, parseInt(Math.random() * 100)) *
-            Math.random() *
-            Math.random() *
-            1) /
-            100,
-        weight: Math.random() > 0.5 ? 1 : 0.8
-      });
-    }
-
-    const baseLatGreen = 22.3 + 0.02;
-    const baseLongGreen = 88.3 + 0.01;
-    const greenPoints = [];
-    for (let i = 0; i < 10; i++) {
-      greenPoints.push({
-        latitude:
-          baseLatGreen +
-          (Math.pow(-1, parseInt(Math.random() * 100)) *
-            Math.random() *
-            Math.random()) /
-            100,
-        longitude:
-          baseLongGreen +
-          (Math.pow(-1, parseInt(Math.random() * 100)) *
-            Math.random() *
-            Math.random() *
-            1) /
-            100,
-        weight: Math.random() > 0.5 ? 1 : 0.8
-      });
-    }
 
     return (
       <View style={[styles.parentContainer, { padding: 0 }]}>
@@ -81,52 +65,32 @@ export default class MapOverlay extends React.Component {
           initialRegion={{
             latitude: baseLat,
             longitude: baseLong,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421
+            latitudeDelta: 0.0622,
+            longitudeDelta: 0.0821
           }}>
-          <Heatmap
-            points={redPoints}
-            gradient={{
-              colors: [colors.transparent, colors.red],
-              startPoints: [0.5, 0.9]
-            }}
-            radius={50}
-          />
-          {/* <Circle
-            center={{ latitude: baseLatRed, longitude: baseLongRed }}
-            radius={800}
-            strokeColor={colors.transparent}
-            fillColor={colors.red}
-          /> */}
-          {redPoints.map((pt, idx) => {
-            return <Marker coordinate={pt} pinColor={colors.red} />;
-          })}
-
-          <Heatmap
-            points={greenPoints}
-            gradient={{
-              colors: [colors.transparent, colors.green],
-              startPoints: [0.5, 0.9]
-            }}
-            radius={50}
-          />
-          {/* <Circle
-            center={{ latitude: baseLatGreen, longitude: baseLongGreen }}
-            radius={800}
-            strokeColor={colors.transparent}
-            fillColor={colors.green}
-          /> */}
-          {greenPoints.map((pt, idx) => {
-            return <Marker coordinate={pt} pinColor={colors.green} />;
-          })}
-          {/*           <Heatmap
-            points={points}
-            gradient={{
-              colors: [colors.red, colors.green],
-              startPoints: [0.5, 0.9]
-            }}
-          />
- */}
+          {dat.map((dt, idx) => (
+            <>
+              <Polygon
+                key={`poly-${idx}`}
+                coordinates={dt.boundary}
+                strokeWidth={2}
+                strokeColor={colors.grey2}
+                fillColor={this.numberToColor(dt.colorGrade)}
+              />
+              <Marker coordinate={dt.center} key={`marker-${idx}`}>
+                <View
+                  styele={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}>
+                  <Text color={colors.black}>
+                    {`${dt.typeMap.p}-${dt.typeMap.c}`}
+                  </Text>
+                </View>
+              </Marker>
+            </>
+          ))}
         </MapView>
         <View
           style={{
@@ -190,7 +154,7 @@ export default class MapOverlay extends React.Component {
               borderBottomWidth: 1,
               marginTop: 20
             }}>
-            <Text style={[text.appbarText, { marginRight: 20 }]}>
+            <Text style={[text.primaryText, { marginRight: 20 }]}>
               I am hungry, put me on the map
             </Text>
             <Switch />

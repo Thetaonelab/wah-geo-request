@@ -6,12 +6,12 @@ const style = StyleSheet.create({
     display: 'flex',
     width: '100%',
     height: 60,
-    backgroundColor: colors.colorsecondary10,
+    backgroundColor: colors.colorprimary0,
     padding: 5,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'relative'
+    position: 'relative',
   },
   menuIconBox: {
     position: 'absolute',
@@ -21,7 +21,7 @@ const style = StyleSheet.create({
     width: 80,
     height: 60,
     display: 'flex',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
 
   menuIconLeft: {
@@ -29,7 +29,7 @@ const style = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
   menuIconRight: {
@@ -37,7 +37,7 @@ const style = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
   watchBox: {
@@ -48,7 +48,7 @@ const style = StyleSheet.create({
     alignItems: 'center',
     borderColor: 'red',
     borderWidth: 1,
-    marginLeft: 'auto'
+    marginLeft: 'auto',
   },
 
   leftSide: {
@@ -59,17 +59,17 @@ const style = StyleSheet.create({
     width: 80,
     height: 60,
     display: 'flex',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
 
   logoImage: {
     width: 60,
     height: 40,
-    resizeMode: 'cover'
+    resizeMode: 'cover',
   },
   backText: {
-    marginLeft: 5
-  }
+    marginLeft: 5,
+  },
 });
 
 export default style;

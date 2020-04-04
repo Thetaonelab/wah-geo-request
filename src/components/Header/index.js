@@ -32,26 +32,10 @@ class Header extends React.Component {
   };
 
   render() {
-    const a = '\uF10D';
     return (
       <View style={styles.container}>
-        <View style={styles.leftSide}>
-          {!this.props.isDashboard && (
-            <TouchableOpacity onPress={this.goBack} style={styles.menuIconLeft}>
-              {/* <Text style={text.appbarText}>BACK</Text> */}
-              <Icon name="align-justify" size={30} />
-            </TouchableOpacity>
-          )}
-        </View>
-
-        {!this.props.isDashboard ? (
-          <Text style={[text.normalBoldText]}>{this.props.pageName}</Text>
-        ) : (
-          <Image style={styles.logoImage} source={LogoImage} />
-        )}
-
         {this.props.drawerMode && (
-          <View style={styles.menuIconBox}>
+          <View style={styles.leftSide}>
             <TouchableOpacity
               style={styles.menuIconLeft}
               onPress={this.toogleDrawer}>
@@ -59,6 +43,18 @@ class Header extends React.Component {
             </TouchableOpacity>
           </View>
         )}
+
+        <Text style={[text.appbarText]}>
+          {this.props.pageName.toUpperCase()}
+        </Text>
+
+        {/* <View style={styles.menuIconBox}>
+            <TouchableOpacity
+              style={styles.menuIconLeft}
+              onPress={this.toogleDrawer}>
+              <Text style={[text.appbarText]}>☰</Text>
+            </TouchableOpacity>
+          </View> */}
       </View>
     );
   }
@@ -66,7 +62,7 @@ class Header extends React.Component {
 
 Header.propTypes = {
   pageName: PropTypes.string.isRequired,
-  isDashboard: PropTypes.bool,
+  // isDashboard: PropTypes.bool,
   drawerMode: PropTypes.bool,
   navigation: PropTypes.shape({
     state: PropTypes.shape({}),
@@ -75,13 +71,12 @@ Header.propTypes = {
     addListener: PropTypes.func,
     toggleDrawer: PropTypes.func,
     openDrawer: PropTypes.func,
-    closeDrawer: PropTypes.func
-  }).isRequired
+    closeDrawer: PropTypes.func,
+  }).isRequired,
 };
 
 Header.defaultProps = {
-  isDashboard: false,
-  drawerMode: true
+  drawerMode: true,
 };
 
 export default Header;
