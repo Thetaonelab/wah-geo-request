@@ -8,10 +8,11 @@ import {
   Dimensions,
   TouchableOpacity
 } from 'react-native';
-
+import PropTypes from 'prop-types';
 import styles from '../../styles/style';
 import colors from '../../styles/color';
 import text from '../../styles/text';
+import ownStyle from './style';
 import data from './data';
 
 export default class ChooseCategory extends React.Component {
@@ -20,7 +21,15 @@ export default class ChooseCategory extends React.Component {
     this.state = {};
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    const stateObj = {};
+    data.forEach((element) => {
+      element.data.forEach((elem) => {
+        stateObj[`item-id-${elem.id}`] = elem.value ? elem.value : 0;
+      });
+    });
+    this.setState({ ...stateObj });
+  }
 
   renderItem = ({ item }) => (
     <View
@@ -55,55 +64,37 @@ export default class ChooseCategory extends React.Component {
         <Text style={text.primaryText}>{item.name}</Text>
         {/* <Text style={text.bodyText}>{'5 subcategories'}</Text> */}
       </View>
-      <View
-        style={{
-          flex: 2,
-          height: 50,
-          alignItems: 'center',
-          paddingRight: 20,
-          justifyContent: 'center',
-          flexDirection: 'row'
-        }}>
+      <View style={ownStyle.pmButtonContainer}>
         <TouchableOpacity
-          style={{
-            height: 40,
-            width: 40,
-            backgroundColor: colors.grey1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: 3
+          style={ownStyle.pmButton}
+          onPress={() => {
+            this.setState((ps) => {
+              if (ps[`item-id-${item.id}`] > 0) {
+                return { [`item-id-${item.id}`]: ps[`item-id-${item.id}`] - 1 };
+              }
+              return {};
+            });
           }}>
           <Text style={[text.primaryText, { fontSize: 25 }]}>—</Text>
         </TouchableOpacity>
-
-        <View
-          style={{
-            height: 40,
-            width: 50,
-            backgroundColor: colors.white,
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-          <Text style={text.primaryText}>0</Text>
+        <View style={ownStyle.pmValue}>
+          <Text style={text.primaryText}>
+            {this.state[`item-id-${item.id}`]}
+          </Text>
         </View>
         <TouchableOpacity
-          style={{
-            height: 40,
-            width: 40,
-            backgroundColor: colors.grey1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: 3
+          style={ownStyle.pmButton}
+          onPress={() => {
+            this.setState((ps) => {
+              if (ps[`item-id-${item.id}`] < 10) {
+                return { [`item-id-${item.id}`]: ps[`item-id-${item.id}`] + 1 };
+              }
+              return {};
+            });
           }}>
           <Text style={[text.primaryText, { fontSize: 28 }]}>+</Text>
         </TouchableOpacity>
-        <View
-          style={{
-            height: 40,
-            width: 40,
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
+        <View style={ownStyle.unit}>
           <Text style={text.primaryText}>{item.unit}</Text>
         </View>
       </View>
@@ -137,7 +128,20 @@ export default class ChooseCategory extends React.Component {
             `key-${i.name.replace(/ /g, '-') + Math.random()}`
           }
         />
+        <TouchableOpacity
+          style={ownStyle.footerButton}
+          onPress={() => {
+            this.props.navigation.navigate('home');
+          }}>
+          <Text style={text.appbarText}>DONE</Text>
+        </TouchableOpacity>
       </View>
     );
   }
 }
+
+ChooseCategory.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired
+  }).isRequired
+};

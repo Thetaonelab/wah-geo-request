@@ -11,7 +11,7 @@ import wah from '../../../assets/wah.png';
 
 const { width, height } = Dimensions.get('window');
 
-export default class Login extends React.Component {
+export default class NGOLogin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -22,6 +22,18 @@ export default class Login extends React.Component {
   render() {
     return (
       <View style={styles.parentContainer}>
+        <Text
+          style={[
+            text.primaryText,
+            {
+              alignSelf: 'center',
+              marginBottom: 20,
+              fontWeight: '700',
+              letterSpacing: 2
+            }
+          ]}>
+          FOR REGISTERED NGO
+        </Text>
         <View
           style={{
             width: parseInt(width / 1.5),
@@ -40,14 +52,14 @@ export default class Login extends React.Component {
               marginBottom: 40
             }}
           />
-          <TextField placeholder="e.g. Justin Trudo" title="Your name" />
-          <TextField placeholder="e.g. 9988998899" title="Phone number" />
+          <TextField placeholder="" title="Mobile number" />
+          <TextField placeholder="" title="Password" />
           <Button
-            label="Validate OTP"
+            label="Login"
             backgroundColor={colors.colorprimary1}
             style={{ marginTop: 30, marginBottom: 10 }}
             onPress={() => {
-              this.props.navigation.navigate('otp');
+              this.props.navigation.navigate('authorizedNGO');
             }}
           />
         </View>
@@ -57,12 +69,10 @@ export default class Login extends React.Component {
             flexDirection: 'row'
           }}>
           <Text style={[text.primaryText, { padding: 10, paddingRight: 0 }]}>
-            Running a relief drive ?
+            Forgot password ?
           </Text>
           <TouchableOpacity
-            onPress={() => {
-              this.props.navigation.navigate('ngoRegister');
-            }}
+            onPress={alert}
             style={{ padding: 10, paddingLeft: 0 }}>
             <Text
               style={[
@@ -70,28 +80,7 @@ export default class Login extends React.Component {
                 { color: colors.colorprimary0, fontWeight: '700' }
               ]}>
               {' '}
-              Register
-            </Text>
-          </TouchableOpacity>
-          <Text
-            style={[
-              text.primaryText,
-              { padding: 5, paddingLeft: 0, paddingTop: 10 }
-            ]}>
-            |
-          </Text>
-          <TouchableOpacity
-            onPress={() => {
-              this.props.navigation.navigate('ngoLogin');
-            }}
-            style={{ padding: 10, paddingLeft: 0 }}>
-            <Text
-              style={[
-                text.primaryText,
-                { color: colors.colorprimary0, fontWeight: '700' }
-              ]}>
-              {' '}
-              Login
+              Contact admin
             </Text>
           </TouchableOpacity>
         </View>
@@ -100,7 +89,7 @@ export default class Login extends React.Component {
   }
 }
 
-Login.propTypes = {
+NGOLogin.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired
   }).isRequired

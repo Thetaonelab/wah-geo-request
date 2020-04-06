@@ -7,6 +7,7 @@ import LogoImage from '../../../assets/wah.png';
 import colors from '../../styles/color';
 import text from '../../styles/text';
 import styles from './style';
+import wahIcon from '../../../assets/wah-icon.png';
 
 class Header extends React.Component {
   constructor(props) {
@@ -47,14 +48,32 @@ class Header extends React.Component {
         <Text style={[text.appbarText]}>
           {this.props.pageName.toUpperCase()}
         </Text>
+        {/* <View
+          style={{
+            padding: 2,
+          }}>
+          <Image
+            style={{ resizeMode: 'cover', width: 30, height: 30 }}
+            source={wahIcon}
+          />
+        </View> */}
 
-        {/* <View style={styles.menuIconBox}>
-            <TouchableOpacity
-              style={styles.menuIconLeft}
-              onPress={this.toogleDrawer}>
-              <Text style={[text.appbarText]}>☰</Text>
-            </TouchableOpacity>
-          </View> */}
+        <View style={styles.menuIconBox}>
+          <TouchableOpacity
+            style={styles.menuIconLeft}
+            onPress={this.toogleDrawer}>
+            <Text style={[text.bodyText]}>
+              🔔
+              <Text
+                style={[
+                  text.bodyText,
+                  { color: colors.black }
+                ]}>
+                - 4
+              </Text>
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
@@ -71,12 +90,12 @@ Header.propTypes = {
     addListener: PropTypes.func,
     toggleDrawer: PropTypes.func,
     openDrawer: PropTypes.func,
-    closeDrawer: PropTypes.func,
-  }).isRequired,
+    closeDrawer: PropTypes.func
+  }).isRequired
 };
 
 Header.defaultProps = {
-  drawerMode: true,
+  drawerMode: true
 };
 
 export default Header;
