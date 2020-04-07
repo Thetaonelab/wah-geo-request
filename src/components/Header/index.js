@@ -58,7 +58,7 @@ class Header extends React.Component {
           />
         </View> */}
 
-        <View style={styles.menuIconBox}>
+        {/* <View style={styles.menuIconBox}>
           <TouchableOpacity
             style={styles.menuIconLeft}
             onPress={this.toogleDrawer}>
@@ -73,7 +73,7 @@ class Header extends React.Component {
               </Text>
             </Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
     );
   }

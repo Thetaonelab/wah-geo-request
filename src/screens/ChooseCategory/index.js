@@ -9,6 +9,8 @@ import {
   TouchableOpacity
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { FloatingButton } from 'react-native-ui-lib';
+import { StackActions, NavigationActions } from 'react-navigation';
 import styles from '../../styles/style';
 import colors from '../../styles/color';
 import text from '../../styles/text';
@@ -18,7 +20,9 @@ import data from './data';
 export default class ChooseCategory extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      totalCount: 0
+    };
   }
 
   componentDidMount() {
@@ -70,7 +74,10 @@ export default class ChooseCategory extends React.Component {
           onPress={() => {
             this.setState((ps) => {
               if (ps[`item-id-${item.id}`] > 0) {
-                return { [`item-id-${item.id}`]: ps[`item-id-${item.id}`] - 1 };
+                return {
+                  [`item-id-${item.id}`]: ps[`item-id-${item.id}`] - 1,
+                  totalCount: ps.totalCount - 1
+                };
               }
               return {};
             });
@@ -87,7 +94,10 @@ export default class ChooseCategory extends React.Component {
           onPress={() => {
             this.setState((ps) => {
               if (ps[`item-id-${item.id}`] < 10) {
-                return { [`item-id-${item.id}`]: ps[`item-id-${item.id}`] + 1 };
+                return {
+                  [`item-id-${item.id}`]: ps[`item-id-${item.id}`] + 1,
+                  totalCount: ps.totalCount + 1
+                };
               }
               return {};
             });
@@ -128,13 +138,30 @@ export default class ChooseCategory extends React.Component {
             `key-${i.name.replace(/ /g, '-') + Math.random()}`
           }
         />
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={ownStyle.footerButton}
           onPress={() => {
-            this.props.navigation.navigate('home');
+            this.props.navigation.navigate('locationAccess');
           }}>
           <Text style={text.appbarText}>DONE</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+
+        <FloatingButton
+          visible={this.state.totalCount !== 0}
+          button={{
+            label: 'I am done!',
+            labelStyle: { fontWeight: '700' },
+            onPress: () => {
+              const resetAction = StackActions.reset({
+                index: 0,
+                actions: [
+                  NavigationActions.navigate({ routeName: 'locationAccess' })
+                ]
+              });
+              this.props.navigation.dispatch(resetAction);
+            }
+          }}
+        />
       </View>
     );
   }
@@ -142,6 +169,6 @@ export default class ChooseCategory extends React.Component {
 
 ChooseCategory.propTypes = {
   navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired
   }).isRequired
 };

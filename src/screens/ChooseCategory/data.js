@@ -70,8 +70,8 @@ export default [
         unit: 'Kg'
       }
     ]
-  },
-  {
+  }
+  /* {
     id: 1,
     title: 'Services',
     data: [
@@ -112,5 +112,5 @@ export default [
         unit: 'NA'
       }
     ]
-  }
+  } */
 ];

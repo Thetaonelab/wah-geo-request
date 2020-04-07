@@ -43,7 +43,7 @@ export default class Login extends React.Component {
           <TextField placeholder="e.g. Justin Trudo" title="Your name" />
           <TextField placeholder="e.g. 9988998899" title="Phone number" />
           <Button
-            label="Validate OTP"
+            label="Verify phone number"
             backgroundColor={colors.colorprimary1}
             style={{ marginTop: 30, marginBottom: 10 }}
             onPress={() => {

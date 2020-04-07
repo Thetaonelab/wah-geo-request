@@ -14,6 +14,7 @@ export default {
   colorsecondary22: 'rgba(138, 137, 192, 0.8)',
   colorsecondary23: 'rgba(138, 137, 192, 0.7)',
   colorsecondary24: 'rgba(138, 137, 192, 0.3)',
+  grey0: '#919191',
   grey1: '#d1d1d1',
   grey2: '#f1f1f1',
   grey3: '#f5f5f5',

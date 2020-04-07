@@ -8,6 +8,8 @@ import Profile from '../screens/Profile';
 import Header from '../components/Header';
 import MapOverlay from '../screens/MapOverlay';
 import ChooseCategory from '../screens/ChooseCategory';
+import LocationAccess from '../screens/LocationAccess';
+import Feed from '../screens/Feed';
 
 const header = (navigation, title, drawerMode, isDashboard) => () => (
   <Header
@@ -25,6 +27,12 @@ export default createStackNavigator(
         header: header(navigation, 'WAH!', true, true)
       })
     },
+    feed: {
+      screen: Feed,
+      navigationOptions: ({ navigation }) => ({
+        header: header(navigation, 'WAH!', true, true)
+      })
+    },
     profile: {
       screen: Profile,
       navigationOptions: ({ navigation }) => ({
@@ -35,6 +43,12 @@ export default createStackNavigator(
       screen: ChooseCategory,
       navigationOptions: ({ navigation }) => ({
         header: header(navigation, 'My giveaway list', false, false)
+      })
+    },
+    locationAccess: {
+      screen: LocationAccess,
+      navigationOptions: ({ navigation }) => ({
+        header: header(navigation, 'Location Access', false, false)
       })
     },
 

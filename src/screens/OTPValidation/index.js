@@ -31,7 +31,7 @@ export default class OtpValidation extends React.Component {
           }}>
           <TextField placeholder="e.g. 12345" title="6 Digit OTP" />
           <Button
-            label="Get Inside"
+            label="Verify"
             backgroundColor={colors.colorprimary1}
             style={{ marginTop: 30, marginBottom: 10 }}
             onPress={() => {

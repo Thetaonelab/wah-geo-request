@@ -1,9 +1,14 @@
+/* eslint-disable react/no-array-index-key */
 import React from 'react';
 import { Text, View, Image, TouchableOpacity } from 'react-native';
+import PropTypes from 'prop-types';
+import UpcomingPickup from './UpcomingPickup';
 import styles from '../../styles/style';
 import colors from '../../styles/color';
 import text from '../../styles/text';
 import items from './data';
+import wahIcon from '../../../assets/wah-icon.png';
+import { UPDATE_TYPES } from './constants';
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -32,8 +37,9 @@ export default class Home extends React.Component {
           </Text>
         </View>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-          {items[0].data.map((d) => (
+          {items[0].data.map((d, idx) => (
             <View
+              key={`item-big-${idx}`}
               style={{
                 height: 50,
                 width: '32%',
@@ -77,61 +83,43 @@ export default class Home extends React.Component {
           }}>
           <Text
             style={[text.primaryText, { fontWeight: '700', letterSpacing: 1 }]}>
-            Upcoming pickups
+            Updates
           </Text>
         </View>
-        <View
+        <UpcomingPickup type={UPDATE_TYPES.PICKUP} />
+        <UpcomingPickup type={UPDATE_TYPES.AWAIT_PICKUP} />
+        <UpcomingPickup type={UPDATE_TYPES.REQUEST} />
+        <TouchableOpacity
           style={{
-            alignItems: 'flex-start',
-            alignSelf: 'flex-start',
-            borderWidth: 1,
-            padding: 10,
-            borderColor: colors.grey1,
-            borderRadius: 4
+            position: 'absolute',
+            right: '6%',
+            bottom: '5%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderWidth: 2,
+            borderColor: colors.colorprimary3,
+            borderRadius: 40,
+            width: 80,
+            height: 80,
+            backgroundColor: colors.colorsecondary10,
+            elevation: 3
+          }}
+          onPress={() => {
+            this.props.navigation.navigate('feed');
           }}>
-          <Text style={[text.secondaryText, { color: colors.black }]}>
-            RAMAKRISHNA MISSION CALCUTTA STUDENTS HOME
-          </Text>
-          <Text style={text.bodyText}>2.30 PM, Tomorrow</Text>
-          <View
-            style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
-            {items[0].data.map((d) => (
-              <View
-                style={{
-                  height: 50,
-                  width: 100,
-                  borderRadius: 3,
-                  flexDirection: 'row',
-                  backgroundColor: colors.grey3,
-                  marginRight: 7,
-                  marginBottom: 7,
-                  alignItems: 'center'
-                }}>
-                <View style={{ flex: 4, paddingLeft: 5 }}>
-                  <Text style={text.bodyText}>{d.name}</Text>
-                  <Text>5 {d.unit}</Text>
-                </View>
-              </View>
-            ))}
-          </View>
-          <TouchableOpacity
-            style={{
-              alignSelf: 'flex-end',
-              padding: 7,
-              borderRadius: 3,
-              borderColor: colors.grey1,
-              borderWidth: 1
-            }}>
-            <Text
-              style={[
-                text.primaryText,
-                { color: colors.colorprimary0, fontWeight: '700' }
-              ]}>
-              CALL
-            </Text>
-          </TouchableOpacity>
-        </View>
+          <Text style={text.appbarText}>5000</Text>
+          <Image
+            style={{ resizeMode: 'cover', width: 30, height: 30 }}
+            source={wahIcon}
+          />
+        </TouchableOpacity>
       </View>
     );
   }
 }
+
+Home.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired
+  }).isRequired
+};
