@@ -4,6 +4,7 @@ import React from 'react';
 import { Dimensions, Image, Text, TouchableOpacity } from 'react-native';
 import { View, TextField, Button } from 'react-native-ui-lib';
 import PropTypes from 'prop-types';
+import auth from '@react-native-firebase/auth';
 import styles from '../../styles/style';
 import colors from '../../styles/color';
 import text from '../../styles/text';
@@ -14,10 +15,32 @@ const { width, height } = Dimensions.get('window');
 export default class Login extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      phoneNumber: '9836825741'
+    };
   }
 
   componentDidMount() {}
+
+  validatePhoneNumber = (number) => {
+    const regexp = /^\+[0-9]?()[0-9](\s|\S)(\d[0-9]{8,16})$/;
+    return regexp.test(number);
+  };
+
+  signInWithPhoneNumber = async () => {
+    if (!this.validatePhoneNumber(this.state.phoneNumber)) {
+      try {
+        /* const confirmation = await auth().signInWithPhoneNumber(
+          `+91${this.state.phoneNumber}`
+        ); */
+        this.props.navigation.navigate('otp', { confirmation: null });
+      } catch (ex) {
+        console.error(ex);
+      }
+    } else {
+      alert('Invalid Phone Number');
+    }
+  };
 
   render() {
     return (
@@ -40,15 +63,28 @@ export default class Login extends React.Component {
               marginBottom: 40
             }}
           />
-          <TextField placeholder="e.g. Justin Trudo" title="Your name" />
-          <TextField placeholder="e.g. 9988998899" title="Phone number" />
+          <TextField
+            placeholder="e.g. Justin Trudo"
+            title="Your name"
+            onChangeText={(val) => {
+              this.setState({ name: val });
+            }}
+          />
+          <TextField
+            placeholder="e.g. 9988998899"
+            title="Phone number"
+            value={this.state.phoneNumber}
+            onChangeText={(val) => {
+              this.setState({ phoneNumber: val });
+            }}
+            showCharacterCounter={true}
+            maxLength={10}
+          />
           <Button
             label="Verify phone number"
             backgroundColor={colors.colorprimary1}
             style={{ marginTop: 30, marginBottom: 10 }}
-            onPress={() => {
-              this.props.navigation.navigate('otp');
-            }}
+            onPress={this.signInWithPhoneNumber}
           />
         </View>
         <View

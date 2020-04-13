@@ -21,3 +21,4 @@ android/app/build/outputs/**/*
 android/app/build_defs.bzl
 android/app/proguard-rules.pro
 android/app/debug.keystore
+yarn-error.log

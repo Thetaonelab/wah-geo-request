@@ -2,7 +2,13 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-restricted-properties */
 import React from 'react';
-import { Text, View, Dimensions } from 'react-native';
+import {
+  Text,
+  View,
+  Dimensions,
+  Modal,
+  TouchableHighlight
+} from 'react-native';
 import MapView, {
   Marker,
   PROVIDER_GOOGLE,
@@ -14,7 +20,9 @@ import styles from '../../styles/style';
 import colors from '../../styles/color';
 import text from '../../styles/text';
 import styleJson from './styleJson';
+// import ownStyle from './style';
 import { getLocationData, getLocationDataRaw } from './api';
+import ModalView from './ModalView';
 
 const { width, height } = Dimensions.get('window');
 
@@ -33,7 +41,8 @@ export default class MapOverlay extends React.Component {
         Math.abs((0.3921 * 40075 * Math.cos(22.6573)) / 360) / 2
       ),
       locationData: [],
-      rawMode: false
+      rawMode: false,
+      modalVisible: false
     };
   }
 
@@ -44,6 +53,9 @@ export default class MapOverlay extends React.Component {
       radius
     });
     this.setState({ locationData, rawMode: false });
+    setTimeout(() => {
+      this.setState({ modalVisible: true });
+    }, 2000);
   }
 
   numberToColor = (n) => {
@@ -96,6 +108,10 @@ export default class MapOverlay extends React.Component {
 
       this.setState({ locationData, rawMode: true });
     }
+  };
+
+  dismissModal = () => {
+    this.setState((st) => ({ modalVisible: false }));
   };
 
   render() {
@@ -168,6 +184,10 @@ export default class MapOverlay extends React.Component {
           ))}
         </MapView>
         <BottomView />
+        <ModalView
+          modalVisible={this.state.modalVisible}
+          dismissModal={this.dismissModal}
+        />
       </View>
     );
   }

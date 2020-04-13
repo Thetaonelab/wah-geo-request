@@ -18,6 +18,23 @@ export default class OtpValidation extends React.Component {
 
   componentDidMount() {}
 
+  confirmCode = async () => {
+    const { confirmation } = this.props.navigation.state.params;
+    const { activateSnackbar } = this.props.navigation.getScreenProps();
+    /* if (!this.state.otp || this.state.otp.length < 6) {
+      activateSnackbar('Please enter 6 digit OTP.', 'error');
+      return;
+    }
+    try {
+      await confirmation.confirm(this.state.otp);
+    } catch (error) {
+      // console.error('Invalid code.');
+      activateSnackbar('Invalid OTP. Please try again', 'error');
+    } */
+
+    this.props.navigation.navigate('authorized');
+  };
+
   render() {
     return (
       <View style={styles.parentContainer}>
@@ -29,14 +46,19 @@ export default class OtpValidation extends React.Component {
             borderWidth: 1,
             borderRadius: 3
           }}>
-          <TextField placeholder="e.g. 12345" title="6 Digit OTP" />
+          <TextField
+            placeholder="e.g. 12345"
+            title="6 Digit OTP"
+            onChange={(text) => {
+              // eslint-disable-next-line react/no-unused-state
+              this.setState({ otp: text });
+            }}
+          />
           <Button
             label="Verify"
             backgroundColor={colors.colorprimary1}
             style={{ marginTop: 30, marginBottom: 10 }}
-            onPress={() => {
-              this.props.navigation.navigate('authorized');
-            }}
+            onPress={this.confirmCode}
           />
         </View>
       </View>
@@ -46,6 +68,10 @@ export default class OtpValidation extends React.Component {
 
 OtpValidation.propTypes = {
   navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired
+    navigate: PropTypes.func.isRequired,
+    getScreenProps: PropTypes.func.isRequired,
+    state: PropTypes.shape({
+      params: PropTypes.shape({ confirmation: PropTypes.object })
+    })
   }).isRequired
 };

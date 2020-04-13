@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "440666551573",
+    "firebase_url": "https://ap-aiml.firebaseio.com",
+    "project_id": "ap-aiml",
+    "storage_bucket": "ap-aiml.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:440666551573:android:bdde86e8350e7e1d70e51c",
+        "android_client_info": {
+          "package_name": "com.thetaonelab.wah"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "440666551573-8fg1hksjqui21tfv9vs4g0our2vigg60.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArUjmwzjZGZvHPx_fodFeUazBIN0t5tko"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "440666551573-8fg1hksjqui21tfv9vs4g0our2vigg60.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

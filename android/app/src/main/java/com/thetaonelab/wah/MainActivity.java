@@ -1,4 +1,4 @@
-package com.wah;
+package com.thetaonelab.wah;
 
 import com.facebook.react.ReactActivity;
 
