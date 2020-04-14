@@ -160,6 +160,9 @@ export default class MapOverlay extends React.Component {
                     strokeWidth={2}
                     strokeColor={colors.grey2}
                     fillColor={this.numberToColor(dt.typeMap.p + dt.typeMap.c)}
+                    onPress={() => {
+                      this.setState({ modalVisible: true });
+                    }}
                   />
                   <Marker coordinate={dt.center} key={`marker-${idx}`}>
                     <View

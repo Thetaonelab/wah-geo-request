@@ -67,6 +67,7 @@ export default class Login extends React.Component {
             placeholder="e.g. Justin Trudo"
             title="Your name"
             onChangeText={(val) => {
+              // eslint-disable-next-line react/no-unused-state
               this.setState({ name: val });
             }}
           />

@@ -21,6 +21,16 @@ export default StyleSheet.create({
     height: height * 0.9,
     alignSelf: 'flex-end'
   },
+  donorDetailsModal: {
+    backgroundColor: colors.grey3,
+    borderRadius: 4,
+    padding: 20,
+    alignItems: 'flex-start',
+    height: parseInt(height / 3),
+    width: parseInt(width / 1.5),
+    elevation: 4
+    // alignSelf: 'flex-end'
+  },
   openButton: {
     // backgroundColor: '#F194FF',
     borderRadius: 20,
