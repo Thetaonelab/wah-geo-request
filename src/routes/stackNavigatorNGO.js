@@ -5,6 +5,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import Profile from '../screens/Profile';
 import Header from '../components/Header';
 import MapOverlay from '../screens/MapOverlay';
+import ActiveRequests from '../screens/ActiveRequests';
 
 const header = (navigation, title, drawerMode, isDashboard) => () => (
   <Header
@@ -26,6 +27,12 @@ export default createStackNavigator(
       screen: MapOverlay,
       navigationOptions: ({ navigation }) => ({
         header: header(navigation, 'Find on map', true, true)
+      })
+    },
+    activeRequests: {
+      screen: ActiveRequests,
+      navigationOptions: ({ navigation }) => ({
+        header: header(navigation, 'Active Requests', false, false)
       })
     }
   },

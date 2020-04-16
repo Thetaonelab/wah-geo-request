@@ -23,6 +23,7 @@ import styleJson from './styleJson';
 // import ownStyle from './style';
 import { getLocationData, getLocationDataRaw } from './api';
 import ModalView from './ModalView';
+import DonorDetails from './DonorDetails';
 
 const { width, height } = Dimensions.get('window');
 
@@ -42,7 +43,8 @@ export default class MapOverlay extends React.Component {
       ),
       locationData: [],
       rawMode: false,
-      modalVisible: false
+      modalVisible: false,
+      donorDetailsVisible: false
     };
   }
 
@@ -53,9 +55,6 @@ export default class MapOverlay extends React.Component {
       radius
     });
     this.setState({ locationData, rawMode: false });
-    setTimeout(() => {
-      this.setState({ modalVisible: true });
-    }, 2000);
   }
 
   numberToColor = (n) => {
@@ -122,7 +121,9 @@ export default class MapOverlay extends React.Component {
           provider={PROVIDER_GOOGLE}
           style={{ height: height - 80, width }}
           initialRegion={this.state.region}
-          onRegionChangeComplete={this.onRegionChangeComplete}>
+          onRegionChangeComplete={this.onRegionChangeComplete}
+          moveOnMarkerPress={false}
+          showsUserLocation>
           <Circle
             center={this.state.base}
             radius={this.state.radius * 1000}
@@ -137,20 +138,40 @@ export default class MapOverlay extends React.Component {
                   key={`marker-${idx}`}
                   pinColor={colors.colorprimary0}
                   zIndex={100}
-                  moveOnMarkerPress={false}>
-                  {/* <MapView.Callout tooltip={true}>
-                      <View
-                        style={{
-                          width: 100,
-                          height: 50,
-                          backgroundColor: colors.white,
-                          borderRadius: 4,
-                          justifyContent: 'center',
-                          alignItems: 'center'
-                        }}>
-                        <Text>callout text</Text>
-                      </View>
-                    </MapView.Callout> */}
+                  ref={(_marker) => {
+                    this.marker = _marker;
+                  }}
+                  onCalloutPress={() => {
+                    // not working
+                    this.marker.hideCallout();
+                  }}>
+                  <MapView.Callout
+                    tooltip={true}
+                    onPress={() => {
+                      this.setState({ donorDetailsVisible: true });
+                    }}>
+                    <View
+                      style={{
+                        backgroundColor: colors.white,
+                        borderRadius: 4,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        padding: 20,
+                        borderColor: colors.colorsecondary10,
+                        borderWidth: 4
+                      }}>
+                      <Text style={text.appbarText}>Mr. Sen | 24 KM away</Text>
+                      <Text style={text.secondaryText}>See details</Text>
+                    </View>
+                    <View
+                      style={{
+                        backgroundColor: colors.colorsecondary10,
+                        width: 4,
+                        height: 20,
+                        alignSelf: 'center'
+                      }}
+                    />
+                  </MapView.Callout>
                 </Marker>
               ) : (
                 <>
@@ -160,11 +181,17 @@ export default class MapOverlay extends React.Component {
                     strokeWidth={2}
                     strokeColor={colors.grey2}
                     fillColor={this.numberToColor(dt.typeMap.p + dt.typeMap.c)}
+                    tappable={true}
                     onPress={() => {
                       this.setState({ modalVisible: true });
                     }}
                   />
-                  <Marker coordinate={dt.center} key={`marker-${idx}`}>
+                  <Marker
+                    coordinate={dt.center}
+                    key={`marker-${idx}`}
+                    onPress={() => {
+                      this.setState({ modalVisible: true });
+                    }}>
                     <View
                       styele={{
                         flex: 1,
@@ -190,6 +217,15 @@ export default class MapOverlay extends React.Component {
         <ModalView
           modalVisible={this.state.modalVisible}
           dismissModal={this.dismissModal}
+        />
+        <DonorDetails
+          name="Test"
+          giveawayList="Rice 23Kg, Dal 10 Kg, Aloo 5 Kg"
+          distance="2.3Km"
+          visible={this.state.donorDetailsVisible}
+          dismiss={() => {
+            this.setState({ donorDetailsVisible: false });
+          }}
         />
       </View>
     );

@@ -1,14 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
-import {
-  Text,
-  View,
-  // Dimensions,
-  TouchableOpacity,
-  FlatList,
-  Image,
-  ScrollView
-} from 'react-native';
+import { Text, View, TouchableOpacity, FlatList, Image } from 'react-native';
 import { Button } from 'react-native-ui-lib';
 import colors from '../../styles/color';
 import text from '../../styles/text';
@@ -16,12 +8,7 @@ import text from '../../styles/text';
 import DonorDetails from './DonorDetails';
 
 export default function DonorList(props) {
-  const [modalVisible, setModalVisible] = useState(0);
-
-/*   setTimeout(() => {
-    setModalVisible(true);
-  }, 3000);
- */
+  const [modalVisible, setModalVisible] = useState(false);
   const askButtonPress = () => {};
   const renderItem = ({ item }) => (
     <TouchableOpacity
@@ -34,8 +21,7 @@ export default function DonorList(props) {
         alignItems: 'center',
         alignSelf: 'stretch'
       }}
-      onLongPress={() => setModalVisible(true)}
-      key={`${item.name}${Math.random()}`}>
+      onLongPress={() => setModalVisible(true)}>
       <View style={{ flex: 1 }}>
         <Image
           source={{
@@ -102,17 +88,20 @@ export default function DonorList(props) {
   };
 
   return (
-    <ScrollView
+    <View
       style={{ height: 600 * 0.8, flex: 1, alignSelf: 'stretch' }}
       contentContainerStyle={{
         marginTop: 20,
         alignItems: 'stretch'
       }}>
-      <FlatList
-        data={props.data}
-        renderItem={renderItem}
-        style={{ alignSelf: 'stretch' }}
-      />
+      <View style={{ alignSelf: 'stretch' }}>
+        <FlatList
+          data={props.data}
+          renderItem={renderItem}
+          style={{ alignSelf: 'stretch' }}
+          keyExtractor={(item) => `${item.name}${Math.random()}`}
+        />
+      </View>
       <DonorDetails
         visible={modalVisible}
         dismiss={dismissModal}
@@ -120,6 +109,6 @@ export default function DonorList(props) {
         distance="2.4KM"
         giveawayList="rice, dal, onion"
       />
-    </ScrollView>
+    </View>
   );
 }

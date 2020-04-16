@@ -1,19 +1,15 @@
+/* eslint-disable react/jsx-curly-newline */
 import React from 'react';
-import {
-  Text,
-  View,
-  // Dimensions,
-  Modal,
-  TouchableOpacity
-} from 'react-native';
+import { View } from 'react-native';
 import PropTypes from 'prop-types';
-// import styles from '../../styles/style';
-// import colors from '../../styles/color';
+/* import { StackActions, NavigationActions } from 'react-navigation'; */
+import styles from '../../styles/style';
+/* import colors from '../../styles/color';
 import text from '../../styles/text';
-import ownStyle from './style';
-import DonorList from './DonorList';
+import ownStyle from './style'; */
+import DonorList from '../MapOverlay/DonorList';
 
-export default class ModalView extends React.Component {
+export default class ActiveRequests extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -71,42 +67,19 @@ export default class ModalView extends React.Component {
     };
   }
 
+  componentDidMount() {}
+
   render() {
     return (
-      <Modal
-        animationType="slide"
-        transparent={true}
-        hardwareAccelerated={true}
-        visible={this.props.modalVisible}
-        onRequestClose={() => {
-          // eslint-disable-next-line no-console
-          // console.log('Modal has been closed.');
-          this.props.dismissModal();
-        }}>
-        <View style={ownStyle.centeredView}>
-          <View style={ownStyle.modalView}>
-            <Text style={text.appbarText}>Donor List</Text>
-
-            <TouchableOpacity
-              style={{
-                ...ownStyle.openButton,
-                position: 'absolute',
-                right: 20,
-                top: 20
-              }}
-              onPress={this.props.dismissModal}>
-              <Text style={ownStyle.textStyle}>×</Text>
-            </TouchableOpacity>
-
-            <DonorList data={this.state.data} />
-          </View>
-        </View>
-      </Modal>
+      <View style={[styles.parentContainer]}>
+        <DonorList data={this.state.data} />
+      </View>
     );
   }
 }
 
-ModalView.propTypes = {
-  modalVisible: PropTypes.bool.isRequired,
-  dismissModal: PropTypes.func.isRequired
+ActiveRequests.propTypes = {
+  navigation: PropTypes.shape({
+    dispatch: PropTypes.func.isRequired
+  }).isRequired
 };

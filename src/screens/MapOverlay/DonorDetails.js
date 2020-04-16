@@ -4,9 +4,12 @@ import {
   View,
   // Dimensions,
   Modal,
-  TouchableOpacity
+  TouchableOpacity,
+  Linking,
+  Platform,
+  ToastAndroid
 } from 'react-native';
-import { Button, TextArea } from 'react-native-ui-lib';
+import { Button, TextField, Badge } from 'react-native-ui-lib';
 import PropTypes from 'prop-types';
 // import styles from '../../styles/style';
 import colors from '../../styles/color';
@@ -20,6 +23,11 @@ export default class DonorDetails extends React.Component {
   }
 
   render() {
+    const phoneNumber =
+      Platform.OS === 'android'
+        ? `tel:${9836825741}`
+        : `telprompt:${9836825741}`;
+
     return (
       <Modal
         animationType="fade"
@@ -46,6 +54,20 @@ export default class DonorDetails extends React.Component {
                   alignSelf: 'flex-end',
                   backgroundColor: colors.grey0,
                   marginLeft: 20
+                }}
+                onPress={() => {
+                  Linking.canOpenURL(phoneNumber)
+                    .then((supported) => {
+                      if (!supported) {
+                        ToastAndroid.show(
+                          'Phone number not supported!',
+                          ToastAndroid.LONG
+                        );
+                        return false;
+                      }
+                      return Linking.openURL(phoneNumber);
+                    })
+                    .catch((err) => console.warn(err));
                 }}
                 labelStyle={[
                   text.bodyText,
@@ -87,7 +109,7 @@ export default class DonorDetails extends React.Component {
                 ]}>
                 {this.props.distance}
               </Text>
-              <Text
+              {/* <Text
                 style={[
                   text.bodyText,
                   {
@@ -95,9 +117,16 @@ export default class DonorDetails extends React.Component {
                   }
                 ]}>
                 Accepted
-              </Text>
-              <TextArea
-                placeholder="e.g. Pickup will be dont at tomorrow 10 AM"
+              </Text> */}
+              <Badge label="Accepted" labelFormatterLimit={3} />
+              <TextField
+                placeholder="Enter a Note for the donor"
+                hideUnderline={false}
+                style={{
+                  marginTop: 20,
+                  alignSelf: 'stretch',
+                  width: '100%'
+                }}
                 onChangeText={(val) => {
                   // eslint-disable-next-line react/no-unused-state
                   this.setState({ note: val });
