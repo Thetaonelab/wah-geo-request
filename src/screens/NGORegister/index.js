@@ -19,13 +19,13 @@ export default class NGORegister extends React.Component {
     this.state = {
       apiErrorMessage: '',
       validArr: '0000000'.split('').map((v) => false),
-      email: 'a@b2.com',
-      mobile: '9899880988',
-      name: 'hello there',
-      regno: 'rtere',
-      password: 're',
-      passwordConfirm: 're',
-      address: 'hello address',
+      email: 'rkmbelur@gmail.com',
+      mobile: '9800880989',
+      name: 'RKM Belur, saradapith',
+      regno: 'S/22/12/2018',
+      password: 'repass1234',
+      passwordConfirm: 'repass1234',
+      address: 'Ramakrishna Math,Howrah 711202',
       loading: false
     };
   }

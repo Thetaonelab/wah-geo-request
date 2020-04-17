@@ -20,8 +20,8 @@ export default class NGOLogin extends React.Component {
     super(props);
     this.state = {
       validArr: '00'.split('').map((v) => false),
-      email: 'a@b2.com',
-      password: 're',
+      email: 'rkmbelur@gmail.com',
+      password: 'repass1234',
       loading: false,
       apiErrorMessage: ''
     };
@@ -64,7 +64,7 @@ export default class NGOLogin extends React.Component {
           const auth = { token: res.json.api_message.token, type: TYPE_NGO };
           await AsyncStorage.setItem('auth', JSON.stringify(auth));
           this.setState({ loading: false });
-          this.props.navigation.navigate('authorizedNGO');
+          this.props.navigation.navigate('common');
         }
       } catch (e) {
         this.setState({ apiErrorMessage: e.message, loading: false });

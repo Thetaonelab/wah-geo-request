@@ -4,15 +4,31 @@ import { Keyboard, StatusBar } from 'react-native';
 import SnackBar from 'react-native-snackbar-component';
 import colors from './styles/color';
 import Navigator from './routes';
+import { TYPE_NGO } from './constants';
+import UserContext from './contexts/UserContext';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       drawerStatus: false,
-      statusBarHidden: true
+      statusBarHidden: true,
+      userDetails: {
+        name: '',
+        address: '',
+        phone: '',
+        email: '',
+        regNo: '',
+        userType: TYPE_NGO
+      }
     };
   }
+
+  updateUser = (userDetails) => {
+    this.setState((pst) => ({
+      userDetails: { ...pst.userDetails, ...userDetails }
+    }));
+  };
 
   onNavigate = (prevState, newState, action) => {
     // eslint-disable-next-line no-console
@@ -93,14 +109,17 @@ export default class App extends React.Component {
     return (
       <>
         <StatusBar hidden={this.state.statusBarHidden} />
-        <Navigator
-          screenProps={{
-            isStatusBarHidden: this.state.statusBarHidden,
-            activateSnackbar: this.activateSnackbar,
-            toggleStatusBarHidden: this.toggleStatusBarHidden
-          }}
-          onNavigationStateChange={this.onNavigate}
-        />
+        <UserContext.Provider
+          value={{ ...this.state.userDetails, updateUser: this.updateUser }}>
+          <Navigator
+            screenProps={{
+              isStatusBarHidden: this.state.statusBarHidden,
+              activateSnackbar: this.activateSnackbar,
+              toggleStatusBarHidden: this.toggleStatusBarHidden
+            }}
+            onNavigationStateChange={this.onNavigate}
+          />
+        </UserContext.Provider>
         <SnackBar
           visible={Boolean(this.state.snackbar?.message)}
           backgroundColor={

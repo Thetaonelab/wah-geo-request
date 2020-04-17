@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React from 'react';
 import { View, ActivityIndicator, Image, Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
@@ -9,6 +10,7 @@ import styles from '../../styles/style';
 // import text from '../../styles/text';
 import wah from '../../../assets/wah.png';
 import { TYPE_NGO, TYPE_DONOR } from '../../constants';
+import UserContext from '../../contexts/UserContext';
 
 const { width, height } = Dimensions.get('window');
 
@@ -49,6 +51,24 @@ export default class SplashScreen extends React.Component {
       const ngoDetails = await fetchNGODetails(auth.token);
       // eslint-disable-next-line no-console
       console.log(ngoDetails);
+      if (ngoDetails.ok) {
+        const {
+          address,
+          email,
+          name,
+          phone_number,
+          registration_number,
+          user_id
+        } = ngoDetails.json;
+        this.context.updateUser({
+          address,
+          email,
+          name,
+          phone: phone_number,
+          regNo: registration_number,
+          userId: user_id
+        });
+      }
     }
 
     this.setLoading(false);
@@ -120,6 +140,7 @@ export default class SplashScreen extends React.Component {
   }
 }
 
+SplashScreen.contextType = UserContext;
 SplashScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired
