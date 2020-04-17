@@ -1,3 +1,4 @@
+
 export const getLocationData = (body) =>
   fetch('http://localhost:3000/getLocationData', {
     method: 'POST',

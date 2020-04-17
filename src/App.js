@@ -2,7 +2,6 @@
 import React from 'react';
 import { Keyboard, StatusBar } from 'react-native';
 import SnackBar from 'react-native-snackbar-component';
-import messaging from '@react-native-firebase/messaging';
 import colors from './styles/color';
 import Navigator from './routes';
 
@@ -10,71 +9,10 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isInAuthorizedRoute: false,
       drawerStatus: false,
-      isLoggedIn: false,
       statusBarHidden: true
     };
   }
-
-  componentDidMount = async () => {
-    await messaging().registerDeviceForRemoteMessages();
-    await this.checkPermission();
-  };
-
-  checkPermission = async () => {
-    const enabled = await messaging().hasPermission();
-    if (enabled) {
-      this.getFcmToken();
-    } else {
-      this.requestPermission();
-    }
-  };
-
-  getFcmToken = async () => {
-    const fcmToken = await messaging().getToken();
-    if (fcmToken) {
-      // eslint-disable-next-line no-console
-      console.log(fcmToken);
-      this.setState({ fcmToken });
-    } else {
-      console.error('Failed', 'No token received');
-    }
-  };
-
-  requestPermission = async () => {
-    try {
-      await messaging().requestPermission();
-      // User has authorised
-    } catch (error) {
-      // User has rejected permissions
-    }
-  };
-
-  /* messageListener = async () => {
-    this.notificationListener = notifications()
-      .onNotification((notification) => {
-        const { title, body } = notification;
-        this.showAlert(title, body);
-      });
-
-    this.notificationOpenedListener = notifications()
-      .onNotificationOpened((notificationOpen) => {
-        const { title, body } = notificationOpen.notification;
-        this.showAlert(title, body);
-      });
-
-    const notificationOpen = await notifications()
-      .getInitialNotification();
-    if (notificationOpen) {
-      const { title, body } = notificationOpen.notification;
-      this.showAlert(title, body);
-    }
-
-    this.messageListener = messaging().onMessage((message) => {
-      console.log(JSON.stringify(message));
-    });
-  }; */
 
   onNavigate = (prevState, newState, action) => {
     // eslint-disable-next-line no-console
@@ -89,16 +27,6 @@ export default class App extends React.Component {
     ) {
       this.toggleDrawer(false); // setting drawer status on toggle
     }
-
-    if (newState.index === 0) {
-      this.setState({
-        isInAuthorizedRoute: true
-      });
-    } else {
-      this.setState({
-        isInAuthorizedRoute: false
-      });
-    } // eslint-disable-line
 
     //  setting up current Route
     this.setState(
@@ -155,12 +83,6 @@ export default class App extends React.Component {
     });
   };
 
-  updateLoginStatus = (val) => {
-    this.setState({
-      isLoggedIn: val
-    });
-  };
-
   toggleStatusBarHidden = () => {
     this.setState((prevState) => ({
       statusBarHidden: !prevState.statusBarHidden
@@ -173,14 +95,9 @@ export default class App extends React.Component {
         <StatusBar hidden={this.state.statusBarHidden} />
         <Navigator
           screenProps={{
-            drawerStatus: this.state.drawerStatus,
-            isKeyboardOpen: this.state.isKeyboardOpen,
-            isLoggedIn: this.state.isLoggedIn,
             isStatusBarHidden: this.state.statusBarHidden,
-            updateLoginStatus: this.updateLoginStatus,
             activateSnackbar: this.activateSnackbar,
-            toggleStatusBarHidden: this.toggleStatusBarHidden,
-            fcmToken: this.state.fcmToken
+            toggleStatusBarHidden: this.toggleStatusBarHidden
           }}
           onNavigationStateChange={this.onNavigate}
         />

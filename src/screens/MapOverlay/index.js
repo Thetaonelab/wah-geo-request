@@ -15,6 +15,7 @@ import MapView, {
   Circle,
   Polygon
 } from 'react-native-maps';
+// import AsyncStorage from '@react-native-community/async-storage';
 import BottomView from './BottomView';
 import styles from '../../styles/style';
 import colors from '../../styles/color';

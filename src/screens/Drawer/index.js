@@ -1,5 +1,5 @@
 import React /* useState */ from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, AsyncStorage } from 'react-native';
 import PropTypes from 'prop-types';
 import styles from '../../styles/style';
 import colors from '../../styles/color';
@@ -35,9 +35,15 @@ export default function Drawer(props) {
           { title: 'Active Requests', path: 'activeRequests' },
           { title: 'All Requests', path: '' },
           { title: 'Share App', path: '' },
-          { title: 'Log out', path: '' }
+          {
+            title: 'Log out',
+            path: 'common',
+            callback: async () => {
+              await AsyncStorage.setItem('auth', '');
+            }
+          }
         ].map((v) => (
-          <DrawerItem navigation={props.navigation} label={v} />
+          <DrawerItem navigation={props.navigation} config={v} />
         ))}
       </View>
     </View>

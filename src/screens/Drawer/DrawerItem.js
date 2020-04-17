@@ -13,10 +13,13 @@ const DrawerItem = (props) => (
       justifyContent: 'center',
       alignItems: 'flex-start'
     }}
-    onPress={() => {
-      props.navigation.navigate(props.label.path);
+    onPress={async () => {
+      if (props.config.callback) {
+        props.config.callback();
+      }
+      props.navigation.navigate(props.config.path);
     }}>
-    <Text style={text.primaryText}>{props.label.title}</Text>
+    <Text style={text.primaryText}>{props.config.title}</Text>
   </TouchableOpacity>
 );
 
@@ -24,9 +27,10 @@ DrawerItem.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired
   }).isRequired,
-  label: PropTypes.shape({
+  config: PropTypes.shape({
     title: PropTypes.string.isRequired,
-    path: PropTypes.string
+    path: PropTypes.string,
+    callback: PropTypes.func
   }).isRequired
 };
 

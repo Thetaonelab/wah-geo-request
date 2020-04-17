@@ -3,7 +3,9 @@
 import React from 'react';
 import { Dimensions, Image, Text } from 'react-native';
 import { View, TextField, Button, MaskedInput } from 'react-native-ui-lib';
+import { StackActions, NavigationActions } from 'react-navigation';
 import PropTypes from 'prop-types';
+import { registerNGO } from './api';
 import styles from '../../styles/style';
 import colors from '../../styles/color';
 import text from '../../styles/text';
@@ -17,33 +19,58 @@ export default class NGORegister extends React.Component {
     this.state = {
       apiErrorMessage: '',
       validArr: '0000000'.split('').map((v) => false),
-      email: 'a@b.com',
+      email: 'a@b2.com',
       mobile: '9899880988',
       name: 'hello there',
       regno: 'rtere',
       password: 're',
       passwordConfirm: 're',
-      address: 'hello address'
+      address: 'hello address',
+      loading: false
     };
   }
 
   componentDidMount() {}
 
-  onSubmit = () => {
-    this.setState({ apiErrorMessage: '' });
-    const {
-      name,
-      email,
-      mobile,
-      regno,
-      password,
-      passwordConfirm,
-      address
-    } = this.state;
-    const validationStatus = this.state.validArr.reduce(
+  onSubmit = async () => {
+    this.setState({ apiErrorMessage: '', loading: true });
+    const { name, email, mobile, regno, password, address } = this.state;
+    const validationSuccess = this.state.validArr.reduce(
       (acc, n) => acc && n,
       true
     );
+
+    if (validationSuccess) {
+      try {
+        const res = await registerNGO({
+          email,
+          name,
+          phone: mobile,
+          password,
+          registration_number: regno,
+          address
+        });
+
+        if (!res.ok) {
+          this.setState({
+            apiErrorMessage: `Error ${res.code}: ${res.json.api_message}`,
+            loading: false
+          });
+          return;
+        }
+
+        const resetAction = StackActions.reset({
+          index: 0,
+          actions: [
+            NavigationActions.navigate({ routeName: 'ngoAwaitingReview' })
+          ]
+        });
+        this.props.navigation.dispatch(resetAction);
+        this.setState({ loading: false });
+      } catch (e) {
+        this.setState({ apiErrorMessage: e.message, loading: false });
+      }
+    }
   };
 
   render() {
@@ -263,7 +290,9 @@ export default class NGORegister extends React.Component {
             </Text>
           </View>
           <Button
-            label="Submit"
+            disabled={this.state.loading}
+            label={!this.state.loading ? 'Submit' : 'Loading ...'}
+            labelStyle={!this.state.loading ? {} : { fontStyle: 'italic' }}
             backgroundColor={colors.colorprimary1}
             style={{ marginTop: 10, marginBottom: 10 }}
             onPress={this.onSubmit}
@@ -276,6 +305,6 @@ export default class NGORegister extends React.Component {
 
 NGORegister.propTypes = {
   navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired
   }).isRequired
 };

@@ -10,6 +10,7 @@
     "format": "prettier --single-quote --jsx-bracket-same-line --write 'src/**/*.{css,js}'"
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.9.0",
     "@react-native-community/blur": "^3.4.1",
     "@react-native-community/datetimepicker": "^2.3.0",
     "@react-native-community/masked-view": "^0.1.7",
