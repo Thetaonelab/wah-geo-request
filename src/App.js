@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unused-state */
 import React from 'react';
 import { Keyboard, StatusBar } from 'react-native';
-import SnackBar from 'react-native-snackbar-component';
+import Snackbar from 'react-native-snackbar';
 import colors from './styles/color';
 import Navigator from './routes';
 import { TYPE_NGO } from './constants';
@@ -65,7 +65,14 @@ export default class App extends React.Component {
   };
 
   activateSnackbar = (message, type = 'success', duration = 8000) => {
-    this.setState({
+    Snackbar.show({
+      text: message,
+      duration,
+      textColor: colors.white,
+      backgroundColor: type === 'error' ? colors.red : colors.colorgreen0
+    });
+
+    /* this.setState({
       snackbar: {
         message,
         type
@@ -82,6 +89,7 @@ export default class App extends React.Component {
         }
       });
     }, duration);
+    */
   };
 
   opneKeyBoard = () => {
@@ -120,7 +128,7 @@ export default class App extends React.Component {
             onNavigationStateChange={this.onNavigate}
           />
         </UserContext.Provider>
-        <SnackBar
+        {/* <SnackBar
           visible={Boolean(this.state.snackbar?.message)}
           backgroundColor={
             this.state.snackbar?.type === 'success'
@@ -129,7 +137,7 @@ export default class App extends React.Component {
           }
           messageColor={colors.white}
           textMessage={this.state.snackbar?.message}
-        />
+        /> */}
       </>
     );
   }

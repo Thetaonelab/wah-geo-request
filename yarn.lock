@@ -4624,6 +4624,11 @@ react-native-screens@^2.4.0:
   dependencies:
     debounce "^1.2.0"
 
+react-native-share@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-3.2.0.tgz#030aa81e2c3ec1d5c7577d3435b6cb1ed304074f"
+  integrity sha512-dKdJV2WRjs5c1cQbhD8na2iJqBVGXWDjQbOpvY64JlTAC3f44L448NaJWxdkiDiToTdYgL1nMai1cmKGmNtD2w==
+
 react-native-slider@^0.11.0:
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/react-native-slider/-/react-native-slider-0.11.0.tgz#b68a0bc43c8422b24cd57947cc5ac2bcdb58fadc"
@@ -4631,12 +4636,10 @@ react-native-slider@^0.11.0:
   dependencies:
     prop-types "^15.5.6"
 
-react-native-snackbar-component@^1.1.8:
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/react-native-snackbar-component/-/react-native-snackbar-component-1.1.8.tgz#7eb3e53b03a69608293f9b7f1319669c7416611b"
-  integrity sha512-WU8K6yWNwk8PaYCDBH51YikfABZXlszPGO1q+1xCDBbdb1lnYMkf/gw5mssjKCyLj6UmpqHraN+e4yDuCbDDjw==
-  dependencies:
-    prop-types "^15.6.0"
+react-native-snackbar@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-snackbar/-/react-native-snackbar-2.2.0.tgz#8b4daf9e16523d61f0152d816ba39982fcbf1198"
+  integrity sha512-j2qVtuXuk3FGNxUjnBqHiQLnz2lYVwCyrsvxpCCxif7ddMqY0sfbACXUwRLTEB5d3aliSN/6EZInGCJ93e4cMQ==
 
 react-native-tab-view@^2.11.0:
   version "2.13.0"

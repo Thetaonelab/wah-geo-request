@@ -18,39 +18,39 @@ export default class SplashScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true
+      loading: true,
+      path: ''
     };
   }
 
   componentDidMount = async () => {
     let auth = await AsyncStorage.getItem('auth');
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
+
     // eslint-disable-next-line no-console
-    console.log('ASYNCSTORAGE', auth);
+    console.log('ASYNCSTORAGE', auth, fcmToken);
     auth = auth ? JSON.parse(auth) : {};
     this.navigateAway(auth);
 
-    if (!auth?.token) {
+    if (!fcmToken) {
       await messaging().registerDeviceForRemoteMessages();
       const enabled = await messaging().hasPermission();
-      let fcmToken = null;
       if (enabled) {
         fcmToken = await messaging().getToken();
       } else {
         await messaging().requestPermission();
         fcmToken = await messaging().getToken();
       }
-
       if (fcmToken) {
-        // console.log({ fcmToken });
         await AsyncStorage.setItem('fcmToken', fcmToken);
       } else {
         console.error('Failed', 'No token received');
         this.props.navigation.navigate('systemError');
       }
-    } else {
+    }
+
+    if (auth.token && auth.type === TYPE_NGO) {
       const ngoDetails = await fetchNGODetails(auth.token);
-      // eslint-disable-next-line no-console
-      console.log(ngoDetails);
       if (ngoDetails.ok) {
         const {
           address,
@@ -69,8 +69,13 @@ export default class SplashScreen extends React.Component {
           userId: user_id
         });
       }
+      this.setState({ path: 'authorizedNGo' });
+    } else if (auth.token && auth.type === TYPE_DONOR) {
+      this.setState({ path: auth.path });
+    } else {
+      // no token present
+      this.setState({ path: 'unAuthorized' });
     }
-
     this.setLoading(false);
   };
 
@@ -106,13 +111,7 @@ export default class SplashScreen extends React.Component {
   navigateAway = (auth) => {
     setTimeout(async () => {
       if (!this.state.loading) {
-        if (auth.token && auth.type === TYPE_NGO) {
-          this.props.navigation.navigate('authorizedNGO');
-        } else if (auth.token && auth.type === TYPE_DONOR) {
-          this.props.navigation.navigate('authorized');
-        } else {
-          this.props.navigation.navigate('unAuthorized');
-        }
+        this.props.navigation.navigate(this.state.path);
       } else {
         this.navigateAway(auth);
       }

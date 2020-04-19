@@ -16,7 +16,12 @@ export default class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      phoneNumber: '9836825741'
+      name: '',
+      phoneNumber: '9836825741',
+      apiErrorMessage: '',
+      validArr: '00'.split('').map((v) => false),
+      loading: false,
+      validationSuccess: false
     };
   }
 
@@ -28,17 +33,24 @@ export default class Login extends React.Component {
   };
 
   signInWithPhoneNumber = async () => {
-    if (!this.validatePhoneNumber(this.state.phoneNumber)) {
+    this.setState({ apiErrorMessage: '', loading: true });
+    const { name, phoneNumber, validationSuccess } = this.state;
+
+    if (validationSuccess) {
       try {
-        /* const confirmation = await auth().signInWithPhoneNumber(
-          `+91${this.state.phoneNumber}`
-        ); */
-        this.props.navigation.navigate('otp', { confirmation: null });
+        const confirmation = await auth().signInWithPhoneNumber(
+          `+91${phoneNumber}`
+        );
+        this.props.navigation.navigate('otp', { confirmation });
       } catch (ex) {
-        console.error(ex);
+        // console.error(ex);
+        this.setState({ apiErrorMessage: ex.message, loading: false });
       }
     } else {
-      alert('Invalid Phone Number');
+      this.setState({
+        apiErrorMessage: 'Invalid Phone Number',
+        loading: false
+      });
     }
   };
 
@@ -63,29 +75,82 @@ export default class Login extends React.Component {
               marginBottom: 40
             }}
           />
-          <TextField
-            placeholder="e.g. Justin Trudo"
-            title="Your name"
-            onChangeText={(val) => {
-              // eslint-disable-next-line react/no-unused-state
-              this.setState({ name: val });
-            }}
-          />
-          <TextField
-            placeholder="e.g. 9988998899"
-            title="Phone number"
-            value={this.state.phoneNumber}
-            onChangeText={(val) => {
-              this.setState({ phoneNumber: val });
-            }}
-            showCharacterCounter={true}
-            maxLength={10}
-          />
+          <View style={{ padding: 10 }}>
+            <TextField
+              placeholder="e.g. Justin Trudo"
+              title="Your name"
+              validate={(val) => val && val.length >= 5}
+              validateOnStart
+              validateOnBlur
+              errorMessage="At least 5  letters."
+              onChangeValidity={(valid) => {
+                this.setState((pst) => {
+                  const newst = pst;
+                  newst.validArr[0] = valid;
+                  const validationSuccess = newst.validArr.reduce(
+                    (acc, n) => acc && n,
+                    true
+                  );
+                  newst.validationSuccess = validationSuccess;
+                  return newst;
+                });
+              }}
+              onChangeText={(txt) => {
+                this.setState({ name: txt });
+              }}
+              value={this.state.name}
+            />
+          </View>
+          <View style={{ padding: 10 }}>
+            <TextField
+              placeholder="e.g. 9988998899"
+              title="Phone number"
+              value={this.state.phoneNumber}
+              onChangeText={(val) => {
+                this.setState({ phoneNumber: val });
+              }}
+              showCharacterCounter={true}
+              maxLength={10}
+              markRequired
+              validate={(val) => val && val.length === 10}
+              validateOnStart
+              validateOnBlur
+              errorMessage="10 digit Phone no required."
+              onChangeValidity={(valid) => {
+                this.setState((pst) => {
+                  const newst = pst;
+                  newst.validArr[1] = valid;
+                  const validationSuccess = newst.validArr.reduce(
+                    (acc, n) => acc && n,
+                    true
+                  );
+                  newst.validationSuccess = validationSuccess;
+                  return newst;
+                });
+              }}
+            />
+          </View>
+          <View style={{ alignSelf: 'center' }}>
+            <Text
+              style={[
+                text.secondaryText,
+                {
+                  color: colors.red,
+                  fontWeight: '700',
+                  letterSpacing: 1,
+                  textAlign: 'center'
+                }
+              ]}>
+              {this.state.apiErrorMessage}
+            </Text>
+          </View>
           <Button
-            label="Verify phone number"
             backgroundColor={colors.colorprimary1}
-            style={{ marginTop: 30, marginBottom: 10 }}
+            style={{ marginTop: 10, marginBottom: 10 }}
             onPress={this.signInWithPhoneNumber}
+            disabled={this.state.loading || !this.state.validationSuccess}
+            label={!this.state.loading ? 'Verify phone number' : 'Loading ...'}
+            labelStyle={!this.state.loading ? {} : { fontStyle: 'italic' }}
           />
         </View>
         <View
@@ -139,6 +204,7 @@ export default class Login extends React.Component {
 
 Login.propTypes = {
   navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired
+    navigate: PropTypes.func.isRequired,
+    getScreenProps: PropTypes.func.isRequired
   }).isRequired
 };

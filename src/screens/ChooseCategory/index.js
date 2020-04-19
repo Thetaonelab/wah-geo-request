@@ -154,9 +154,7 @@ export default class ChooseCategory extends React.Component {
             onPress: () => {
               const resetAction = StackActions.reset({
                 index: 0,
-                actions: [
-                  NavigationActions.navigate({ routeName: 'locationAccess' })
-                ]
+                actions: [NavigationActions.navigate({ routeName: 'home' })]
               });
               this.props.navigation.dispatch(resetAction);
             }

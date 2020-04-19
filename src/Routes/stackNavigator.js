@@ -66,6 +66,6 @@ export default createStackNavigator(
     }
   },
   {
-    initialRouteName: 'chooseCategory'
+    initialRouteName: 'locationAccess'
   }
 );

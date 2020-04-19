@@ -1,11 +1,12 @@
 /* eslint-disable no-console */
 import React from 'react';
-import { Text, View, Platform } from 'react-native';
+import { Text, View, Platform, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import { StackActions, NavigationActions } from 'react-navigation';
 import { TextField, Button } from 'react-native-ui-lib';
 import Geolocation from 'react-native-geolocation-service';
 import Geocoder from 'react-native-geocoding';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import styles from '../../styles/style';
 import colors from '../../styles/color';
@@ -48,7 +49,7 @@ export default class LocationAccess extends React.Component {
   onSubmitPress = () => {
     const resetAction = StackActions.reset({
       index: 0,
-      actions: [NavigationActions.navigate({ routeName: 'home' })]
+      actions: [NavigationActions.navigate({ routeName: 'chooseCategory' })]
     });
     this.props.navigation.dispatch(resetAction);
   };
@@ -57,66 +58,84 @@ export default class LocationAccess extends React.Component {
     console.log(this.state);
     return (
       <View style={[styles.parentContainer, { padding: 0 }]}>
-        {!this.state.locationLatLong ? (
-          <View>
-            <Text>This app needs to have location access.</Text>
-            <Button
-              label="OK fine!"
-              backgroundColor={colors.colorprimary1}
-              style={{ marginTop: 30, marginBottom: 10 }}
-              onPress={this.handleOnPress}
-            />
-          </View>
-        ) : (
-          <View style={{ width: '80%' }}>
-            <Text
-              style={[
-                text.heroText,
-                { letterSpacing: 2, color: colors.colorprimary0 }
-              ]}>
-              ADDRESS
-            </Text>
-            <View
-              style={{
-                paddingVertical: 15,
-                borderBottomWidth: 1,
-                borderBottomColor: colors.colorprimary0,
-                marginBottom: 15
-              }}>
-              <Text style={text.primaryText}>{this.state.addressFromAPI}</Text>
+        <View style={{ flex: 5, justifyContent: 'center' }}>
+          {!this.state.locationLatLong ? (
+            <View>
+              <Text>This app needs to have location access.</Text>
+              <Button
+                label="OK fine!"
+                backgroundColor={colors.colorprimary1}
+                style={{ marginTop: 30, marginBottom: 10 }}
+                onPress={this.handleOnPress}
+              />
             </View>
-            <TextField
-              placeholder="e.g. Srimayee apartment"
-              title="Apartment / Complex name"
-              value={this.state.address1}
-              onChangeText={(val) => {
-                this.setState({ address1: val });
-              }}
-            />
-            <TextField
-              placeholder="e.g. 1C-809A"
-              title="Door / Flat No"
-              value={this.state.address2}
-              onChangeText={(val) => {
-                this.setState({ address2: val });
-              }}
-            />
-            <TextField
-              placeholder="e.g. Opp. to Mediasiti building"
-              title="Landmark"
-              value={this.state.landmark}
-              onChangeText={(val) => {
-                this.setState({ landmark: val });
-              }}
-            />
-            <Button
-              label="Looks Good!"
-              backgroundColor={colors.colorprimary1}
-              style={{ marginTop: 30, marginBottom: 10 }}
-              onPress={this.onSubmitPress}
-            />
-          </View>
-        )}
+          ) : (
+            <View style={{ width: '80%' }}>
+              <Text
+                style={[
+                  text.heroText,
+                  { letterSpacing: 2, color: colors.colorprimary0 }
+                ]}>
+                ADDRESS
+              </Text>
+              <View
+                style={{
+                  paddingVertical: 15,
+                  borderBottomWidth: 1,
+                  borderBottomColor: colors.colorprimary0,
+                  marginBottom: 15
+                }}>
+                <Text style={text.primaryText}>
+                  {this.state.addressFromAPI}
+                </Text>
+              </View>
+              <TextField
+                placeholder="e.g. Srimayee apartment"
+                title="Apartment / Complex name"
+                value={this.state.address1}
+                onChangeText={(val) => {
+                  this.setState({ address1: val });
+                }}
+              />
+              <TextField
+                placeholder="e.g. 1C-809A"
+                title="Door / Flat No"
+                value={this.state.address2}
+                onChangeText={(val) => {
+                  this.setState({ address2: val });
+                }}
+              />
+              <TextField
+                placeholder="e.g. Opp. to Mediasiti building"
+                title="Landmark"
+                value={this.state.landmark}
+                onChangeText={(val) => {
+                  this.setState({ landmark: val });
+                }}
+              />
+              <Button
+                label="Looks Good!"
+                backgroundColor={colors.colorprimary1}
+                style={{ marginTop: 30, marginBottom: 10 }}
+                onPress={this.onSubmitPress}
+              />
+            </View>
+          )}
+        </View>
+        <TouchableOpacity
+          style={{
+            alignItems: 'flex-end',
+            flex: 1,
+            justifyContent: 'center'
+          }}
+          onPress={async () => {
+            await AsyncStorage.setItem('auth', '');
+            this.props.navigation.navigate('common');
+          }}>
+          <Text style={[text.primaryText, { color: colors.colorsecondary20 }]}>
+            Login again
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }

@@ -284,7 +284,12 @@ export default class NGORegister extends React.Component {
             <Text
               style={[
                 text.secondaryText,
-                { color: colors.red, fontWeight: '700', letterSpacing: 1 }
+                {
+                  color: colors.red,
+                  fontWeight: '700',
+                  letterSpacing: 1,
+                  textAlign: 'center'
+                }
               ]}>
               {this.state.apiErrorMessage}
             </Text>

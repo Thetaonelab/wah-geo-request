@@ -44,7 +44,6 @@ export default class NGOLogin extends React.Component {
           password
         });
 
-        let resetAction = null;
         if (!res.ok) {
           this.setState({
             apiErrorMessage: `Error ${res.code}: ${res.json.api_message}`,
@@ -52,14 +51,15 @@ export default class NGOLogin extends React.Component {
           });
 
           if (res.code === 432) {
+            let resetAction = null;
             resetAction = StackActions.reset({
               index: 0,
               actions: [
                 NavigationActions.navigate({ routeName: 'ngoAwaitingReview' })
               ]
             });
+            this.props.navigation.dispatch(resetAction);
           }
-          this.props.navigation.dispatch(resetAction);
         } else {
           const auth = { token: res.json.api_message.token, type: TYPE_NGO };
           await AsyncStorage.setItem('auth', JSON.stringify(auth));
@@ -67,6 +67,7 @@ export default class NGOLogin extends React.Component {
           this.props.navigation.navigate('common');
         }
       } catch (e) {
+        console.error(e);
         this.setState({ apiErrorMessage: e.message, loading: false });
       }
     }
@@ -156,7 +157,12 @@ export default class NGOLogin extends React.Component {
             <Text
               style={[
                 text.secondaryText,
-                { color: colors.red, fontWeight: '700', letterSpacing: 1 }
+                {
+                  color: colors.red,
+                  fontWeight: '700',
+                  letterSpacing: 1,
+                  textAlign: 'center'
+                }
               ]}>
               {this.state.apiErrorMessage}
             </Text>
