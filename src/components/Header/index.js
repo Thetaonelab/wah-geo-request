@@ -1,13 +1,13 @@
 import React from 'react';
-import { View, Image, Text, TouchableOpacity } from 'react-native';
+import { View /* , Image */, Text, TouchableOpacity } from 'react-native';
 
 import PropTypes from 'prop-types';
-import LogoImage from '../../../assets/wah.png';
+// import LogoImage from '../../../assets/wah.png';
 
-import colors from '../../styles/color';
+// import colors from '../../styles/color';
 import text from '../../styles/text';
 import styles from './style';
-import wahIcon from '../../../assets/wah-icon.png';
+// import wahIcon from '../../../assets/wah-icon.png';
 
 class Header extends React.Component {
   constructor(props) {

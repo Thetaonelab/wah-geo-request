@@ -4,17 +4,19 @@ import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 // local imports
 import authorizedStack from './authorized';
 import authorizedStackNGO from './authorizedNGO';
-import unAuthorizedStack from './unauthorizedStack';
+import unauthorizedStack from './unauthorizedStack';
+import preHomeStack from './preHomeStack';
 import SplashScreen from '../screens/SplashScreen';
 
 const MainRoute = createSwitchNavigator(
   {
     authorized: authorizedStack,
+    authorizedPreHomeStack: preHomeStack,
     authorizedNGO: authorizedStackNGO,
     common: {
       screen: SplashScreen
     },
-    unAuthorized: unAuthorizedStack
+    unauthorized: unauthorizedStack
   },
   {
     initialRouteName: 'common'

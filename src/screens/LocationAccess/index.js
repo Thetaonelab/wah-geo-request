@@ -1,35 +1,60 @@
 /* eslint-disable no-console */
 import React from 'react';
-import { Text, View, Platform, TouchableOpacity } from 'react-native';
+import { Text, View, Platform } from 'react-native';
 import PropTypes from 'prop-types';
-import { StackActions, NavigationActions } from 'react-navigation';
 import { TextField, Button } from 'react-native-ui-lib';
 import Geolocation from 'react-native-geolocation-service';
 import Geocoder from 'react-native-geocoding';
 import AsyncStorage from '@react-native-community/async-storage';
 
+import { registerDonor } from './api';
 import styles from '../../styles/style';
 import colors from '../../styles/color';
 import text from '../../styles/text';
+import { GOOGLE_GEOCODE_KEY } from '../../config';
+import { TYPE_DONOR } from '../../constants';
 // import ownStyle from './style';
 
 export default class LocationAccess extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      locationLatLong: null,
+      complexName: 'Alaktika',
+      doorNo: '1b-807',
+      landmark: 'city center 2',
+      addressFromAPI: '',
+      validArr: '00'.split('').map(() => false),
+      validationSuccess: false,
+      loading: false,
+      apiErrorMessage: ''
+    };
   }
 
   componentDidMount() {
-    Geocoder.init('AIzaSyDBVtbo3bl7yNHa440W7VkEfxHwW5iBFiY', {
+    Geocoder.init(GOOGLE_GEOCODE_KEY, {
       language: 'en'
     });
   }
+
+  onChangeValidity = (index) => (valid) => {
+    this.setState((pst) => {
+      const newst = pst;
+      newst.validArr[index] = valid;
+      const validationSuccess = newst.validArr.reduce(
+        (acc, n) => acc && n,
+        true
+      );
+      newst.validationSuccess = validationSuccess;
+      return newst;
+    });
+  };
 
   handleOnPress = () => {
     // console.log(Geolocation.requestAuthorization);
     Geolocation.getCurrentPosition(
       (loc) => {
-        this.setState({ locationLatLong: loc });
+        this.setState({ locationLatLong: loc.coords });
         console.log(loc);
         Geocoder.from(loc.coords)
           .then((json) => {
@@ -46,19 +71,66 @@ export default class LocationAccess extends React.Component {
     );
   };
 
-  onSubmitPress = () => {
-    const resetAction = StackActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({ routeName: 'chooseCategory' })]
-    });
-    this.props.navigation.dispatch(resetAction);
+  onSubmitPress = async () => {
+    this.setState({ apiErrorMessage: '', loading: true });
+    const {
+      complexName,
+      doorNo,
+      landmark,
+      addressFromAPI,
+      validationSuccess,
+      locationLatLong
+    } = this.state;
+
+    const { token, name, phoneNumber } = this.props.navigation.state.params;
+    console.log({ token, name, phoneNumber });
+
+    if (validationSuccess) {
+      /* const { token, name, phoneNumber } = this.props.navigation.params;
+      console.log({ token, name, phoneNumber }); */
+      try {
+        const body = {
+          name,
+          door: doorNo,
+          landmark,
+          complex_name: complexName,
+          phone: phoneNumber,
+          lat: locationLatLong.latitude,
+          lon: locationLatLong.longitude,
+          address: addressFromAPI
+        };
+        console.log(token, body);
+        // eslint-disable-next-line no-unused-vars
+        const donorRes = await registerDonor(token, body);
+        console.log(donorRes);
+        if (donorRes.ok) {
+          const auth = {
+            token: donorRes.json.api_message.token,
+            type: TYPE_DONOR
+          };
+          await AsyncStorage.setItem('auth', JSON.stringify(auth));
+          this.props.navigation.navigate('common');
+        } else {
+          throw new Error(
+            `Error ${donorRes.code}: ${donorRes.json.api_message}`
+          );
+        }
+      } catch (ex) {
+        this.setState({ apiErrorMessage: ex.message, loading: false });
+      }
+    }
   };
 
   render() {
-    console.log(this.state);
     return (
       <View style={[styles.parentContainer, { padding: 0 }]}>
-        <View style={{ flex: 5, justifyContent: 'center' }}>
+        <View
+          style={{
+            flex: 5,
+            justifyContent: 'center',
+            alignSelf: 'stretch',
+            alignItems: 'center'
+          }}>
           {!this.state.locationLatLong ? (
             <View>
               <Text>This app needs to have location access.</Text>
@@ -71,58 +143,97 @@ export default class LocationAccess extends React.Component {
             </View>
           ) : (
             <View style={{ width: '80%' }}>
-              <Text
-                style={[
-                  text.heroText,
-                  { letterSpacing: 2, color: colors.colorprimary0 }
-                ]}>
-                ADDRESS
-              </Text>
-              <View
-                style={{
-                  paddingVertical: 15,
-                  borderBottomWidth: 1,
-                  borderBottomColor: colors.colorprimary0,
-                  marginBottom: 15
-                }}>
-                <Text style={text.primaryText}>
-                  {this.state.addressFromAPI}
+              <View style={{ padding: 10 }}>
+                <Text
+                  style={[
+                    text.heroText,
+                    { letterSpacing: 2, color: colors.colorprimary0 }
+                  ]}>
+                  ADDRESS
+                </Text>
+                <View
+                  style={{
+                    paddingVertical: 15,
+                    borderBottomWidth: 1,
+                    borderBottomColor: colors.colorprimary0,
+                    marginBottom: 15
+                  }}>
+                  <Text style={text.primaryText}>
+                    {this.state.addressFromAPI || 'Fetching address ...'}
+                  </Text>
+                </View>
+              </View>
+              <View style={{ padding: 10 }}>
+                <TextField
+                  placeholder="e.g. Srimayee apartment"
+                  title="Apartment / Complex name"
+                  value={this.state.complexName}
+                  onChangeText={(val) => {
+                    this.setState({ complexName: val });
+                  }}
+                  validate={(val) => val && val.length >= 5}
+                  validateOnStart
+                  validateOnBlur
+                  errorMessage="At least 5  letters."
+                  onChangeValidity={this.onChangeValidity(0)}
+                />
+              </View>
+              <View style={{ padding: 10 }}>
+                <TextField
+                  placeholder="e.g. 1C-809A"
+                  title="Door / Flat No"
+                  value={this.state.doorNo}
+                  onChangeText={(val) => {
+                    this.setState({ doorNo: val });
+                  }}
+                  validate={(val) => val && val.length >= 5}
+                  validateOnStart
+                  validateOnBlur
+                  errorMessage="At least 5  letters."
+                  onChangeValidity={this.onChangeValidity(1)}
+                />
+              </View>
+              <View style={{ padding: 10 }}>
+                <TextField
+                  placeholder="e.g. Opp. to Mediasiti building"
+                  title="Landmark"
+                  value={this.state.landmark}
+                  onChangeText={(val) => {
+                    this.setState({ landmark: val });
+                  }}
+                  validate={(val) => val && val.length >= 5}
+                  validateOnStart
+                  validateOnBlur
+                  errorMessage="At least 5  letters."
+                  onChangeValidity={this.onChangeValidity(2)}
+                />
+              </View>
+              <View style={{ alignSelf: 'center' }}>
+                <Text
+                  style={[
+                    text.secondaryText,
+                    {
+                      color: colors.red,
+                      fontWeight: '700',
+                      letterSpacing: 1,
+                      textAlign: 'center'
+                    }
+                  ]}>
+                  {this.state.apiErrorMessage}
                 </Text>
               </View>
-              <TextField
-                placeholder="e.g. Srimayee apartment"
-                title="Apartment / Complex name"
-                value={this.state.address1}
-                onChangeText={(val) => {
-                  this.setState({ address1: val });
-                }}
-              />
-              <TextField
-                placeholder="e.g. 1C-809A"
-                title="Door / Flat No"
-                value={this.state.address2}
-                onChangeText={(val) => {
-                  this.setState({ address2: val });
-                }}
-              />
-              <TextField
-                placeholder="e.g. Opp. to Mediasiti building"
-                title="Landmark"
-                value={this.state.landmark}
-                onChangeText={(val) => {
-                  this.setState({ landmark: val });
-                }}
-              />
               <Button
-                label="Looks Good!"
                 backgroundColor={colors.colorprimary1}
-                style={{ marginTop: 30, marginBottom: 10 }}
+                style={{ marginTop: 10, marginBottom: 10 }}
                 onPress={this.onSubmitPress}
+                disabled={this.state.loading || !this.state.validationSuccess}
+                label={!this.state.loading ? 'Looks Good!' : 'Loading ...'}
+                labelStyle={!this.state.loading ? {} : { fontStyle: 'italic' }}
               />
             </View>
           )}
         </View>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={{
             alignItems: 'flex-end',
             flex: 1,
@@ -135,7 +246,7 @@ export default class LocationAccess extends React.Component {
           <Text style={[text.primaryText, { color: colors.colorsecondary20 }]}>
             Login again
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     );
   }
@@ -143,6 +254,14 @@ export default class LocationAccess extends React.Component {
 
 LocationAccess.propTypes = {
   navigation: PropTypes.shape({
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    navigate: PropTypes.func.isRequired,
+    state: PropTypes.shape({
+      params: PropTypes.shape({
+        token: PropTypes.string.isRequired,
+        phoneNumber: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired
+      }).isRequired
+    }).isRequired
   }).isRequired
 };

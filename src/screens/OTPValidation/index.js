@@ -46,24 +46,29 @@ export default class OtpValidation extends React.Component {
   tryLogin = async (token) => {
     const loginRes = await loginIndividual(token);
     if (loginRes.ok) {
+      const {
+        token: backendToken,
+        isGiveawayListDone
+      } = loginRes.json.api_message;
       const auth = {
-        token: loginRes.json.api_message.token,
-        type: TYPE_DONOR,
-        path: 'home'
+        token: backendToken,
+        type: TYPE_DONOR
       };
       await AsyncStorage.setItem('auth', JSON.stringify(auth));
+      this.setState({ loading: false }, () => {
+        this.props.navigation.navigate('common');
+      });
     } else {
-      const auth = {
-        token,
-        type: TYPE_DONOR,
-        path: 'locationAccess',
-        temp: true
-      };
-      await AsyncStorage.setItem('auth', JSON.stringify(auth));
+      // not registered yet
+      const { name, phoneNumber } = this.props.navigation.state.params;
+      this.setState({ loading: false }, () => {
+        this.props.navigation.navigate('locationAccess', {
+          token,
+          name,
+          phoneNumber
+        }); // should be reset instead of navigate
+      });
     }
-
-    this.setState({ loading: false });
-    this.props.navigation.navigate('common');
   };
 
   render() {
@@ -105,7 +110,11 @@ OtpValidation.propTypes = {
     navigate: PropTypes.func.isRequired,
     getScreenProps: PropTypes.func.isRequired,
     state: PropTypes.shape({
-      params: PropTypes.shape({ confirmation: PropTypes.object })
+      params: PropTypes.shape({
+        confirmation: PropTypes.object,
+        phoneNumber: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired
+      })
     })
   }).isRequired
 };

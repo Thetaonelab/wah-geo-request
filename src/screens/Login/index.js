@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable no-restricted-properties */
 import React from 'react';
 import { Dimensions, Image, Text, TouchableOpacity } from 'react-native';
@@ -10,7 +9,7 @@ import colors from '../../styles/color';
 import text from '../../styles/text';
 import wah from '../../../assets/wah.png';
 
-const { width, height } = Dimensions.get('window');
+const { width /* , height */ } = Dimensions.get('window');
 
 export default class Login extends React.Component {
   constructor(props) {
@@ -19,7 +18,7 @@ export default class Login extends React.Component {
       name: '',
       phoneNumber: '9836825741',
       apiErrorMessage: '',
-      validArr: '00'.split('').map((v) => false),
+      validArr: '00'.split('').map(() => false),
       loading: false,
       validationSuccess: false
     };
@@ -41,9 +40,12 @@ export default class Login extends React.Component {
         const confirmation = await auth().signInWithPhoneNumber(
           `+91${phoneNumber}`
         );
-        this.props.navigation.navigate('otp', { confirmation });
+        this.props.navigation.navigate('otp', {
+          confirmation,
+          name,
+          phoneNumber
+        });
       } catch (ex) {
-        // console.error(ex);
         this.setState({ apiErrorMessage: ex.message, loading: false });
       }
     } else {

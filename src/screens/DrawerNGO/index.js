@@ -10,26 +10,22 @@ import DrawerItem from './DrawerItem';
 
 export default function Drawer(props) {
   const user = useContext(UserContext);
-  const { address, name, phone /* , userId */ } = user.donor;
+  const { address, email, name, phone, regNo /* , userId */ } = user.ngo;
   return (
     <View style={[styles.parentContainer, { padding: 0 }]}>
       <View
         style={{
           flex: 1,
-          backgroundColor: colors.colorsecondary10,
+          backgroundColor: colors.colorprimary0,
           padding: 20,
           justifyContent: 'center',
           alignSelf: 'stretch'
         }}>
         <Text style={[text.appbarText, { color: colors.black }]}>{name}</Text>
-        <Text style={[text.secondaryText, { color: colors.black }]}>
-          {phone}
-        </Text>
-        <Text
-          style={[text.bodyText, { color: colors.black, fontStyle: 'italic' }]}>
-          {address}
-        </Text>
-        {/* <Text style={[text.bodyText, { color: colors.black }]}>{userId}</Text> */}
+        <Text style={[text.bodyText, { color: colors.black }]}>{address}</Text>
+        <Text style={[text.bodyText, { color: colors.black }]}>{email}</Text>
+        <Text style={[text.bodyText, { color: colors.black }]}>{phone}</Text>
+        <Text style={[text.bodyText, { color: colors.black }]}>{regNo}</Text>
       </View>
       <View
         style={{
@@ -40,9 +36,10 @@ export default function Drawer(props) {
         }}>
         {[
           { title: 'Profile', path: '' },
-          { title: 'About', path: 'about' },
+          { title: 'Active Requests', path: 'activeRequests' },
+          { title: 'All Requests', path: '' },
           {
-            title: 'Share app',
+            title: 'Share App',
             path: '',
             callback: async () => {
               await Share.open({
@@ -58,8 +55,10 @@ export default function Drawer(props) {
             callback: async () => {
               user.updateUser({
                 address: '',
+                email: '',
                 name: '',
                 phone: '',
+                regNo: '',
                 userId: ''
               });
               await AsyncStorage.setItem('auth', '');

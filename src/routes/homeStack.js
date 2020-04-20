@@ -6,9 +6,6 @@ import About from '../screens/About';
 import Home from '../screens/Home';
 import Profile from '../screens/Profile';
 import Header from '../components/Header';
-import MapOverlay from '../screens/MapOverlay';
-import ChooseCategory from '../screens/ChooseCategory';
-import LocationAccess from '../screens/LocationAccess';
 import Feed from '../screens/Feed';
 
 const header = (navigation, title, drawerMode, isDashboard) => () => (
@@ -39,33 +36,14 @@ export default createStackNavigator(
         header: header(navigation, 'Profile', false, false)
       })
     },
-    chooseCategory: {
-      screen: ChooseCategory,
-      navigationOptions: ({ navigation }) => ({
-        header: header(navigation, 'My giveaway list', false, false)
-      })
-    },
-    locationAccess: {
-      screen: LocationAccess,
-      navigationOptions: ({ navigation }) => ({
-        header: header(navigation, 'Location Access', false, false)
-      })
-    },
-
     about: {
       screen: About,
       navigationOptions: ({ navigation }) => ({
         header: header(navigation, 'About', false, false)
       })
-    },
-    mapOverlay: {
-      screen: MapOverlay,
-      navigationOptions: ({ navigation }) => ({
-        header: header(navigation, 'Find on map', true, true)
-      })
     }
   },
   {
-    initialRouteName: 'locationAccess'
+    initialRouteName: 'home'
   }
 );

@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { FloatingButton } from 'react-native-ui-lib';
-import { StackActions, NavigationActions } from 'react-navigation';
+// import { StackActions, NavigationActions } from 'react-navigation';
 import styles from '../../styles/style';
 import colors from '../../styles/color';
 import text from '../../styles/text';
@@ -138,25 +138,13 @@ export default class ChooseCategory extends React.Component {
             `key-${i.name.replace(/ /g, '-') + Math.random()}`
           }
         />
-        {/* <TouchableOpacity
-          style={ownStyle.footerButton}
-          onPress={() => {
-            this.props.navigation.navigate('locationAccess');
-          }}>
-          <Text style={text.appbarText}>DONE</Text>
-        </TouchableOpacity> */}
-
         <FloatingButton
           visible={this.state.totalCount !== 0}
           button={{
             label: 'I am done!',
             labelStyle: { fontWeight: '700' },
             onPress: () => {
-              const resetAction = StackActions.reset({
-                index: 0,
-                actions: [NavigationActions.navigate({ routeName: 'home' })]
-              });
-              this.props.navigation.dispatch(resetAction);
+              this.props.navigation.navigate('authorized');
             }
           }}
         />
@@ -167,6 +155,7 @@ export default class ChooseCategory extends React.Component {
 
 ChooseCategory.propTypes = {
   navigation: PropTypes.shape({
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    navigate: PropTypes.func.isRequired
   }).isRequired
 };

@@ -14,3 +14,11 @@ export const fetchNGODetails = (token) =>
     { ...headers, Authorization: `Bearer ${token}` },
     null
   );
+
+  export const fetchDonorDetails = (token) =>
+  fetchUtil(
+    `${API_ROOT}/fetch_individual_details`,
+    'GET',
+    { ...headers, Authorization: `Bearer ${token}` },
+    null
+  );

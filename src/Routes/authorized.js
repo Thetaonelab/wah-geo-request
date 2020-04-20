@@ -3,7 +3,7 @@ import React from 'react';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { Dimensions } from 'react-native';
 
-import homeStack from './stackNavigator';
+import homeStack from './homeStack';
 import Drawer from '../screens/Drawer';
 import colors from '../styles/color';
 

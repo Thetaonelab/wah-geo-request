@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 export const fetchUtil = (url, method = 'GET', headers, body) =>
   fetch(url, {
     method,
@@ -6,8 +7,18 @@ export const fetchUtil = (url, method = 'GET', headers, body) =>
   }).then(
     (response) =>
       new Promise((resolve) => {
-        response.json().then((json) => {
-          resolve({ ok: response.ok, code: response.status, json });
+        response.text().then((text) => {
+          try {
+            const json = JSON.parse(text);
+            resolve({ ok: response.ok, code: response.status, json });
+          } catch (ex) {
+            console.log('Error', ex.message, { url, method, headers, body });
+            resolve({
+              ok: response.ok,
+              code: response.status,
+              json: { api_message: text }
+            });
+          }
         });
       })
   );

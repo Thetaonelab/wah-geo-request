@@ -4,7 +4,7 @@ import { Keyboard, StatusBar } from 'react-native';
 import Snackbar from 'react-native-snackbar';
 import colors from './styles/color';
 import Navigator from './routes';
-import { TYPE_NGO } from './constants';
+import { TYPE_NGO, TYPE_DONOR } from './constants';
 import UserContext from './contexts/UserContext';
 
 export default class App extends React.Component {
@@ -14,6 +14,13 @@ export default class App extends React.Component {
       drawerStatus: false,
       statusBarHidden: true,
       userDetails: {
+        name: '',
+        address: '',
+        phone: '',
+        userId: '',
+        userType: TYPE_DONOR
+      },
+      NGOUserDetails: {
         name: '',
         address: '',
         phone: '',
@@ -27,6 +34,12 @@ export default class App extends React.Component {
   updateUser = (userDetails) => {
     this.setState((pst) => ({
       userDetails: { ...pst.userDetails, ...userDetails }
+    }));
+  };
+
+  updateNGOUser = (NGOUserDetails) => {
+    this.setState((pst) => ({
+      NGOUserDetails: { ...pst.NGOUserDetails, ...NGOUserDetails }
     }));
   };
 
@@ -71,25 +84,6 @@ export default class App extends React.Component {
       textColor: colors.white,
       backgroundColor: type === 'error' ? colors.red : colors.colorgreen0
     });
-
-    /* this.setState({
-      snackbar: {
-        message,
-        type
-      }
-    });
-
-    if (this.snackbarTimer) clearTimeout(this.snackbarTimer);
-
-    this.snackbarTimer = setTimeout(() => {
-      this.setState({
-        snackbar: {
-          message: '',
-          type
-        }
-      });
-    }, duration);
-    */
   };
 
   opneKeyBoard = () => {
@@ -118,7 +112,12 @@ export default class App extends React.Component {
       <>
         <StatusBar hidden={this.state.statusBarHidden} />
         <UserContext.Provider
-          value={{ ...this.state.userDetails, updateUser: this.updateUser }}>
+          value={{
+            donor: { ...this.state.userDetails },
+            ngo: { ...this.state.NGOUserDetails },
+            updateUser: this.updateUser,
+            updateNGOUser: this.updateNGOUser
+          }}>
           <Navigator
             screenProps={{
               isStatusBarHidden: this.state.statusBarHidden,
@@ -128,16 +127,6 @@ export default class App extends React.Component {
             onNavigationStateChange={this.onNavigate}
           />
         </UserContext.Provider>
-        {/* <SnackBar
-          visible={Boolean(this.state.snackbar?.message)}
-          backgroundColor={
-            this.state.snackbar?.type === 'success'
-              ? colors.colorprimary0
-              : colors.colorsecondary20
-          }
-          messageColor={colors.white}
-          textMessage={this.state.snackbar?.message}
-        /> */}
       </>
     );
   }

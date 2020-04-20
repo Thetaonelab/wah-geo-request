@@ -15,9 +15,10 @@ export default class Gallery extends Component {
 
   componentDidMount() {
     const that = this;
-    const items = Array.apply(null, Array(120)).map((v, i) => {
-      return { id: i, src: `https://unsplash.it/400/400?image=${i + 1}` };
-    });
+    const items = Array.apply(null, Array(120)).map((v, i) => ({
+      id: i,
+      src: `https://unsplash.it/400/400?image=${i + 1}`
+    }));
     that.setState({
       dataSource: items
     });

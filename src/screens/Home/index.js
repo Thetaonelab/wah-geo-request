@@ -39,7 +39,7 @@ export default class Home extends React.Component {
         <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
           {items[0].data.map((d, idx) => (
             <View
-              key={`item-big-${idx}`}
+              key={`item-big-${idx}-${Math.random()}`}
               style={{
                 height: 50,
                 width: '32%',

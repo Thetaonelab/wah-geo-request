@@ -1,13 +1,21 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 import React from 'react';
-import { View, ActivityIndicator, Image, Dimensions } from 'react-native';
+import {
+  View,
+  ActivityIndicator,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+  Text
+} from 'react-native';
 import PropTypes from 'prop-types';
 import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-community/async-storage';
-import { fetchNGODetails } from './api';
+import { fetchNGODetails, fetchDonorDetails } from './api';
 import colors from '../../styles/color';
+import text from '../../styles/text';
 import styles from '../../styles/style';
-// import text from '../../styles/text';
 import wah from '../../../assets/wah.png';
 import { TYPE_NGO, TYPE_DONOR } from '../../constants';
 import UserContext from '../../contexts/UserContext';
@@ -15,11 +23,16 @@ import UserContext from '../../contexts/UserContext';
 const { width, height } = Dimensions.get('window');
 
 export default class SplashScreen extends React.Component {
+  counter = 0;
+
+  interval = 1000;
+
   constructor(props) {
     super(props);
     this.state = {
       loading: true,
-      path: ''
+      path: '',
+      timeout: false
     };
   }
 
@@ -27,9 +40,8 @@ export default class SplashScreen extends React.Component {
     let auth = await AsyncStorage.getItem('auth');
     let fcmToken = await AsyncStorage.getItem('fcmToken');
 
-    // eslint-disable-next-line no-console
-    console.log('ASYNCSTORAGE', auth, fcmToken);
     auth = auth ? JSON.parse(auth) : {};
+    // console.log('ASYNCSTORAGE', auth, fcmToken);
     this.navigateAway(auth);
 
     if (!fcmToken) {
@@ -59,8 +71,8 @@ export default class SplashScreen extends React.Component {
           phone_number,
           registration_number,
           user_id
-        } = ngoDetails.json;
-        this.context.updateUser({
+        } = ngoDetails.api_message.json;
+        this.context.updateNGOUser({
           address,
           email,
           name,
@@ -69,12 +81,37 @@ export default class SplashScreen extends React.Component {
           userId: user_id
         });
       }
-      this.setState({ path: 'authorizedNGo' });
+      this.setState({ path: 'authorizedNGO' });
     } else if (auth.token && auth.type === TYPE_DONOR) {
-      this.setState({ path: auth.path });
+      const donorDetails = await fetchDonorDetails(auth.token);
+      // console.log(donorDetails);
+      if (donorDetails.ok) {
+        const {
+          address,
+          complex_name,
+          door_no,
+          landmark,
+          lat,
+          lon,
+          name,
+          phone_number,
+          user_id,
+          has_give_away_list
+        } = donorDetails.json.api_message;
+        this.context.updateUser({
+          address,
+          name,
+          phone: phone_number,
+          userId: user_id
+        });
+        const path = has_give_away_list
+          ? 'homeStack'
+          : 'authorizedPreHomeStack';
+        this.setState({ path });
+      }
     } else {
       // no token present
-      this.setState({ path: 'unAuthorized' });
+      this.setState({ path: 'unauthorized' });
     }
     this.setLoading(false);
   };
@@ -84,20 +121,21 @@ export default class SplashScreen extends React.Component {
   };
 
   /* messageListener = async () => {
-    this.notificationListener = notifications()
-      .onNotification((notification) => {
+    this.notificationListener = notifications().onNotification(
+      (notification) => {
         const { title, body } = notification;
         this.showAlert(title, body);
-      });
+      }
+    );
 
-    this.notificationOpenedListener = notifications()
-      .onNotificationOpened((notificationOpen) => {
+    this.notificationOpenedListener = notifications().onNotificationOpened(
+      (notificationOpen) => {
         const { title, body } = notificationOpen.notification;
         this.showAlert(title, body);
-      });
+      }
+    );
 
-    const notificationOpen = await notifications()
-      .getInitialNotification();
+    const notificationOpen = await notifications().getInitialNotification();
     if (notificationOpen) {
       const { title, body } = notificationOpen.notification;
       this.showAlert(title, body);
@@ -109,13 +147,17 @@ export default class SplashScreen extends React.Component {
   }; */
 
   navigateAway = (auth) => {
+    this.counter += this.interval;
+    if (this.counter >= this.interval * 2) {
+      this.setState({ timeout: true });
+    }
     setTimeout(async () => {
-      if (!this.state.loading) {
+      if (!this.state.loading && this.state.path) {
         this.props.navigation.navigate(this.state.path);
       } else {
         this.navigateAway(auth);
       }
-    }, 1000);
+    }, this.interval);
   };
 
   render() {
@@ -133,6 +175,23 @@ export default class SplashScreen extends React.Component {
         </View>
         <View style={{ flex: 1 }}>
           <ActivityIndicator color={colors.colorsecondary10} size={50} />
+          {this.state.timeout ? (
+            <TouchableOpacity
+              style={{
+                alignItems: 'flex-end',
+                flex: 1,
+                justifyContent: 'center'
+              }}
+              onPress={async () => {
+                await AsyncStorage.setItem('auth', '');
+                this.props.navigation.navigate('common');
+              }}>
+              <Text
+                style={[text.primaryText, { color: colors.colorsecondary20 }]}>
+                Login again
+              </Text>
+            </TouchableOpacity>
+          ) : null}
         </View>
       </View>
     );

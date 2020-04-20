@@ -13,6 +13,7 @@ import OTPValidation from '../screens/OTPValidation';
 import NGORegister from '../screens/NGORegister';
 import NGOLogin from '../screens/NGOLogin';
 import NgoAwaitingReview from '../screens/NgoAwaitingReview';
+import LocationAccess from '../screens/LocationAccess';
 
 const noHeader = () => ({ headerShown: false });
 
@@ -36,6 +37,10 @@ export default createStackNavigator(
     },
     ngoAwaitingReview: {
       screen: NgoAwaitingReview,
+      navigationOptions: noHeader
+    },
+    locationAccess: {
+      screen: LocationAccess,
       navigationOptions: noHeader
     }
   },
