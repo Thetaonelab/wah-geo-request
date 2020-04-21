@@ -31,6 +31,19 @@ export default class Login extends React.Component {
     return regexp.test(number);
   };
 
+  onChangeValidity = (index) => (valid) => {
+    this.setState((pst) => {
+      const newst = pst;
+      newst.validArr[index] = valid;
+      const validationSuccess = newst.validArr.reduce(
+        (acc, n) => acc && n,
+        true
+      );
+      newst.validationSuccess = validationSuccess;
+      return newst;
+    });
+  };
+
   signInWithPhoneNumber = async () => {
     this.setState({ apiErrorMessage: '', loading: true });
     const { name, phoneNumber, validationSuccess } = this.state;
@@ -82,21 +95,10 @@ export default class Login extends React.Component {
               placeholder="e.g. Justin Trudo"
               title="Your name"
               validate={(val) => val && val.length >= 5}
-              validateOnStart
               validateOnBlur
+              validateOnStart
               errorMessage="At least 5  letters."
-              onChangeValidity={(valid) => {
-                this.setState((pst) => {
-                  const newst = pst;
-                  newst.validArr[0] = valid;
-                  const validationSuccess = newst.validArr.reduce(
-                    (acc, n) => acc && n,
-                    true
-                  );
-                  newst.validationSuccess = validationSuccess;
-                  return newst;
-                });
-              }}
+              onChangeValidity={this.onChangeValidity(0)}
               onChangeText={(txt) => {
                 this.setState({ name: txt });
               }}
@@ -115,21 +117,10 @@ export default class Login extends React.Component {
               maxLength={10}
               markRequired
               validate={(val) => val && val.length === 10}
-              validateOnStart
               validateOnBlur
+              validateOnStart
               errorMessage="10 digit Phone no required."
-              onChangeValidity={(valid) => {
-                this.setState((pst) => {
-                  const newst = pst;
-                  newst.validArr[1] = valid;
-                  const validationSuccess = newst.validArr.reduce(
-                    (acc, n) => acc && n,
-                    true
-                  );
-                  newst.validationSuccess = validationSuccess;
-                  return newst;
-                });
-              }}
+              onChangeValidity={this.onChangeValidity(1)}
             />
           </View>
           <View style={{ alignSelf: 'center' }}>

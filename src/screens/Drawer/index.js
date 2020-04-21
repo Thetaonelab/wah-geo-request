@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
-import { Text, View, AsyncStorage } from 'react-native';
+import { Text, View } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import PropTypes from 'prop-types';
 import Share from 'react-native-share';
 import UserContext from '../../contexts/UserContext';

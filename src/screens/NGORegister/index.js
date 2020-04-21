@@ -26,19 +26,37 @@ export default class NGORegister extends React.Component {
       password: 'repass1234',
       passwordConfirm: 'repass1234',
       address: 'Ramakrishna Math,Howrah 711202',
-      loading: false
+      loading: false,
+      validationSuccess: false
     };
   }
 
   componentDidMount() {}
 
+  onChangeValidity = (index) => (valid) => {
+    this.setState((pst) => {
+      const newst = pst;
+      newst.validArr[index] = valid;
+      const validationSuccess = newst.validArr.reduce(
+        (acc, n) => acc && n,
+        true
+      );
+      newst.validationSuccess = validationSuccess;
+      return newst;
+    });
+  };
+
   onSubmit = async () => {
     this.setState({ apiErrorMessage: '', loading: true });
-    const { name, email, mobile, regno, password, address } = this.state;
-    const validationSuccess = this.state.validArr.reduce(
-      (acc, n) => acc && n,
-      true
-    );
+    const {
+      name,
+      email,
+      mobile,
+      regno,
+      password,
+      address,
+      validationSuccess
+    } = this.state;
 
     if (validationSuccess) {
       try {
@@ -121,13 +139,7 @@ export default class NGORegister extends React.Component {
                 validateOnBlur
                 enableErrors
                 errorMessage="Mandatory >7 letters"
-                onChangeValidity={(valid) => {
-                  this.setState((pst) => {
-                    const newst = pst;
-                    newst.validArr[0] = valid;
-                    return newst;
-                  });
-                }}
+                onChangeValidity={this.onChangeValidity(0)}
               />
             </View>
             <View style={{ flex: 1, padding: 10 }}>
@@ -144,13 +156,7 @@ export default class NGORegister extends React.Component {
                 validateOnBlur
                 enableErrors
                 errorMessage="Required field"
-                onChangeValidity={(valid) => {
-                  this.setState((pst) => {
-                    const newst = pst;
-                    newst.validArr[1] = valid;
-                    return newst;
-                  });
-                }}
+                onChangeValidity={this.onChangeValidity(1)}
               />
             </View>
           </View>
@@ -170,13 +176,7 @@ export default class NGORegister extends React.Component {
                 validateOnBlur
                 enableErrors
                 errorMessage="Valid email id required"
-                onChangeValidity={(valid) => {
-                  this.setState((pst) => {
-                    const newst = pst;
-                    newst.validArr[2] = valid;
-                    return newst;
-                  });
-                }}
+                onChangeValidity={this.onChangeValidity(2)}
               />
             </View>
             <View style={{ flex: 1, padding: 10 }}>
@@ -194,13 +194,7 @@ export default class NGORegister extends React.Component {
                   this.setState({ mobile: txt });
                 }}
                 errorMessage="Mobile no required"
-                onChangeValidity={(valid) => {
-                  this.setState((pst) => {
-                    const newst = pst;
-                    newst.validArr[3] = valid;
-                    return newst;
-                  });
-                }}
+                onChangeValidity={this.onChangeValidity(3)}
               />
             </View>
           </View>
@@ -214,13 +208,7 @@ export default class NGORegister extends React.Component {
                 onChangeText={(txt) => {
                   this.setState({ password: txt });
                 }}
-                onChangeValidity={(valid) => {
-                  this.setState((pst) => {
-                    const newst = pst;
-                    newst.validArr[4] = valid;
-                    return newst;
-                  });
-                }}
+                onChangeValidity={this.onChangeValidity(4)}
                 secureTextEntry
                 validate="required"
                 validateOnStart
@@ -245,13 +233,7 @@ export default class NGORegister extends React.Component {
                 validateOnBlur
                 enableErrors
                 errorMessage="Must match."
-                onChangeValidity={(valid) => {
-                  this.setState((pst) => {
-                    const newst = pst;
-                    newst.validArr[5] = valid;
-                    return newst;
-                  });
-                }}
+                onChangeValidity={this.onChangeValidity(5)}
               />
             </View>
           </View>
@@ -270,13 +252,7 @@ export default class NGORegister extends React.Component {
                 validateOnBlur
                 enableErrors
                 errorMessage="Required field"
-                onChangeValidity={(valid) => {
-                  this.setState((pst) => {
-                    const newst = pst;
-                    newst.validArr[6] = valid;
-                    return newst;
-                  });
-                }}
+                onChangeValidity={this.onChangeValidity(6)}
               />
             </View>
           </View>
@@ -295,7 +271,7 @@ export default class NGORegister extends React.Component {
             </Text>
           </View>
           <Button
-            disabled={this.state.loading}
+            disabled={this.state.loading || !this.state.validationSuccess}
             label={!this.state.loading ? 'Submit' : 'Loading ...'}
             labelStyle={!this.state.loading ? {} : { fontStyle: 'italic' }}
             backgroundColor={colors.colorprimary1}

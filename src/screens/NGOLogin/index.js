@@ -23,20 +23,29 @@ export default class NGOLogin extends React.Component {
       email: 'rkmbelur@gmail.com',
       password: 'repass1234',
       loading: false,
-      apiErrorMessage: ''
+      apiErrorMessage: '',
+      validationSuccess: false
     };
   }
 
   componentDidMount() {}
 
+  onChangeValidity = (index) => (valid) => {
+    this.setState((pst) => {
+      const newst = pst;
+      newst.validArr[index] = valid;
+      const validationSuccess = newst.validArr.reduce(
+        (acc, n) => acc && n,
+        true
+      );
+      newst.validationSuccess = validationSuccess;
+      return newst;
+    });
+  };
+
   login = async () => {
     this.setState({ apiErrorMessage: '', loading: true });
-    const { email, password } = this.state;
-    const validationSuccess = this.state.validArr.reduce(
-      (acc, n) => acc && n,
-      true
-    );
-
+    const { email, password, validationSuccess } = this.state;
     if (validationSuccess) {
       try {
         const res = await loginNGO({
@@ -67,7 +76,7 @@ export default class NGOLogin extends React.Component {
           this.props.navigation.navigate('common');
         }
       } catch (e) {
-        console.error(e);
+        // console.error(e);
         this.setState({ apiErrorMessage: e.message, loading: false });
       }
     }
@@ -120,13 +129,7 @@ export default class NGOLogin extends React.Component {
               enableErrors
               validate="email"
               errorMessage="Valid email id required"
-              onChangeValidity={(valid) => {
-                this.setState((pst) => {
-                  const newst = pst;
-                  newst.validArr[0] = valid;
-                  return newst;
-                });
-              }}
+              onChangeValidity={this.onChangeValidity(0)}
             />
           </View>
           <View style={{ padding: 10 }}>
@@ -144,13 +147,7 @@ export default class NGOLogin extends React.Component {
               enableErrors
               validate="required"
               errorMessage="Mandatory field"
-              onChangeValidity={(valid) => {
-                this.setState((pst) => {
-                  const newst = pst;
-                  newst.validArr[1] = valid;
-                  return newst;
-                });
-              }}
+              onChangeValidity={this.onChangeValidity(1)}
             />
           </View>
           <View style={{ alignSelf: 'center' }}>
@@ -168,7 +165,7 @@ export default class NGOLogin extends React.Component {
             </Text>
           </View>
           <Button
-            disabled={this.state.loading}
+            disabled={this.state.loading || !this.state.validationSuccess}
             label={!this.state.loading ? 'Login' : 'Loading ...'}
             labelStyle={!this.state.loading ? {} : { fontStyle: 'italic' }}
             backgroundColor={colors.colorprimary1}

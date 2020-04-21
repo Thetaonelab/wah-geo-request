@@ -42,6 +42,8 @@ export default class SplashScreen extends React.Component {
   };
 
   doInit = async () => {
+    this.setLoading(true);
+
     let auth = await AsyncStorage.getItem('auth');
     let fcmToken = await AsyncStorage.getItem('fcmToken');
 
@@ -67,6 +69,7 @@ export default class SplashScreen extends React.Component {
 
     if (auth.token && auth.type === TYPE_NGO) {
       const ngoDetails = await fetchNGODetails(auth.token);
+      // console.log(ngoDetails);
       if (ngoDetails.ok) {
         const {
           address,
@@ -86,11 +89,13 @@ export default class SplashScreen extends React.Component {
         });
         this.setState({ path: 'authorizedNGO' });
       } else {
-        this.setState({ errorMessage: ngoDetails.josn.api_message });
+        this.setState({
+          errorMessage: `Error ${ngoDetails.code}: ${ngoDetails.json.api_message}`
+        });
       }
     } else if (auth.token && auth.type === TYPE_DONOR) {
       const donorDetails = await fetchDonorDetails(auth.token);
-      // console.log(donorDetails);
+      // console.log({ donorDetails });
       if (donorDetails.ok) {
         const {
           address,
@@ -114,11 +119,14 @@ export default class SplashScreen extends React.Component {
           ? 'homeStack'
           : 'authorizedPreHomeStack';
         this.setState({ path });
+      } else {
+        this.setState({
+          errorMessage: `Error ${donorDetails.code}: ${donorDetails.json.api_message}`
+        });
       }
     } else {
       // no token present
-      if (donorDetails.status === 422) this.setState({ path: 'unauthorized' });
-      else this.setState({ errorMessage: donorDetails.josn.api_message });
+      this.setState({ path: 'unauthorized' });
     }
     this.setLoading(false);
 
@@ -126,7 +134,11 @@ export default class SplashScreen extends React.Component {
   };
 
   setLoading = (loading) => {
-    this.setState({ loading });
+    if (loading === true) {
+      this.setState({ loading, errorMessage: '' });
+    } else {
+      this.setState({ loading });
+    }
   };
 
   navigateAway = () => {
@@ -159,17 +171,22 @@ export default class SplashScreen extends React.Component {
         <View style={{ flex: 1 }}>
           {this.state.errorMessage ? (
             <View>
-              <Text style={[text.secondaryText, { color: color.red }]}>
+              <Text
+                style={[
+                  text.secondaryText,
+                  { color: colors.red, fontWeight: '700' }
+                ]}>
                 {this.state.errorMessage}
               </Text>
               <TouchableOpacity
                 style={{
-                  alignItems: 'flex-end',
+                  alignItems: 'center',
                   flex: 1,
                   justifyContent: 'center'
                 }}
                 onPress={this.doInit}>
-                <Text style={[text.primaryText, { color: colors.black }]}>
+                <Text
+                  style={[text.primaryText, { color: colors.colorprimary0 }]}>
                   RETRY
                 </Text>
               </TouchableOpacity>
