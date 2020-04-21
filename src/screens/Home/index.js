@@ -7,7 +7,7 @@ import styles from '../../styles/style';
 import colors from '../../styles/color';
 import text from '../../styles/text';
 import items from './data';
-import wahIcon from '../../../assets/wah-icon.png';
+import wahIcon from '../../../assets/test-icon.png';
 import { UPDATE_TYPES } from './constants';
 
 export default class Home extends React.Component {

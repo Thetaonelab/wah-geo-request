@@ -16,7 +16,7 @@ import { fetchNGODetails, fetchDonorDetails } from './api';
 import colors from '../../styles/color';
 import text from '../../styles/text';
 import styles from '../../styles/style';
-import wah from '../../../assets/wah.png';
+import wah from '../../../assets/test.png';
 import { TYPE_NGO, TYPE_DONOR } from '../../constants';
 import UserContext from '../../contexts/UserContext';
 
@@ -65,61 +65,8 @@ export default class SplashScreen extends React.Component {
       }
     }
 
-    if (auth.token && auth.type === TYPE_NGO) {
-      const ngoDetails = await fetchNGODetails(auth.token);
-      if (ngoDetails.ok) {
-        const {
-          address,
-          email,
-          name,
-          phone_number,
-          registration_number,
-          user_id
-        } = ngoDetails.json.api_message;
-        this.context.updateNGOUser({
-          address,
-          email,
-          name,
-          phone: phone_number,
-          regNo: registration_number,
-          userId: user_id
-        });
-        this.setState({ path: 'authorizedNGO' });
-      } else {
-        this.setState({ errorMessage: ngoDetails.josn.api_message });
-      }
-    } else if (auth.token && auth.type === TYPE_DONOR) {
-      const donorDetails = await fetchDonorDetails(auth.token);
-      // console.log(donorDetails);
-      if (donorDetails.ok) {
-        const {
-          address,
-          complex_name,
-          door_no,
-          landmark,
-          lat,
-          lon,
-          name,
-          phone_number,
-          user_id,
-          has_give_away_list
-        } = donorDetails.json.api_message;
-        this.context.updateUser({
-          address,
-          name,
-          phone: phone_number,
-          userId: user_id
-        });
-        const path = has_give_away_list
-          ? 'homeStack'
-          : 'authorizedPreHomeStack';
-        this.setState({ path });
-      }
-    } else {
-      // no token present
-      if (donorDetails.status === 422) this.setState({ path: 'unauthorized' });
-      else this.setState({ errorMessage: donorDetails.josn.api_message });
-    }
+    // no token present
+    this.setState({ path: 'unauthorized' });
     this.setLoading(false);
 
     if (!this.counter) this.navigateAway();
@@ -159,7 +106,7 @@ export default class SplashScreen extends React.Component {
         <View style={{ flex: 1 }}>
           {this.state.errorMessage ? (
             <View>
-              <Text style={[text.secondaryText, { color: color.red }]}>
+              <Text style={[text.secondaryText, { color: colors.red }]}>
                 {this.state.errorMessage}
               </Text>
               <TouchableOpacity

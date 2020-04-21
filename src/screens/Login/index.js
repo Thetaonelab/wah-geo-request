@@ -7,7 +7,7 @@ import auth from '@react-native-firebase/auth';
 import styles from '../../styles/style';
 import colors from '../../styles/color';
 import text from '../../styles/text';
-import wah from '../../../assets/wah.png';
+import wah from '../../../assets/test.png';
 
 const { width /* , height */ } = Dimensions.get('window');
 
