@@ -13,11 +13,27 @@ export const fetchUtil = (url, method = 'GET', headers, body) =>
             resolve({ ok: response.ok, code: response.status, json });
           } catch (ex) {
             console.log('Error', ex.message, { url, method, headers, body });
-            resolve({
-              ok: response.ok,
-              code: response.status,
-              json: { api_message: text }
-            });
+            try {
+              const parser = new DOMParser();
+              const xmlDoc = parser.parseFromString(text, 'text/xml');
+              const title = xmlDoc.getElementsByTagName('title');
+              let errorStr = title[0].childNodes[0].nodeValue;
+              const p = xmlDoc.getElementsByTagName('p');
+              errorStr += p[0].childNodes[0].nodeValue;
+              console.log({ errorStr });
+              resolve({
+                ok: response.ok,
+                code: response.status,
+                json: { api_message: errorStr }
+              });
+            } catch (ex2) {
+              console.log({ ex2 });
+              resolve({
+                ok: response.ok,
+                code: response.status,
+                json: { api_message: text }
+              });
+            }
           }
         });
       })

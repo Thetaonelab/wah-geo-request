@@ -8,4 +8,4 @@ const headers = {
 };
 
 export const loginNGO = (body) =>
-  fetchUtil(`${API_ROOT}/login`, 'POST', headers, body);
+  fetchUtil(`${API_ROOT}/login_ngo`, 'POST', headers, body);

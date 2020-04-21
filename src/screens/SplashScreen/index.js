@@ -32,17 +32,21 @@ export default class SplashScreen extends React.Component {
     this.state = {
       loading: true,
       path: '',
-      timeout: false
+      timeout: false,
+      errorMessage: ''
     };
   }
 
   componentDidMount = async () => {
+    this.doInit();
+  };
+
+  doInit = async () => {
     let auth = await AsyncStorage.getItem('auth');
     let fcmToken = await AsyncStorage.getItem('fcmToken');
 
     auth = auth ? JSON.parse(auth) : {};
     // console.log('ASYNCSTORAGE', auth, fcmToken);
-    this.navigateAway(auth);
 
     if (!fcmToken) {
       await messaging().registerDeviceForRemoteMessages();
@@ -57,7 +61,7 @@ export default class SplashScreen extends React.Component {
         await AsyncStorage.setItem('fcmToken', fcmToken);
       } else {
         console.error('Failed', 'No token received');
-        this.props.navigation.navigate('systemError');
+        this.setState({ errorMessage: 'Error fetching fcm token' });
       }
     }
 
@@ -71,7 +75,7 @@ export default class SplashScreen extends React.Component {
           phone_number,
           registration_number,
           user_id
-        } = ngoDetails.api_message.json;
+        } = ngoDetails.json.api_message;
         this.context.updateNGOUser({
           address,
           email,
@@ -80,8 +84,10 @@ export default class SplashScreen extends React.Component {
           regNo: registration_number,
           userId: user_id
         });
+        this.setState({ path: 'authorizedNGO' });
+      } else {
+        this.setState({ errorMessage: ngoDetails.josn.api_message });
       }
-      this.setState({ path: 'authorizedNGO' });
     } else if (auth.token && auth.type === TYPE_DONOR) {
       const donorDetails = await fetchDonorDetails(auth.token);
       // console.log(donorDetails);
@@ -111,42 +117,19 @@ export default class SplashScreen extends React.Component {
       }
     } else {
       // no token present
-      this.setState({ path: 'unauthorized' });
+      if (donorDetails.status === 422) this.setState({ path: 'unauthorized' });
+      else this.setState({ errorMessage: donorDetails.josn.api_message });
     }
     this.setLoading(false);
+
+    if (!this.counter) this.navigateAway();
   };
 
   setLoading = (loading) => {
     this.setState({ loading });
   };
 
-  /* messageListener = async () => {
-    this.notificationListener = notifications().onNotification(
-      (notification) => {
-        const { title, body } = notification;
-        this.showAlert(title, body);
-      }
-    );
-
-    this.notificationOpenedListener = notifications().onNotificationOpened(
-      (notificationOpen) => {
-        const { title, body } = notificationOpen.notification;
-        this.showAlert(title, body);
-      }
-    );
-
-    const notificationOpen = await notifications().getInitialNotification();
-    if (notificationOpen) {
-      const { title, body } = notificationOpen.notification;
-      this.showAlert(title, body);
-    }
-
-    this.messageListener = messaging().onMessage((message) => {
-      console.log(JSON.stringify(message));
-    });
-  }; */
-
-  navigateAway = (auth) => {
+  navigateAway = () => {
     this.counter += this.interval;
     if (this.counter >= this.interval * 2) {
       this.setState({ timeout: true });
@@ -155,7 +138,7 @@ export default class SplashScreen extends React.Component {
       if (!this.state.loading && this.state.path) {
         this.props.navigation.navigate(this.state.path);
       } else {
-        this.navigateAway(auth);
+        this.navigateAway();
       }
     }, this.interval);
   };
@@ -174,8 +157,27 @@ export default class SplashScreen extends React.Component {
           />
         </View>
         <View style={{ flex: 1 }}>
-          <ActivityIndicator color={colors.colorsecondary10} size={50} />
-          {this.state.timeout ? (
+          {this.state.errorMessage ? (
+            <View>
+              <Text style={[text.secondaryText, { color: color.red }]}>
+                {this.state.errorMessage}
+              </Text>
+              <TouchableOpacity
+                style={{
+                  alignItems: 'flex-end',
+                  flex: 1,
+                  justifyContent: 'center'
+                }}
+                onPress={this.doInit}>
+                <Text style={[text.primaryText, { color: colors.black }]}>
+                  RETRY
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <ActivityIndicator color={colors.colorsecondary10} size={50} />
+          )}
+          {this.state.timeout && !this.state.errorMessage ? (
             <TouchableOpacity
               style={{
                 alignItems: 'flex-end',
