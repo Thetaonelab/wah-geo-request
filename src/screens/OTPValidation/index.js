@@ -46,10 +46,7 @@ export default class OtpValidation extends React.Component {
   tryLogin = async (token) => {
     const loginRes = await loginIndividual(token);
     if (loginRes.ok) {
-      const {
-        token: backendToken,
-        isGiveawayListDone
-      } = loginRes.json.api_message;
+      const { token: backendToken } = loginRes.json.api_message;
       const auth = {
         token: backendToken,
         type: TYPE_DONOR

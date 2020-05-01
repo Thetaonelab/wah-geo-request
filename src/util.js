@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-console */
 export const fetchUtil = (url, method = 'GET', headers, body) =>
   fetch(url, {
@@ -15,12 +16,12 @@ export const fetchUtil = (url, method = 'GET', headers, body) =>
             } catch (ex) {
               console.log('Error', ex.message, { url, method, headers, body });
               try {
-                const parser = new DOMParser();
+                const parser = new (require('xmldom').DOMParser)();
                 const xmlDoc = parser.parseFromString(text, 'text/xml');
                 const title = xmlDoc.getElementsByTagName('title');
                 let errorStr = title[0].childNodes[0].nodeValue;
                 const p = xmlDoc.getElementsByTagName('p');
-                errorStr += p[0].childNodes[0].nodeValue;
+                errorStr += ` (${p[0].childNodes[0].nodeValue})`;
                 console.log({ errorStr });
                 resolve({
                   ok: response.ok,
@@ -39,10 +40,13 @@ export const fetchUtil = (url, method = 'GET', headers, body) =>
           });
         })
     )
-    .catch((err) => new Promise((resolve) => {
-        resolve({
-          ok: false,
-          code: -1,
-          json: { api_message: err.message }
-        });
-      }));
+    .catch(
+      (err) =>
+        new Promise((resolve) => {
+          resolve({
+            ok: false,
+            code: -1,
+            json: { api_message: err.message }
+          });
+        })
+    );

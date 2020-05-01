@@ -6,34 +6,68 @@ import {
   SectionList,
   Image,
   Dimensions,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { FloatingButton } from 'react-native-ui-lib';
+import AsyncStorage from '@react-native-community/async-storage';
 // import { StackActions, NavigationActions } from 'react-navigation';
+import { fetchGiveawayList, saveGiveawayList } from './api';
 import styles from '../../styles/style';
 import colors from '../../styles/color';
 import text from '../../styles/text';
 import ownStyle from './style';
-import data from './data';
+// import data from './data';
 
 export default class ChooseCategory extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      totalCount: 0
+      totalCount: 0,
+      data: [],
+      loading: true
     };
   }
 
-  componentDidMount() {
-    const stateObj = {};
-    data.forEach((element) => {
-      element.data.forEach((elem) => {
-        stateObj[`item-id-${elem.id}`] = elem.value ? elem.value : 0;
+  async componentDidMount() {
+    let auth = await AsyncStorage.getItem('auth');
+    auth = auth ? JSON.parse(auth) : {};
+    const fetchGiveawayListRes = await fetchGiveawayList(auth.token);
+    if (fetchGiveawayListRes.ok) {
+      // eslint-disable-next-line camelcase
+      const data = fetchGiveawayListRes.json.api_message?.json_agg;
+      const stateObj = {};
+      data.forEach((element) => {
+        element.data.forEach((elem) => {
+          stateObj[`item-id-${elem.id}`] = elem.value ? elem.value : 0;
+        });
       });
-    });
-    this.setState({ ...stateObj });
+      this.setState({ ...stateObj, data });
+    } else {
+      // do some error handling
+    }
+    this.setState({ loading: false });
   }
+
+  saveAndLeave = async () => {
+    const saveList = Object.keys(this.state)
+      .map((v) => {
+        if (v.indexOf('item-id-') === 0 && this.state[v] !== 0) {
+          return { id: v.replace('item-id-', ''), qty: this.state[v] };
+        }
+        return -1;
+      })
+      .filter((v) => v !== -1);
+
+    let auth = await AsyncStorage.getItem('auth');
+    auth = auth ? JSON.parse(auth) : {};
+    // const saveGiveawayListRes =
+    await saveGiveawayList(auth.token, saveList);
+    // console.log({ saveGiveawayListRes });
+
+    // this.props.navigation.navigate('authorized');
+  };
 
   renderItem = ({ item }) => (
     <View
@@ -114,40 +148,43 @@ export default class ChooseCategory extends React.Component {
   render() {
     return (
       <View style={[styles.parentContainer, { padding: 0 }]}>
-        <SectionList
-          sections={data}
-          renderItem={this.renderItem}
-          renderSectionHeader={({ section }) => (
-            <View
+        {this.state.loading ? (
+          <ActivityIndicator color={colors.colorsecondary10} size={50} />
+        ) : (
+          <>
+            <SectionList
+              sections={this.state.data}
+              renderItem={this.renderItem}
+              renderSectionHeader={({ section }) => (
+                <View
+                  style={{
+                    backgroundColor: colors.grey2,
+                    paddingLeft: 20,
+                    justifyContent: 'center',
+                    height: 40
+                  }}>
+                  <Text style={text.appbarText}>{section.title}</Text>
+                </View>
+              )}
               style={{
-                backgroundColor: colors.grey2,
-                paddingLeft: 20,
-                justifyContent: 'center',
-                height: 40
-              }}>
-              <Text style={text.appbarText}>{section.title}</Text>
-            </View>
-          )}
-          data={this.state.categories}
-          style={{
-            flex: 1,
-            alignSelf: 'stretch',
-            width: Dimensions.get('window').width
-          }}
-          keyExtractor={(i) =>
-            `key-${i.name.replace(/ /g, '-') + Math.random()}`
-          }
-        />
-        <FloatingButton
-          visible={this.state.totalCount !== 0}
-          button={{
-            label: 'I am done!',
-            labelStyle: { fontWeight: '700' },
-            onPress: () => {
-              this.props.navigation.navigate('authorized');
-            }
-          }}
-        />
+                flex: 1,
+                alignSelf: 'stretch',
+                width: Dimensions.get('window').width
+              }}
+              keyExtractor={(i) =>
+                `key-${i.name.replace(/ /g, '-') + Math.random()}`
+              }
+            />
+            <FloatingButton
+              visible={this.state.totalCount !== 0}
+              button={{
+                label: 'I am done!',
+                labelStyle: { fontWeight: '700' },
+                onPress: this.saveAndLeave
+              }}
+            />
+          </>
+        )}
       </View>
     );
   }

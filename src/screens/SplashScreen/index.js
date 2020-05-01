@@ -48,6 +48,7 @@ export default class SplashScreen extends React.Component {
     let fcmToken = await AsyncStorage.getItem('fcmToken');
 
     auth = auth ? JSON.parse(auth) : {};
+    // eslint-disable-next-line no-console
     // console.log('ASYNCSTORAGE', auth, fcmToken);
 
     if (!fcmToken) {
@@ -66,6 +67,8 @@ export default class SplashScreen extends React.Component {
         this.setState({ errorMessage: 'Error fetching fcm token' });
       }
     }
+    // eslint-disable-next-line no-console
+    // console.log('ASYNCSTORAGE SET', auth, fcmToken);
 
     if (auth.token && auth.type === TYPE_NGO) {
       const ngoDetails = await fetchNGODetails(auth.token);
@@ -95,7 +98,6 @@ export default class SplashScreen extends React.Component {
       }
     } else if (auth.token && auth.type === TYPE_DONOR) {
       const donorDetails = await fetchDonorDetails(auth.token);
-      // console.log({ donorDetails });
       if (donorDetails.ok) {
         const {
           address,
@@ -168,21 +170,22 @@ export default class SplashScreen extends React.Component {
             }}
           />
         </View>
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 2 }}>
           {this.state.errorMessage ? (
-            <View>
+            <View style={{ flex: 1, backgroundColor: 'blue' }}>
               <Text
                 style={[
                   text.secondaryText,
-                  { color: colors.red, fontWeight: '700' }
+                  { color: colors.red, fontWeight: '700', textAlign: 'center' }
                 ]}>
                 {this.state.errorMessage}
               </Text>
               <TouchableOpacity
                 style={{
                   alignItems: 'center',
-                  flex: 1,
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  backgroundColor: 'red',
+                  height: 40
                 }}
                 onPress={this.doInit}>
                 <Text
@@ -194,10 +197,10 @@ export default class SplashScreen extends React.Component {
           ) : (
             <ActivityIndicator color={colors.colorsecondary10} size={50} />
           )}
-          {this.state.timeout && !this.state.errorMessage ? (
+          {this.state.timeout /* && !this.state.errorMessage */ ? (
             <TouchableOpacity
               style={{
-                alignItems: 'flex-end',
+                alignItems: 'center',
                 flex: 1,
                 justifyContent: 'center'
               }}
@@ -207,7 +210,7 @@ export default class SplashScreen extends React.Component {
               }}>
               <Text
                 style={[text.primaryText, { color: colors.colorsecondary20 }]}>
-                Login again
+                Clear Data
               </Text>
             </TouchableOpacity>
           ) : null}
