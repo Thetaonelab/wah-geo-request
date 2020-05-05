@@ -66,7 +66,9 @@ export default class NGORegister extends React.Component {
           phone: mobile,
           password,
           registration_number: regno,
-          address
+          address,
+          lat: 22.3,
+          lon: 88.3
         });
 
         if (!res.ok) {

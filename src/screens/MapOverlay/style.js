@@ -26,7 +26,7 @@ export default StyleSheet.create({
     borderRadius: 4,
     padding: 20,
     alignItems: 'flex-start',
-    height: parseInt(height / 3),
+    height: parseInt(height / 2.5),
     width: parseInt(width / 1.5),
     elevation: 4
     // alignSelf: 'flex-end'

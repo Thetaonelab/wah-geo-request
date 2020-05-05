@@ -15,25 +15,9 @@ export const fetchGiveawayList = (token) =>
     null
   );
 
-export const fetchNGORequests = (token) =>
+export const saveGiveawayList = (token, body) =>
   fetchUtil(
-    `${API_ROOT}/fetch_ngo_requests`,
-    'GET',
-    { ...headers, Authorization: `Bearer ${token}` },
-    null
-  );
-
-export const acceptNGORequest = (token, body) =>
-  fetchUtil(
-    `${API_ROOT}/accept_ngo_request`,
-    'POST',
-    { ...headers, Authorization: `Bearer ${token}` },
-    body
-  );
-
-export const rejectNGORequest = (token, body) =>
-  fetchUtil(
-    `${API_ROOT}/reject_ngo_request`,
+    `${API_ROOT}/update_my_giveaway_list`,
     'POST',
     { ...headers, Authorization: `Bearer ${token}` },
     body

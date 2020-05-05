@@ -5,16 +5,16 @@ import {
   // Dimensions,
   Modal,
   TouchableOpacity,
-  Linking,
-  Platform,
-  ToastAndroid
+  Platform
 } from 'react-native';
 import { Button, TextField, Badge } from 'react-native-ui-lib';
 import PropTypes from 'prop-types';
+
 // import styles from '../../styles/style';
 import colors from '../../styles/color';
 import text from '../../styles/text';
 import ownStyle from './style';
+import { call, openGps } from '../../util';
 
 export default class DonorDetails extends React.Component {
   constructor(props) {
@@ -55,20 +55,7 @@ export default class DonorDetails extends React.Component {
                   backgroundColor: colors.grey0,
                   marginLeft: 20
                 }}
-                onPress={() => {
-                  Linking.canOpenURL(phoneNumber)
-                    .then((supported) => {
-                      if (!supported) {
-                        ToastAndroid.show(
-                          'Phone number not supported!',
-                          ToastAndroid.LONG
-                        );
-                        return false;
-                      }
-                      return Linking.openURL(phoneNumber);
-                    })
-                    .catch((err) => console.warn(err));
-                }}
+                onPress={call(phoneNumber)}
                 labelStyle={[
                   text.bodyText,
                   {
@@ -97,7 +84,26 @@ export default class DonorDetails extends React.Component {
                 flex: 1,
                 marginTop: 20
               }}>
-              <Text style={text.primaryText}>{this.props.giveawayList}</Text>
+              <Text style={text.bodyText}>{this.props.address}</Text>
+              <View
+                style={{
+                  height: 2,
+                  alignSelf: 'stretch',
+                  borderBottomWidth: 1,
+                  borderBottomColor: colors.grey1,
+                  paddingVertical: 5
+                }}
+              />
+              <Text style={text.secondaryText}>{this.props.giveawayList}</Text>
+              <View
+                style={{
+                  height: 2,
+                  alignSelf: 'stretch',
+                  borderBottomWidth: 1,
+                  borderBottomColor: colors.grey1,
+                  paddingBottom: 5
+                }}
+              />
               <Text
                 style={[
                   text.bodyText,
@@ -162,6 +168,7 @@ export default class DonorDetails extends React.Component {
                     color: colors.colorsecondary20,
                     fontWeight: '700'
                   }}
+                  onPress={() => openGps(this.props.lat, this.props.lon)}
                 />
               </View>
             </View>
@@ -177,5 +184,8 @@ DonorDetails.propTypes = {
   dismiss: PropTypes.func.isRequired,
   giveawayList: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  distance: PropTypes.string.isRequired
+  address: PropTypes.string.isRequired,
+  distance: PropTypes.string.isRequired,
+  lat: PropTypes.number.isRequired,
+  lon: PropTypes.number.isRequired
 };

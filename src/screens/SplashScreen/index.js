@@ -27,6 +27,8 @@ export default class SplashScreen extends React.Component {
 
   interval = 1000;
 
+  unmounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -40,6 +42,10 @@ export default class SplashScreen extends React.Component {
   componentDidMount = async () => {
     this.doInit();
   };
+
+  componentWillUnmount() {
+    this.unmounted = true;
+  }
 
   doInit = async () => {
     this.setLoading(true);
@@ -146,7 +152,7 @@ export default class SplashScreen extends React.Component {
   navigateAway = () => {
     this.counter += this.interval;
     if (this.counter >= this.interval * 2) {
-      this.setState({ timeout: true });
+      if (!this.unmounted) this.setState({ timeout: true });
     }
     setTimeout(async () => {
       if (!this.state.loading && this.state.path) {
@@ -172,7 +178,7 @@ export default class SplashScreen extends React.Component {
         </View>
         <View style={{ flex: 2 }}>
           {this.state.errorMessage ? (
-            <View style={{ flex: 1, backgroundColor: 'blue' }}>
+            <View style={{ flex: 1 }}>
               <Text
                 style={[
                   text.secondaryText,
@@ -184,7 +190,6 @@ export default class SplashScreen extends React.Component {
                 style={{
                   alignItems: 'center',
                   justifyContent: 'center',
-                  backgroundColor: 'red',
                   height: 40
                 }}
                 onPress={this.doInit}>

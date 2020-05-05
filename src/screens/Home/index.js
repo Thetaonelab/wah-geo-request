@@ -8,26 +8,44 @@ import {
   ActivityIndicator
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { Badge } from 'react-native-ui-lib';
 import AsyncStorage from '@react-native-community/async-storage';
 import UpcomingPickup from './UpcomingPickup';
-import { fetchGiveawayList } from './api';
+import { fetchGiveawayList, fetchNGORequests } from './api';
 import styles from '../../styles/style';
 import colors from '../../styles/color';
 import text from '../../styles/text';
 // import items from './data';
 import wahIcon from '../../../assets/wah-icon.png';
-import { UPDATE_TYPES } from './constants';
+// import { UPDATE_TYPES } from './constants';
 
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       data: [],
-      giveawayListLoading: true
+      giveawayListLoading: true,
+      ngoRequestLoading: true,
+      updates: []
     };
   }
 
   async componentDidMount() {
+    this.unsubscribeFocus = this.props.navigation.addListener(
+      'didFocus',
+      () => {
+        this.fetchGiveawayList();
+        this.fetchNGORequests();
+      }
+    );
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeFocus.remove();
+  }
+
+  async fetchGiveawayList() {
+    this.setState({ giveawayListLoading: true, data: [] });
     let auth = await AsyncStorage.getItem('auth');
     auth = auth ? JSON.parse(auth) : {};
     const fetchGiveawayListRes = await fetchGiveawayList(auth.token);
@@ -42,6 +60,28 @@ export default class Home extends React.Component {
     this.setState({ giveawayListLoading: false });
   }
 
+  async fetchNGORequests() {
+    this.setState({ ngoRequestLoading: true, data: [] });
+    let auth = await AsyncStorage.getItem('auth');
+    auth = auth ? JSON.parse(auth) : {};
+    const fetchGiveawayListRes = await fetchNGORequests(auth.token);
+    // console.log({ fetchGiveawayListRes });
+    if (fetchGiveawayListRes.ok) {
+      // eslint-disable-next-line camelcase
+      const rawData = fetchGiveawayListRes.json.api_message;
+      const data = rawData.map((update) => ({
+          id: update.ngo,
+          name: update.name,
+          address: update.address,
+          phone: update.phone,
+          notes: update.notes,
+          status: update.status
+        }));
+      this.setState({ updates: data });
+    }
+    this.setState({ ngoRequestLoading: false });
+  }
+
   render() {
     return (
       <View
@@ -53,17 +93,35 @@ export default class Home extends React.Component {
           style={{
             paddingVertical: 15,
             alignItems: 'flex-start',
-            alignSelf: 'stretch'
+            alignSelf: 'stretch',
+            flexDirection: 'row'
           }}>
           <Text
             style={[text.primaryText, { fontWeight: '700', letterSpacing: 1 }]}>
             My Giveaway List
           </Text>
+
+          {!this.state.giveawayListLoading && (
+            <Badge
+              label=" EDIT "
+              labelFormatterLimit={3}
+              onPress={() => {
+                this.props.navigation.navigate('editGiveawayList');
+              }}
+              backgroundColor={colors.colorprimary0}
+              style={{ marginLeft: 30 }}
+            />
+          )}
         </View>
         {this.state.giveawayListLoading ? (
           <ActivityIndicator color={colors.colorsecondary10} size={30} />
         ) : (
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              alignSelf: 'stretch'
+            }}>
             {this.state.data.map((d, idx) => (
               <View
                 key={`item-big-${idx}-${Math.random()}`}
@@ -114,9 +172,23 @@ export default class Home extends React.Component {
             Updates
           </Text>
         </View>
-        <UpcomingPickup type={UPDATE_TYPES.PICKUP} />
-        <UpcomingPickup type={UPDATE_TYPES.AWAIT_PICKUP} />
-        <UpcomingPickup type={UPDATE_TYPES.REQUEST} />
+        {this.state.ngoRequestLoading ? (
+          <ActivityIndicator color={colors.colorsecondary10} size={30} />
+        ) : (
+          <View style={{ alignSelf: 'stretch' }}>
+            {this.state.updates.map((upd) => (
+              <UpcomingPickup
+                id={upd.id}
+                status={upd.status}
+                name={upd.name}
+                address={upd.address}
+                notes={upd.notes}
+                phoneNumber={upd.phone}
+              />
+            ))}
+          </View>
+        )}
+
         <TouchableOpacity
           style={{
             position: 'absolute',
@@ -148,6 +220,7 @@ export default class Home extends React.Component {
 
 Home.propTypes = {
   navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired
+    navigate: PropTypes.func.isRequired,
+    addListener: PropTypes.func.isRequired
   }).isRequired
 };

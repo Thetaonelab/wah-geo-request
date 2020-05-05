@@ -20,7 +20,7 @@ import text from '../../styles/text';
 import ownStyle from './style';
 // import data from './data';
 
-export default class ChooseCategory extends React.Component {
+export default class EditGiveawayList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -38,12 +38,14 @@ export default class ChooseCategory extends React.Component {
       // eslint-disable-next-line camelcase
       const data = fetchGiveawayListRes.json.api_message?.json_agg;
       const stateObj = {};
+      let totalCount = 0;
       data.forEach((element) => {
         element.data.forEach((elem) => {
-          stateObj[`item-id-${elem.id}`] = elem.value ? elem.value : 0;
+          stateObj[`item-id-${elem.id}`] = elem.qty ? elem.qty : 0;
+          totalCount += elem.qty ? elem.qty : 0;
         });
       });
-      this.setState({ ...stateObj, data });
+      this.setState({ ...stateObj, data, totalCount });
     } else {
       // do some error handling
     }
@@ -53,7 +55,7 @@ export default class ChooseCategory extends React.Component {
   saveAndLeave = async () => {
     const saveList = Object.keys(this.state)
       .map((v) => {
-        if (v.indexOf('item-id-') === 0 && this.state[v] !== 0) {
+        if (v.indexOf('item-id-') === 0) {
           return { id: v.replace('item-id-', ''), qty: this.state[v] };
         }
         return -1;
@@ -64,9 +66,7 @@ export default class ChooseCategory extends React.Component {
     auth = auth ? JSON.parse(auth) : {};
     // const saveGiveawayListRes =
     await saveGiveawayList(auth.token, saveList);
-    // console.log({ saveGiveawayListRes });
-
-    this.props.navigation.navigate('authorized');
+    this.props.navigation.goBack();
   };
 
   renderItem = ({ item }) => (
@@ -79,7 +79,11 @@ export default class ChooseCategory extends React.Component {
         paddingHorizontal: 10,
         borderBottomColor: colors.grey1,
         borderBottomWidth: 1,
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor:
+          this.state[`item-id-${item.id}`] > 0
+            ? colors.colorgreen7
+            : colors.white
       }}>
       <View
         style={{
@@ -190,9 +194,10 @@ export default class ChooseCategory extends React.Component {
   }
 }
 
-ChooseCategory.propTypes = {
+EditGiveawayList.propTypes = {
   navigation: PropTypes.shape({
     dispatch: PropTypes.func.isRequired,
-    navigate: PropTypes.func.isRequired
+    navigate: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired
   }).isRequired
 };
