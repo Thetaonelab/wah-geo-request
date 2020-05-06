@@ -70,13 +70,13 @@ export default class Home extends React.Component {
       // eslint-disable-next-line camelcase
       const rawData = fetchGiveawayListRes.json.api_message;
       const data = rawData.map((update) => ({
-          id: update.ngo,
-          name: update.name,
-          address: update.address,
-          phone: update.phone,
-          notes: update.notes,
-          status: update.status
-        }));
+        id: update.ngo,
+        name: update.name,
+        address: update.address,
+        phone: update.phone,
+        notes: update.notes,
+        status: update.status
+      }));
       this.setState({ updates: data });
     }
     this.setState({ ngoRequestLoading: false });
@@ -184,6 +184,7 @@ export default class Home extends React.Component {
                 address={upd.address}
                 notes={upd.notes}
                 phoneNumber={upd.phone}
+                key={`key-up-${Math.random() * 1000}`}
               />
             ))}
           </View>

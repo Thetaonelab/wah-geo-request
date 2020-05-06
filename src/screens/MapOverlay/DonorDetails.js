@@ -84,7 +84,9 @@ export default class DonorDetails extends React.Component {
                 flex: 1,
                 marginTop: 20
               }}>
-              <Text style={text.bodyText}>{this.props.address}</Text>
+              <Text style={[text.bodyText, { fontStyle: 'italic' }]}>
+                {this.props.address}
+              </Text>
               <View
                 style={{
                   height: 2,
@@ -124,7 +126,7 @@ export default class DonorDetails extends React.Component {
                 ]}>
                 Accepted
               </Text> */}
-              <Badge label="Accepted" labelFormatterLimit={3} />
+              <Badge label={this.props.status} labelFormatterLimit={3} />
               <TextField
                 placeholder="Enter a Note for the donor"
                 hideUnderline={false}
@@ -187,5 +189,6 @@ DonorDetails.propTypes = {
   address: PropTypes.string.isRequired,
   distance: PropTypes.string.isRequired,
   lat: PropTypes.number.isRequired,
-  lon: PropTypes.number.isRequired
+  lon: PropTypes.number.isRequired,
+  status: PropTypes.string.isRequired
 };

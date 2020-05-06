@@ -28,7 +28,7 @@ export default createStackNavigator(
     feed: {
       screen: Feed,
       navigationOptions: ({ navigation }) => ({
-        header: header(navigation, 'WAH!', true, true)
+        header: header(navigation, 'WAH!', false, true)
       })
     },
     profile: {

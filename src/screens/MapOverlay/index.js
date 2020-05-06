@@ -23,7 +23,6 @@ import text from '../../styles/text';
 import styleJson from './styleJson';
 // import ownStyle from './style';
 import { getLocationData, getLocationDataRaw } from './api';
-import ModalView from './ModalView';
 import DonorDetails from './DonorDetails';
 
 const { width, height } = Dimensions.get('window');
@@ -44,7 +43,7 @@ export default class MapOverlay extends React.Component {
       ),
       locationData: [],
       rawMode: false,
-      modalVisible: false,
+      // modalVisible: false,
       donorDetailsVisible: false
     };
   }
@@ -110,10 +109,10 @@ export default class MapOverlay extends React.Component {
     }
   };
 
-  dismissModal = () => {
+/*   dismissModal = () => {
     this.setState((st) => ({ modalVisible: false }));
   };
-
+ */
   render() {
     return (
       <View style={[styles.parentContainer, { padding: 0 }]}>
@@ -183,16 +182,8 @@ export default class MapOverlay extends React.Component {
                     strokeColor={colors.grey2}
                     fillColor={this.numberToColor(dt.typeMap.p + dt.typeMap.c)}
                     tappable={true}
-                    onPress={() => {
-                      this.setState({ modalVisible: true });
-                    }}
                   />
-                  <Marker
-                    coordinate={dt.center}
-                    key={`marker-${idx}`}
-                    onPress={() => {
-                      this.setState({ modalVisible: true });
-                    }}>
+                  <Marker coordinate={dt.center} key={`marker-${idx}`}>
                     <View
                       styele={{
                         flex: 1,
@@ -215,19 +206,18 @@ export default class MapOverlay extends React.Component {
           ))}
         </MapView>
         <BottomView />
-        <ModalView
-          modalVisible={this.state.modalVisible}
-          dismissModal={this.dismissModal}
-        />
-        <DonorDetails
-          name="Test"
-          giveawayList="Rice 23Kg, Dal 10 Kg, Aloo 5 Kg"
-          distance="2.3Km"
-          visible={this.state.donorDetailsVisible}
-          dismiss={() => {
-            this.setState({ donorDetailsVisible: false });
-          }}
-        />
+
+        {this.state.rawMode && (
+          <DonorDetails
+            name="Test"
+            giveawayList="Rice 23Kg, Dal 10 Kg, Aloo 5 Kg"
+            distance="2.3Km"
+            visible={this.state.donorDetailsVisible}
+            dismiss={() => {
+              this.setState({ donorDetailsVisible: false });
+            }}
+          />
+        )}
       </View>
     );
   }

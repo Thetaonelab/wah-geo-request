@@ -15,10 +15,12 @@ web-report/
 
 # android
 android/.gradle/**/*
-android/app/build/generated/**/*
-android/app/build/intermediates/**/*
-android/app/build/outputs/**/*
 android/app/build_defs.bzl
 android/app/proguard-rules.pro
 android/app/debug.keystore
 yarn-error.log
+android/app/build/**/*
+android/build/intermediates/lint-cache/sdk-registry.xml/sdk-registry.xml
+android/build/intermediates/lint-cache/maven.google/androidx/swiperefreshlayout/group-index.xml
+android/build/intermediates/lint-cache/maven.google/com/android/support/group-index.xml
+android/build/intermediates/lint-cache/maven.google/master-index.xml

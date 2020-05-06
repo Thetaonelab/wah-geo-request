@@ -67,7 +67,11 @@ export default function Drawer(props) {
             }
           }
         ].map((v) => (
-          <DrawerItem navigation={props.navigation} config={v} />
+          <DrawerItem
+            navigation={props.navigation}
+            config={v}
+            key={`drawer-donor-${Math.random() * 1000}`}
+          />
         ))}
       </View>
     </View>

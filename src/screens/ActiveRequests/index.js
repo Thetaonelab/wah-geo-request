@@ -15,93 +15,11 @@ export default class ActiveRequests extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true,
-      data: [
-        {
-          name: 'Mr. Sen',
-          distance: '2.5 KM',
-          desc: 'Rice: 5Kg, Dal: 56 Kg',
-          status: '✓ Accepted'
-        },
-        {
-          name: 'Mr. Ghosh',
-          distance: '2.5 KM',
-          desc: 'Rice: 5Kg, Dal: 56 Kg',
-          status: '⧖ Waiting'
-        },
-        {
-          name: 'Mr. Ghosh',
-          distance: '2.5 KM',
-          desc: 'Rice: 5Kg, Dal: 56 Kg',
-          status: '× Rejected'
-        },
-        {
-          name: 'Mr. Ghosh',
-          distance: '2.5 KM',
-          desc: 'Rice: 5Kg, Dal: 56 Kg'
-        },
-        {
-          name: 'Mr. Ghosh',
-          distance: '2.5 KM',
-          desc: 'Rice: 5Kg, Dal: 56 Kg'
-        },
-        {
-          name: 'Mr. Ghosh',
-          distance: '2.5 KM',
-          desc: 'Rice: 5Kg, Dal: 56 Kg'
-        },
-        {
-          name: 'Mr. Ghosh',
-          distance: '2.5 KM',
-          desc: 'Rice: 5Kg, Dal: 56 Kg'
-        },
-        {
-          name: 'Mr. Ghosh',
-          distance: '2.5 KM',
-          desc: 'Rice: 5Kg, Dal: 56 Kg'
-        },
-        {
-          name: 'Mr. Ghosh',
-          distance: '2.5 KM',
-          desc: 'Rice: 5Kg, Dal: 56 Kg',
-          status: 'Accepted'
-        }
-      ]
+      loading: false
     };
   }
 
-  async componentDidMount() {
-    let auth = await AsyncStorage.getItem('auth');
-    auth = auth ? JSON.parse(auth) : {};
-    const listDonorsNearbyRes = await listDonorsNearby(auth.token, {
-      lat: 24.3,
-      lon: 88.3,
-      radius: 90000
-    });
-    // console.log({ listDonorsNearbyRes });
-    if (listDonorsNearbyRes.ok) {
-      // eslint-disable-next-line camelcase
-      const data = listDonorsNearbyRes.json.api_message?.map((donor) => ({
-        id: donor.donor,
-        name: donor.name,
-        distance: `${(donor.distance / 1000).toFixed(1)}KM`,
-        desc: donor.giveaway_list
-          .map((item) => `${item.name}: ${item.qty}${item.unit}`)
-          .join(','),
-        status: donor.status === 'Yet to contact' ? undefined : donor.status,
-        lat: donor.lat,
-        lon: donor.lon,
-        phoneNumber: donor.phone,
-        address: donor.address
-      }));
-      this.setState({ data });
-    } else {
-      this.setState({
-        errorMessage: `Error ${listDonorsNearbyRes.code}: ${listDonorsNearbyRes.json.api_message}`
-      });
-    }
-    this.setState({ loading: false });
-  }
+  componentDidMount() {}
 
   render() {
     return (
@@ -124,7 +42,13 @@ export default class ActiveRequests extends React.Component {
             </Text>
           </View>
         ) : (
-          <DonorList data={this.state.data} askDonorApi={askDonor} />
+          <DonorList
+            askDonorApi={askDonor}
+            listDonorsNearby={listDonorsNearby}
+            lat={22.3}
+            lon={88.3}
+            radius={30000}
+          />
         )}
       </View>
     );

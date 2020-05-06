@@ -29,21 +29,26 @@ class Header extends React.Component {
   };
 
   goBack = () => {
-    this.props.navigation.navigate('home');
+    this.props.navigation.goBack();
   };
 
   render() {
+    const { isFirstRoute } = this.props.navigation.isFirstRouteInParent();
     return (
       <View style={styles.container}>
-        {this.props.drawerMode && (
-          <View style={styles.leftSide}>
+        <View style={styles.leftSide}>
+          {this.props.drawerMode ? (
             <TouchableOpacity
               style={styles.menuIconLeft}
               onPress={this.toogleDrawer}>
               <Text style={[text.appbarText]}>☰</Text>
             </TouchableOpacity>
-          </View>
-        )}
+          ) : !isFirstRoute ? (
+            <TouchableOpacity style={styles.menuIconLeft} onPress={this.goBack}>
+              <Text style={[text.appbarText]}>←</Text>
+            </TouchableOpacity>
+          ) : null}
+        </View>
 
         <Text style={[text.appbarText]}>
           {this.props.pageName.toUpperCase()}
@@ -81,13 +86,13 @@ class Header extends React.Component {
 
 Header.propTypes = {
   pageName: PropTypes.string.isRequired,
-  // isDashboard: PropTypes.bool,
   drawerMode: PropTypes.bool,
   navigation: PropTypes.shape({
     state: PropTypes.shape({}),
     navigate: PropTypes.func,
     getScreenProps: PropTypes.func,
-    addListener: PropTypes.func,
+    goBack: PropTypes.func,
+    isFirstRouteInParent: PropTypes.func,
     toggleDrawer: PropTypes.func,
     openDrawer: PropTypes.func,
     closeDrawer: PropTypes.func
@@ -95,7 +100,7 @@ Header.propTypes = {
 };
 
 Header.defaultProps = {
-  drawerMode: true
+  drawerMode: false
 };
 
 export default Header;
