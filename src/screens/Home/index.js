@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/accessible-emoji */
 /* eslint-disable react/no-array-index-key */
 import React from 'react';
 import {
@@ -15,9 +16,7 @@ import { fetchGiveawayList, fetchNGORequests } from './api';
 import styles from '../../styles/style';
 import colors from '../../styles/color';
 import text from '../../styles/text';
-// import items from './data';
 import wahIcon from '../../../assets/wah-icon.png';
-// import { UPDATE_TYPES } from './constants';
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -35,16 +34,16 @@ export default class Home extends React.Component {
       'didFocus',
       () => {
         this.fetchGiveawayList();
-        this.fetchNGORequests();
       }
     );
+    this.fetchNGORequests();
   }
 
   componentWillUnmount() {
     this.unsubscribeFocus.remove();
   }
 
-  async fetchGiveawayList() {
+  fetchGiveawayList = async () => {
     this.setState({ giveawayListLoading: true, data: [] });
     let auth = await AsyncStorage.getItem('auth');
     auth = auth ? JSON.parse(auth) : {};
@@ -58,10 +57,10 @@ export default class Home extends React.Component {
       this.setState({ data });
     }
     this.setState({ giveawayListLoading: false });
-  }
+  };
 
-  async fetchNGORequests() {
-    this.setState({ ngoRequestLoading: true, data: [] });
+  fetchNGORequests = async () => {
+    this.setState({ ngoRequestLoading: true, updates: [] });
     let auth = await AsyncStorage.getItem('auth');
     auth = auth ? JSON.parse(auth) : {};
     const fetchGiveawayListRes = await fetchNGORequests(auth.token);
@@ -75,12 +74,44 @@ export default class Home extends React.Component {
         address: update.address,
         phone: update.phone,
         notes: update.notes,
-        status: update.status
+        status: update.status_code,
+        statusStr: update.status
       }));
       this.setState({ updates: data });
     }
     this.setState({ ngoRequestLoading: false });
-  }
+  };
+
+  renderUpdates = () => {
+    if (this.state.updates?.length === 0) {
+      return (
+        <View style={{ alignSelf: 'stretch', alignItems: 'flex-start' }}>
+          {/* <Text style={text.appbarText}>ⓘ</Text> */}
+          <Text
+            style={[
+              text.bodyText,
+              { fontStyle: 'italic', textAlign: 'left', width: '80%' }
+            ]}>
+            No update to display. You will see requests from NGOs for picking up
+            your giveaway items.
+          </Text>
+        </View>
+      );
+    }
+    return this.state.updates.map((upd) => (
+      <UpcomingPickup
+        id={upd.id}
+        status={upd.status}
+        statusStr={upd.statusStr}
+        name={upd.name}
+        address={upd.address}
+        notes={upd.notes}
+        phoneNumber={upd.phone}
+        stateChangedSoReload={this.fetchNGORequests}
+        key={`key-up-${Math.random() * 1000}`}
+      />
+    ));
+  };
 
   render() {
     return (
@@ -175,19 +206,7 @@ export default class Home extends React.Component {
         {this.state.ngoRequestLoading ? (
           <ActivityIndicator color={colors.colorsecondary10} size={30} />
         ) : (
-          <View style={{ alignSelf: 'stretch' }}>
-            {this.state.updates.map((upd) => (
-              <UpcomingPickup
-                id={upd.id}
-                status={upd.status}
-                name={upd.name}
-                address={upd.address}
-                notes={upd.notes}
-                phoneNumber={upd.phone}
-                key={`key-up-${Math.random() * 1000}`}
-              />
-            ))}
-          </View>
+          <View style={{ alignSelf: 'stretch' }}>{this.renderUpdates()}</View>
         )}
 
         <TouchableOpacity

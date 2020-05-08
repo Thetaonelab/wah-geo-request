@@ -24,7 +24,7 @@ export default class NgoAwaitingReview extends React.Component {
       <View style={styles.parentContainer}>
         <View
           style={{
-            width: parseInt(width / 1.5),
+            width: parseInt(width * 0.9),
             borderColor: colors.colorsecondary23,
             padding: 30,
             borderWidth: 1,

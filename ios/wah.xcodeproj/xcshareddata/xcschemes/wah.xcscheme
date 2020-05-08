@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "wah.app"
+               BuildableName = "wah!.app"
                BlueprintName = "wah"
                ReferencedContainer = "container:wah.xcodeproj">
             </BuildableReference>
@@ -55,7 +55,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "wah.app"
+            BuildableName = "wah!.app"
             BlueprintName = "wah"
             ReferencedContainer = "container:wah.xcodeproj">
          </BuildableReference>
@@ -72,7 +72,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "wah.app"
+            BuildableName = "wah!.app"
             BlueprintName = "wah"
             ReferencedContainer = "container:wah.xcodeproj">
          </BuildableReference>

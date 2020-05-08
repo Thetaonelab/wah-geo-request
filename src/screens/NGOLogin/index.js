@@ -99,7 +99,7 @@ export default class NGOLogin extends React.Component {
         </Text>
         <View
           style={{
-            width: parseInt(width / 1.5),
+            width: parseInt(width * 0.9),
             borderColor: colors.colorsecondary23,
             padding: 10,
             borderWidth: 1,

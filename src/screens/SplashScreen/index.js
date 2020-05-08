@@ -7,7 +7,8 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
-  Text
+  Text,
+  Platform
 } from 'react-native';
 import PropTypes from 'prop-types';
 import messaging from '@react-native-firebase/messaging';
@@ -58,19 +59,23 @@ export default class SplashScreen extends React.Component {
     // console.log('ASYNCSTORAGE', auth, fcmToken);
 
     if (!fcmToken) {
-      await messaging().registerDeviceForRemoteMessages();
-      const enabled = await messaging().hasPermission();
-      if (enabled) {
-        fcmToken = await messaging().getToken();
+      if (Platform.OS === 'ios') {
+        fcmToken = 'ios-configuration-to-be-done';
       } else {
-        await messaging().requestPermission();
-        fcmToken = await messaging().getToken();
-      }
-      if (fcmToken) {
-        await AsyncStorage.setItem('fcmToken', fcmToken);
-      } else {
-        console.error('Failed', 'No token received');
-        this.setState({ errorMessage: 'Error fetching fcm token' });
+        await messaging().registerDeviceForRemoteMessages();
+        const enabled = await messaging().hasPermission();
+        if (enabled) {
+          fcmToken = await messaging().getToken();
+        } else {
+          await messaging().requestPermission();
+          fcmToken = await messaging().getToken();
+        }
+        if (fcmToken) {
+          await AsyncStorage.setItem('fcmToken', fcmToken);
+        } else {
+          console.error('Failed', 'No token received');
+          this.setState({ errorMessage: 'Error fetching fcm token' });
+        }
       }
     }
     // eslint-disable-next-line no-console

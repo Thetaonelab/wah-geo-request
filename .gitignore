@@ -24,3 +24,5 @@ android/build/intermediates/lint-cache/sdk-registry.xml/sdk-registry.xml
 android/build/intermediates/lint-cache/maven.google/androidx/swiperefreshlayout/group-index.xml
 android/build/intermediates/lint-cache/maven.google/com/android/support/group-index.xml
 android/build/intermediates/lint-cache/maven.google/master-index.xml
+ios/Pods/**/*
+ios/Pods/*

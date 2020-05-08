@@ -14,7 +14,7 @@ import colors from '../../styles/color';
 import text from '../../styles/text';
 // import ownStyle from './style';
 import DonorDetails from './DonorDetails';
-import { UPDATE_TYPES } from '../Home/constants';
+import { REQUEST_STATUS } from '../../constants';
 
 export default class DonorList extends Component {
   constructor(props) {
@@ -68,7 +68,8 @@ export default class DonorList extends Component {
         desc: donor.giveaway_list
           .map((item) => `${item.name}: ${item.qty}${item.unit}`)
           .join(', '),
-        status: donor.status,
+        status: donor.status_code,
+        statusStr: donor.status,
         lat: donor.lat,
         lon: donor.lon,
         phoneNumber: donor.phone,
@@ -95,7 +96,7 @@ export default class DonorList extends Component {
           desc: item.desc,
           lat: item.lat,
           lon: item.lon,
-          status: item.status
+          status: item.statusStr
         }
       : null;
     this.setState({
@@ -141,7 +142,7 @@ export default class DonorList extends Component {
         alignSelf: 'stretch'
       }}
       onLongPress={() => this.setModalVisible(true, item)}>
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 2 }}>
         <Avatar
           label={item.name.substring(0, 2)}
           backgroundColor={this.getRandomColor()}
@@ -167,8 +168,8 @@ export default class DonorList extends Component {
         </Text>
       </View>
 
-      {item.status === UPDATE_TYPES.NOT_CONTACTED ? (
-        <View style={{ flex: 3, alignItems: 'flex-end' }}>
+      {item.status === REQUEST_STATUS.NEW ? (
+        <View style={{ flex: 2, alignItems: 'flex-end' }}>
           {this.getLoading(index) ? (
             <ActivityIndicator
               color={colors.colorsecondary10}
@@ -178,6 +179,7 @@ export default class DonorList extends Component {
           ) : (
             <Button
               label="Ask"
+              size="xSmall"
               backgroundColor={colors.colorprimary1}
               onPress={this.askButtonPress(item.id, index)}
               labelStyle={[
@@ -190,17 +192,18 @@ export default class DonorList extends Component {
                 }
               ]}
               style={{
-                width: 90,
-                height: 40,
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                padding: 0
               }}
             />
           )}
         </View>
       ) : (
         <View style={{ marginEnd: 0, flex: 3, alignItems: 'flex-end' }}>
-          <Text style={text.secondaryText}>{item.status}</Text>
+          <Text style={[text.bodyText, { fontWeight: '700' }]}>
+            {item.statusStr}
+          </Text>
         </View>
       )}
     </TouchableOpacity>
@@ -261,7 +264,7 @@ export default class DonorList extends Component {
             note={this.state.details?.note}
             lat={this.state.details?.lat}
             lon={this.state.details?.lon}
-            status={this.state.details?.status}
+            status={this.state.details?.statusStr}
           />
         )}
       </View>
