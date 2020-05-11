@@ -1,20 +1,24 @@
+import { API_ROOT, X_API_KEY } from '../../config';
+import { fetchUtil } from '../../util';
 
-export const getLocationData = (body) =>
-  fetch('http://localhost:3000/getLocationData', {
-    method: 'POST',
-    body: JSON.stringify(body),
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    }
-  }).then((response) => response.json());
+const headers = {
+  Accept: 'application/json',
+  'Content-Type': 'application/json',
+  'x-api-key': X_API_KEY
+};
 
-export const getLocationDataRaw = (body) =>
-  fetch('http://localhost:3000/getLocationDataRaw', {
-    method: 'POST',
-    body: JSON.stringify(body),
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    }
-  }).then((response) => response.json());
+export const getLocationDataRaw = (token, body) =>
+  fetchUtil(
+    `${API_ROOT}/list_donors_nearby`,
+    'POST',
+    { ...headers, Authorization: `Bearer ${token}` },
+    body
+  );
+
+export const getLocationData = (token, body) =>
+  fetchUtil(
+    'https://h3.api.mytruckin.com/get_h3_indices_wah',
+    'POST',
+    { ...headers, Authorization: `Bearer ${token}` },
+    body
+  );

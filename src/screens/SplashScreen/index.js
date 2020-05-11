@@ -91,7 +91,9 @@ export default class SplashScreen extends React.Component {
           name,
           phone_number,
           registration_number,
-          user_id
+          user_id,
+          lat,
+          lon
         } = ngoDetails.json.api_message;
         this.context.updateNGOUser({
           address,
@@ -99,7 +101,8 @@ export default class SplashScreen extends React.Component {
           name,
           phone: phone_number,
           regNo: registration_number,
-          userId: user_id
+          userId: user_id,
+          base: { latitude: lat, longitude: lon }
         });
         this.setState({ path: 'authorizedNGO' });
       } else {

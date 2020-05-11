@@ -7,7 +7,8 @@ import {
   View,
   Dimensions,
   Modal,
-  TouchableHighlight
+  TouchableHighlight,
+  ActivityIndicator
 } from 'react-native';
 import MapView, {
   Marker,
@@ -15,13 +16,14 @@ import MapView, {
   Circle,
   Polygon
 } from 'react-native-maps';
-// import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-community/async-storage';
 import BottomView from './BottomView';
 import styles from '../../styles/style';
 import colors from '../../styles/color';
 import text from '../../styles/text';
 import styleJson from './styleJson';
 // import ownStyle from './style';
+import UserContext from '../../contexts/UserContext';
 import { getLocationData, getLocationDataRaw } from './api';
 import DonorDetails from './DonorDetails';
 
@@ -31,31 +33,40 @@ export default class MapOverlay extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      base: { latitude: 22.6573, longitude: 88.3624 },
-      region: {
-        latitude: 22.6573,
-        longitude: 88.3624,
-        latitudeDelta: 0.5219515622656417,
-        longitudeDelta: 0.3920997306704379
-      },
-      radius: parseInt(
-        Math.abs((0.3921 * 40075 * Math.cos(22.6573)) / 360) / 2
-      ),
+      base: null,
+      region: null,
+      radius: null,
       locationData: [],
       rawMode: false,
-      // modalVisible: false,
-      donorDetailsVisible: false
+      donorDetailsVisible: false,
+      loadingMap: true
     };
   }
 
-  async componentDidMount() {
-    const { base, radius } = this.state;
-    const locationData = await getLocationData({
+  componentDidMount() {
+    const { base } = this.context.ngo;
+    this.setState({
       base,
-      radius
+      region: {
+        ...base,
+        latitudeDelta: 0.5219515622656417,
+        longitudeDelta: 0.3920997306704379
+      },
+      radius: this.pointToMaxRadiusInKM(base),
+      loadingMap: false
     });
-    this.setState({ locationData, rawMode: false });
   }
+
+  // TODO: accuracy is low, need to rewrite
+  pointToMaxRadiusInKM = (
+    point,
+    delta = { latitudeDelta: 0, longitudeDelta: 0.3921 }
+  ) =>
+    parseInt(
+      Math.abs(
+        (delta.longitudeDelta * 40075 * Math.cos(point.latitude)) / 360
+      ) / 2
+    );
 
   numberToColor = (n) => {
     if (n > 50) {
@@ -84,36 +95,87 @@ export default class MapOverlay extends React.Component {
 
   onRegionChangeComplete = async (center) => {
     const region = center;
-    const base = { latitude: center.latitude, longitude: center.longitude };
-    const radius = parseInt(
-      Math.abs(
-        (center.longitudeDelta * 40075 * Math.cos(center.longitude)) / 360
-      ) / 2
+    // const base = { latitude: center.latitude, longitude: center.longitude };
+    const radius = this.pointToMaxRadiusInKM(
+      { latitude: center.latitude, longitude: center.longitude },
+      {
+        latitudeDelta: center.latitudeDelta,
+        longitudeDelta: center.longitudeDelta
+      }
     );
+    let auth = await AsyncStorage.getItem('auth');
+    auth = auth ? JSON.parse(auth) : {};
+    this.setState({ region, radius });
+
     // console.log({ region, base, radius });
-
-    this.setState({ region, base, radius });
     if (radius > 3) {
-      const locationData = await getLocationData({
-        base,
-        radius
+      const locRes = await getLocationData(auth.token, {
+        lat: center.latitude,
+        lon: center.longitude,
+        radius: radius * 1000
       });
-      this.setState({ locationData, rawMode: false });
+      // console.log({ locRes });
+      this.setState({ locationData: locRes.json, rawMode: false });
     } else if (radius > 1) {
-      const locationData = await getLocationDataRaw({
-        base,
-        radius
+      const locRes = await getLocationDataRaw(auth.token, {
+        lat: center.latitude,
+        lon: center.longitude,
+        radius: radius * 1000
       });
+      // console.log({ locRes });
+      const data = locRes.json.api_message?.map((donor) => ({
+        id: donor.donor,
+        name: donor.name,
+        distance: `${(donor.distance / 1000).toFixed(1)}KM`,
+        desc: donor.giveaway_list
+          .map((item) => `${item.name}: ${item.qty}${item.unit}`)
+          .join(', '),
+        status: donor.status_code,
+        statusStr: donor.status,
+        lat: donor.lat,
+        lon: donor.lon,
+        phoneNumber: donor.phone,
+        address: donor.address,
+        loading: false
+      }));
 
-      this.setState({ locationData, rawMode: true });
+      this.setState({ locationData: data, rawMode: true });
     }
   };
 
-/*   dismissModal = () => {
+  setModalVisible = (val, item) => () => {
+    const details = item
+      ? {
+          id: item.id,
+          name: item.name,
+          distance: item.distance,
+          note: item.note,
+          address: item.address,
+          desc: item.desc,
+          lat: item.lat,
+          lon: item.lon,
+          status: item.statusStr
+        }
+      : null;
+    this.setState({
+      donorDetailsVisible: val,
+      details
+    });
+  };
+
+  /*   dismissModal = () => {
     this.setState((st) => ({ modalVisible: false }));
   };
  */
   render() {
+    if (this.state.loadingMap) {
+      return (
+        <View style={[styles.parentContainer, { padding: 0 }]}>
+          <ActivityIndicator size={50} color={colors.colorsecondary10} />
+        </View>
+      );
+    }
+
     return (
       <View style={[styles.parentContainer, { padding: 0 }]}>
         <MapView
@@ -123,7 +185,13 @@ export default class MapOverlay extends React.Component {
           initialRegion={this.state.region}
           onRegionChangeComplete={this.onRegionChangeComplete}
           moveOnMarkerPress={false}
-          showsUserLocation>
+          showsUserLocation={false}>
+          <Circle
+            center={this.state.base}
+            radius={this.state.radius * 50}
+            strokeColor={colors.transparent}
+            fillColor={colors.colorsecondary10}
+          />
           <Circle
             center={this.state.base}
             radius={this.state.radius * 1000}
@@ -134,7 +202,7 @@ export default class MapOverlay extends React.Component {
             <>
               {this.state.rawMode ? (
                 <Marker
-                  coordinate={dt}
+                  coordinate={{ latitude: dt.lat, longitude: dt.lon }}
                   key={`marker-${idx}`}
                   pinColor={colors.colorprimary0}
                   zIndex={100}
@@ -147,9 +215,7 @@ export default class MapOverlay extends React.Component {
                   }}>
                   <MapView.Callout
                     tooltip={true}
-                    onPress={() => {
-                      this.setState({ donorDetailsVisible: true });
-                    }}>
+                    onPress={this.setModalVisible(true, dt)}>
                     <View
                       style={{
                         backgroundColor: colors.white,
@@ -160,7 +226,9 @@ export default class MapOverlay extends React.Component {
                         borderColor: colors.colorsecondary10,
                         borderWidth: 4
                       }}>
-                      <Text style={text.appbarText}>Mr. Sen | 24 KM away</Text>
+                      <Text style={text.appbarText}>
+                        {`${dt.name} | ${dt.distance} away`}
+                      </Text>
                       <Text style={text.secondaryText}>See details</Text>
                     </View>
                     <View
@@ -177,10 +245,13 @@ export default class MapOverlay extends React.Component {
                 <>
                   <Polygon
                     key={`poly-${idx}`}
-                    coordinates={dt.boundary}
+                    coordinates={dt.hex_boundary.map((pt) => ({
+                      latitude: pt[0],
+                      longitude: pt[1]
+                    }))}
                     strokeWidth={2}
                     strokeColor={colors.grey2}
-                    fillColor={this.numberToColor(dt.typeMap.p + dt.typeMap.c)}
+                    fillColor={this.numberToColor(dt.num_donors)}
                     tappable={true}
                   />
                   <Marker coordinate={dt.center} key={`marker-${idx}`}>
@@ -196,7 +267,7 @@ export default class MapOverlay extends React.Component {
                           { fontSize: 10, fontWeight: '700' }
                         ]}
                         color={colors.black}>
-                        {`${dt.typeMap.p + dt.typeMap.c}`}
+                        {`${dt.num_donors}`}
                       </Text>
                     </View>
                   </Marker>
@@ -209,10 +280,15 @@ export default class MapOverlay extends React.Component {
 
         {this.state.rawMode && (
           <DonorDetails
-            name="Test"
-            giveawayList="Rice 23Kg, Dal 10 Kg, Aloo 5 Kg"
-            distance="2.3Km"
             visible={this.state.donorDetailsVisible}
+            name={this.state.details?.name}
+            distance={this.state.details?.distance}
+            giveawayList={this.state.details?.desc}
+            address={this.state.details?.address}
+            note={this.state.details?.note}
+            lat={this.state.details?.lat}
+            lon={this.state.details?.lon}
+            status={this.state.details?.statusStr}
             dismiss={() => {
               this.setState({ donorDetailsVisible: false });
             }}
@@ -222,3 +298,5 @@ export default class MapOverlay extends React.Component {
     );
   }
 }
+
+MapOverlay.contextType = UserContext;
