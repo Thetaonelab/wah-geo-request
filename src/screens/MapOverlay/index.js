@@ -24,8 +24,13 @@ import text from '../../styles/text';
 import styleJson from './styleJson';
 // import ownStyle from './style';
 import UserContext from '../../contexts/UserContext';
-import { getLocationData, getLocationDataRaw } from './api';
+import {
+  getLocationData,
+  getLocationDataRaw,
+  updatePickupSchedule
+} from './api';
 import DonorDetails from './DonorDetails';
+import { REQUEST_STATUS } from '../../constants';
 
 const { width, height } = Dimensions.get('window');
 
@@ -39,7 +44,8 @@ export default class MapOverlay extends React.Component {
       locationData: [],
       rawMode: false,
       donorDetailsVisible: false,
-      loadingMap: true
+      loadingMap: true,
+      loadingApi: false
     };
   }
 
@@ -103,20 +109,27 @@ export default class MapOverlay extends React.Component {
         longitudeDelta: center.longitudeDelta
       }
     );
+    this.setState({ region, radius });
+
     let auth = await AsyncStorage.getItem('auth');
     auth = auth ? JSON.parse(auth) : {};
-    this.setState({ region, radius });
 
     // console.log({ region, base, radius });
     if (radius > 3) {
+      this.setState({ loadingApi: true });
       const locRes = await getLocationData(auth.token, {
         lat: center.latitude,
         lon: center.longitude,
         radius: radius * 1000
       });
       // console.log({ locRes });
-      this.setState({ locationData: locRes.json, rawMode: false });
+      this.setState({
+        locationData: locRes.json,
+        rawMode: false,
+        loadingApi: false
+      });
     } else if (radius > 1) {
+      this.setState({ loadingApi: true });
       const locRes = await getLocationDataRaw(auth.token, {
         lat: center.latitude,
         lon: center.longitude,
@@ -136,17 +149,19 @@ export default class MapOverlay extends React.Component {
         lon: donor.lon,
         phoneNumber: donor.phone,
         address: donor.address,
+        notes: donor.notes,
+        ngoNotes: donor.ngo_notes,
         loading: false
       }));
-
-      this.setState({ locationData: data, rawMode: true });
+      // console.log(data);
+      this.setState({ locationData: data, rawMode: true, loadingApi: false });
     }
   };
 
   setModalVisible = (val, item) => () => {
     const details = item
       ? {
-          id: item.id,
+          donorId: item.id,
           name: item.name,
           distance: item.distance,
           note: item.note,
@@ -154,13 +169,36 @@ export default class MapOverlay extends React.Component {
           desc: item.desc,
           lat: item.lat,
           lon: item.lon,
-          status: item.statusStr
+          status: item.statusStr,
+          statusCode: item.status,
+          phoneNumber: item.phoneNumber,
+          notes: item.notes,
+          ngoNotes: item.ngoNotes,
+          loading: false
         }
       : null;
     this.setState({
       donorDetailsVisible: val,
       details
     });
+  };
+
+  updatePickupSchedule = async (donor, scheduleNote) => {
+    const { details } = this.state;
+    details.loading = true;
+    this.setState({ details: { ...details } });
+    let auth = await AsyncStorage.getItem('auth');
+    auth = auth ? JSON.parse(auth) : {};
+    const updatePickupScheduleRes = await updatePickupSchedule(auth.token, {
+      donor,
+      ngo_notes: scheduleNote
+    });
+    // console.log({ updatePickupScheduleRes });
+    details.loading = false;
+    details.ngoNotes = scheduleNote;
+    details.statusCode = REQUEST_STATUS.PICKUP_SCHEDULE_UPDATED;
+    details.status = 'PICKUP_SCHEDULE_UPDATED';
+    this.setState({ details: { ...details } });
   };
 
   /*   dismissModal = () => {
@@ -195,8 +233,13 @@ export default class MapOverlay extends React.Component {
           <Circle
             center={this.state.base}
             radius={this.state.radius * 1000}
-            strokeColor={colors.transparent}
-            fillColor={colors.colorsecondary24}
+            strokeColor={colors.black}
+            strokeWidth={3}
+            // fillColor={colors.colorsecondary24}
+            lineCap="round"
+            lineJoin="round"
+            lineDashPattern={[400, 500, 600]}
+            lineDashPhase={100}
           />
           {this.state.locationData.map((dt, idx) => (
             <>
@@ -254,7 +297,12 @@ export default class MapOverlay extends React.Component {
                     fillColor={this.numberToColor(dt.num_donors)}
                     tappable={true}
                   />
-                  <Marker coordinate={dt.center} key={`marker-${idx}`}>
+                  <Marker
+                    coordinate={{
+                      latitude: dt.center.lat,
+                      longitude: dt.center.long
+                    }}
+                    key={`marker-${idx}`}>
                     <View
                       styele={{
                         flex: 1,
@@ -278,9 +326,10 @@ export default class MapOverlay extends React.Component {
         </MapView>
         <BottomView />
 
-        {this.state.rawMode && (
+        {!this.state.loadingApi && this.state.rawMode && (
           <DonorDetails
             visible={this.state.donorDetailsVisible}
+            donorId={this.state.details?.donorId}
             name={this.state.details?.name}
             distance={this.state.details?.distance}
             giveawayList={this.state.details?.desc}
@@ -288,10 +337,16 @@ export default class MapOverlay extends React.Component {
             note={this.state.details?.note}
             lat={this.state.details?.lat}
             lon={this.state.details?.lon}
-            status={this.state.details?.statusStr}
+            status={this.state.details?.status}
+            statusCode={this.state.details?.statusCode}
+            phoneNumber={this.state.details?.phoneNumber}
+            notes={this.state.details?.notes}
+            ngoNotes={this.state.details?.ngoNotes}
+            loading={this.state.details?.loading}
             dismiss={() => {
               this.setState({ donorDetailsVisible: false });
             }}
+            updatePickupSchedule={this.updatePickupSchedule}
           />
         )}
       </View>

@@ -22,3 +22,11 @@ export const askDonor = (token, body) =>
     { ...headers, Authorization: `Bearer ${token}` },
     body
   );
+
+export const updatePickupSchedule = (token, body) =>
+  fetchUtil(
+    `${API_ROOT}/update_pickup_schedule`,
+    'POST',
+    { ...headers, Authorization: `Bearer ${token}` },
+    body
+  );

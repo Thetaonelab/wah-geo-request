@@ -2,8 +2,8 @@
 import React from 'react';
 import { View, ActivityIndicator, Text } from 'react-native';
 import PropTypes from 'prop-types';
-import AsyncStorage from '@react-native-community/async-storage';
-import { askDonor, listDonorsNearby } from './api';
+// import AsyncStorage from '@react-native-community/async-storage';
+import { askDonor, listDonorsNearby, updatePickupSchedule } from './api';
 /* import { StackActions, NavigationActions } from 'react-navigation'; */
 import styles from '../../styles/style';
 import colors from '../../styles/color';
@@ -44,6 +44,7 @@ export default class ActiveRequests extends React.Component {
         ) : (
           <DonorList
             askDonorApi={askDonor}
+            updatePickupSchedule={updatePickupSchedule}
             listDonorsNearby={listDonorsNearby}
             lat={22.3}
             lon={88.3}

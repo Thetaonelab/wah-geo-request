@@ -6,30 +6,21 @@ const { width, height } = Dimensions.get('window');
 export default StyleSheet.create({
   centeredView: {
     flex: 1,
-    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: -5
-  },
-  modalView: {
-    backgroundColor: colors.white,
-    borderTopLeftRadius: 20,
-    borderTopEndRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    width,
-    height: height * 0.9,
-    alignSelf: 'flex-end'
+    width
   },
   donorDetailsModal: {
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    elevation: 4,
+    flex: 1,
+    width: width * 0.9
+  },
+  detailsWrapper: {
     backgroundColor: colors.grey3,
     borderRadius: 4,
-    padding: 20,
-    alignItems: 'flex-start',
-    height: parseInt(height / 2.5),
-    width: parseInt(width / 1.5),
-    elevation: 4
-    // alignSelf: 'flex-end'
+    padding: 20
   },
   openButton: {
     // backgroundColor: '#F194FF',
