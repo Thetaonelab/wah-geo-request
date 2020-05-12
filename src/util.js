@@ -91,3 +91,7 @@ export const openGps = (lat, lng) => {
   const url = `${scheme}${lat},${lng}`;
   Linking.openURL(url);
 };
+
+export const getRandomColor = (opacity = 0.3) => `rgba(${parseInt(Math.random() * 1000) % 256},${
+    parseInt(Math.random() * 1000) % 256
+  },${parseInt(Math.random() * 1000) % 256},${opacity})`;

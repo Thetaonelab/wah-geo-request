@@ -104,6 +104,45 @@ export default class DonorDetails extends React.Component {
           borderBottomColor: colors.grey1
         }}
       />
+
+      <View
+        style={{
+          marginTop: 20,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignSelf: 'stretch'
+        }}>
+        <Button
+          label="Mark as completed"
+          style={{
+            height: 30,
+            alignItems: 'center',
+            justifyContent: 'center',
+            alignSelf: 'flex-end',
+            backgroundColor: colors.colorprimary0
+          }}
+          size="xSmall"
+          onPress={() => {
+            this.props.markAsCompleted(this.props.donorId);
+          }}
+        />
+        <Button
+          label="NAVIGATE"
+          style={{
+            height: 30,
+            alignItems: 'center',
+            justifyContent: 'center',
+            alignSelf: 'flex-end',
+            backgroundColor: colors.transparent
+          }}
+          labelStyle={{
+            color: colors.colorsecondary20,
+            fontWeight: '700'
+          }}
+          onPress={() => openGps(this.props.lat, this.props.lon)}
+          size="xSmall"
+        />
+      </View>
     </View>
   );
 
@@ -135,7 +174,7 @@ export default class DonorDetails extends React.Component {
                   alignItems: 'center'
                 }}>
                 <Text style={text.appbarText}>{this.props.name}</Text>
-                {this.props.statusCode !== REQUEST_STATUS.NEW && (
+                {this.props.statusCode >= REQUEST_STATUS.ACCEPTED && (
                   <Button
                     label="CALL"
                     style={{
@@ -249,7 +288,8 @@ DonorDetails.propTypes = {
   // notes: PropTypes.string,
   ngoNotes: PropTypes.string,
   loading: PropTypes.bool,
-  updatePickupSchedule: PropTypes.func.isRequired
+  updatePickupSchedule: PropTypes.func.isRequired,
+  markAsCompleted: PropTypes.func.isRequired
 };
 
 DonorDetails.defaultProps = {

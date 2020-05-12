@@ -3,7 +3,12 @@ import React from 'react';
 import { View, ActivityIndicator, Text } from 'react-native';
 import PropTypes from 'prop-types';
 // import AsyncStorage from '@react-native-community/async-storage';
-import { askDonor, listDonorsNearby, updatePickupSchedule } from './api';
+import {
+  askDonor,
+  listDonorsNearby,
+  updatePickupSchedule,
+  markAsCompleted
+} from './api';
 /* import { StackActions, NavigationActions } from 'react-navigation'; */
 import styles from '../../styles/style';
 import colors from '../../styles/color';
@@ -46,6 +51,10 @@ export default class ActiveRequests extends React.Component {
             askDonorApi={askDonor}
             updatePickupSchedule={updatePickupSchedule}
             listDonorsNearby={listDonorsNearby}
+            markAsCompleted={markAsCompleted}
+            activateSnackbar={
+              this.props.navigation.getScreenProps().activateSnackbar
+            }
             lat={22.3}
             lon={88.3}
             radius={30000}
@@ -58,6 +67,7 @@ export default class ActiveRequests extends React.Component {
 
 ActiveRequests.propTypes = {
   navigation: PropTypes.shape({
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
+    getScreenProps: PropTypes.func.isRequired
   }).isRequired
 };

@@ -16,7 +16,10 @@ import MapView, {
   Circle,
   Polygon
 } from 'react-native-maps';
+import { Avatar } from 'react-native-ui-lib';
 import AsyncStorage from '@react-native-community/async-storage';
+import PropTypes from 'prop-types';
+import { getRandomColor } from '../../util';
 import BottomView from './BottomView';
 import styles from '../../styles/style';
 import colors from '../../styles/color';
@@ -27,7 +30,8 @@ import UserContext from '../../contexts/UserContext';
 import {
   getLocationData,
   getLocationDataRaw,
-  updatePickupSchedule
+  updatePickupSchedule,
+  markAsCompleted
 } from './api';
 import DonorDetails from './DonorDetails';
 import { REQUEST_STATUS } from '../../constants';
@@ -184,6 +188,7 @@ export default class MapOverlay extends React.Component {
   };
 
   updatePickupSchedule = async (donor, scheduleNote) => {
+    const { activateSnackbar } = this.props.navigation.getScreenProps();
     const { details } = this.state;
     details.loading = true;
     this.setState({ details: { ...details } });
@@ -199,12 +204,31 @@ export default class MapOverlay extends React.Component {
     details.statusCode = REQUEST_STATUS.PICKUP_SCHEDULE_UPDATED;
     details.status = 'PICKUP_SCHEDULE_UPDATED';
     this.setState({ details: { ...details } });
+    activateSnackbar('Pickup schedule updated successfully!', 'success');
+  };
+
+  markAsCompleted = async (donor) => {
+    const { activateSnackbar } = this.props.navigation.getScreenProps();
+    const { details } = this.state;
+    details.loading = true;
+    this.setState({ details: { ...details } });
+    let auth = await AsyncStorage.getItem('auth');
+    auth = auth ? JSON.parse(auth) : {};
+    const markAsCompletedRes = await markAsCompleted(auth.token, {
+      donor
+    });
+    details.loading = false;
+    details.statusCode = REQUEST_STATUS.PICKED_UP;
+    details.status = 'COMPLETED';
+    this.setState({ details: { ...details } });
+    activateSnackbar('Request closed successfully', 'success');
   };
 
   /*   dismissModal = () => {
     this.setState((st) => ({ modalVisible: false }));
   };
  */
+
   render() {
     if (this.state.loadingMap) {
       return (
@@ -267,7 +291,8 @@ export default class MapOverlay extends React.Component {
                         alignItems: 'center',
                         padding: 20,
                         borderColor: colors.colorsecondary10,
-                        borderWidth: 4
+                        borderWidth: 4,
+                        width: 200
                       }}>
                       <Text style={text.appbarText}>
                         {`${dt.name} | ${dt.distance} away`}
@@ -347,6 +372,7 @@ export default class MapOverlay extends React.Component {
               this.setState({ donorDetailsVisible: false });
             }}
             updatePickupSchedule={this.updatePickupSchedule}
+            markAsCompleted={this.markAsCompleted}
           />
         )}
       </View>
@@ -355,3 +381,9 @@ export default class MapOverlay extends React.Component {
 }
 
 MapOverlay.contextType = UserContext;
+
+MapOverlay.propTypes = {
+  navigation: PropTypes.shape({
+    getScreenProps: PropTypes.func.isRequired
+  }).isRequired
+};

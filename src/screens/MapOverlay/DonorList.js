@@ -11,6 +11,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import PropTypes from 'prop-types';
 import { Button, Avatar } from 'react-native-ui-lib';
 import moment from 'moment';
+import { getRandomColor } from '../../util';
 import colors from '../../styles/color';
 import text from '../../styles/text';
 // import ownStyle from './style';
@@ -120,6 +121,7 @@ export default class DonorList extends Component {
   };
 
   askButtonPress = (donorId, index) => async () => {
+    const { activateSnackbar } = this.props;
     this.setLoading(index, true);
     let auth = await AsyncStorage.getItem('auth');
     auth = auth ? JSON.parse(auth) : {};
@@ -137,9 +139,11 @@ export default class DonorList extends Component {
     }
     this.setLoading(index, false);
     this.loadData();
+    activateSnackbar('Request successful!', 'success');
   };
 
   updatePickupSchedule = async (donor, scheduleNote) => {
+    const { activateSnackbar } = this.props;
     const { details } = this.state;
     details.loading = true;
     this.setState({ details: { ...details } });
@@ -159,12 +163,26 @@ export default class DonorList extends Component {
     details.statusCode = REQUEST_STATUS.PICKUP_SCHEDULE_UPDATED;
     details.status = this.getStatusStr('PICKUP_SCHEDULE_UPDATED');
     this.setState({ details: { ...details } });
+    activateSnackbar('Pickup schedule updated successfully!', 'success');
   };
 
-  getRandomColor = () =>
-    `rgba(${parseInt(Math.random() * 1000) % 256},${
-      parseInt(Math.random() * 1000) % 256
-    },${parseInt(Math.random() * 1000) % 256},0.3)`;
+  markAsCompleted = async (donor) => {
+    const { activateSnackbar } = this.props;
+    const { details } = this.state;
+    details.loading = true;
+    this.setState({ details: { ...details } });
+    let auth = await AsyncStorage.getItem('auth');
+    auth = auth ? JSON.parse(auth) : {};
+    // eslint-disable-next-line no-unused-vars
+    const markAsCompletedRes = await this.props.markAsCompleted(auth.token, {
+      donor
+    });
+    details.loading = false;
+    details.statusCode = REQUEST_STATUS.PICKED_UP;
+    details.status = 'COMPLETED';
+    this.setState({ details: { ...details } });
+    activateSnackbar('Request closed successfully', 'success');
+  };
 
   renderItem = ({ item, index }) => (
     <TouchableOpacity
@@ -185,7 +203,7 @@ export default class DonorList extends Component {
         }}>
         <Avatar
           label={item.name.substring(0, 2)}
-          backgroundColor={this.getRandomColor()}
+          backgroundColor={getRandomColor()}
         />
       </View>
       <View style={{ flex: 5 }}>
@@ -315,6 +333,7 @@ export default class DonorList extends Component {
             loading={this.state.details?.loading}
             dismiss={this.dismissModal}
             updatePickupSchedule={this.updatePickupSchedule}
+            markAsCompleted={this.markAsCompleted}
           />
         )}
       </View>
@@ -326,7 +345,9 @@ DonorList.propTypes = {
   askDonorApi: PropTypes.func.isRequired,
   updatePickupSchedule: PropTypes.func.isRequired,
   listDonorsNearby: PropTypes.func.isRequired,
+  markAsCompleted: PropTypes.func.isRequired,
   lat: PropTypes.number.isRequired,
   lon: PropTypes.number.isRequired,
-  radius: PropTypes.number.isRequired
+  radius: PropTypes.number.isRequired,
+  activateSnackbar: PropTypes.func.isRequired
 };

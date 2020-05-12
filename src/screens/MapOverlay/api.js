@@ -30,3 +30,11 @@ export const updatePickupSchedule = (token, body) =>
     { ...headers, Authorization: `Bearer ${token}` },
     body
   );
+
+export const markAsCompleted = (token, body) =>
+  fetchUtil(
+    `${API_ROOT}/picked_up_from_donor`,
+    'POST',
+    { ...headers, Authorization: `Bearer ${token}` },
+    body
+  );
