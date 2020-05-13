@@ -26,7 +26,7 @@ export default createStackNavigator(
     mapOverlay: {
       screen: MapOverlay,
       navigationOptions: ({ navigation }) => ({
-        header: header(navigation, 'Find on map', true, true)
+        header: header(navigation, 'Donors on map', true, true)
       })
     },
     activeRequests: {

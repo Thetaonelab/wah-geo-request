@@ -45,6 +45,7 @@ export default class MapOverlay extends React.Component {
       base: null,
       region: null,
       radius: null,
+      defaultServiceRadius: 30,
       locationData: [],
       rawMode: false,
       donorDetailsVisible: false,
@@ -59,8 +60,8 @@ export default class MapOverlay extends React.Component {
       base,
       region: {
         ...base,
-        latitudeDelta: 0.5219515622656417,
-        longitudeDelta: 0.3920997306704379
+        latitudeDelta: 0.8129076855753112,
+        longitudeDelta: 0.5765921249985695
       },
       radius: this.pointToMaxRadiusInKM(base),
       loadingMap: false
@@ -70,7 +71,10 @@ export default class MapOverlay extends React.Component {
   // TODO: accuracy is low, need to rewrite
   pointToMaxRadiusInKM = (
     point,
-    delta = { latitudeDelta: 0, longitudeDelta: 0.3921 }
+    delta = {
+      latitudeDelta: 0.8129076855753112,
+      longitudeDelta: 0.5765921249985695
+    }
   ) =>
     parseInt(
       Math.abs(
@@ -103,6 +107,32 @@ export default class MapOverlay extends React.Component {
     return colors.transparent;
   };
 
+  distance = (lat1, lon1, lat2, lon2, unit = 'K') => {
+    if (lat1 === lat2 && lon1 === lon2) {
+      return 0;
+    }
+    const radlat1 = (Math.PI * lat1) / 180;
+    const radlat2 = (Math.PI * lat2) / 180;
+    const theta = lon1 - lon2;
+    const radtheta = (Math.PI * theta) / 180;
+    let dist =
+      Math.sin(radlat1) * Math.sin(radlat2) +
+      Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+    if (dist > 1) {
+      dist = 1;
+    }
+    dist = Math.acos(dist);
+    dist = (dist * 180) / Math.PI;
+    dist = dist * 60 * 1.1515;
+    if (unit === 'K') {
+      dist *= 1.609344;
+    }
+    if (unit === 'N') {
+      dist *= 0.8684;
+    }
+    return dist;
+  };
+
   onRegionChangeComplete = async (center) => {
     const region = center;
     // const base = { latitude: center.latitude, longitude: center.longitude };
@@ -115,24 +145,39 @@ export default class MapOverlay extends React.Component {
     );
     this.setState({ region, radius });
 
-    let auth = await AsyncStorage.getItem('auth');
-    auth = auth ? JSON.parse(auth) : {};
-
-    // console.log({ region, base, radius });
+    // console.log({ region, radius });
     if (radius > 3) {
+      this.setState({ locationData: [] });
+      let auth = await AsyncStorage.getItem('auth');
+      auth = auth ? JSON.parse(auth) : {};
       this.setState({ loadingApi: true });
       const locRes = await getLocationData(auth.token, {
         lat: center.latitude,
         lon: center.longitude,
         radius: radius * 1000
       });
-      // console.log({ locRes });
+      // console.log({ ...locRes.json });
+
+      /* locRes.json.forEach((v) => {
+        console.log(
+          this.distance(
+            v.center.lat,
+            v.center.long,
+            center.latitude,
+            center.longitude
+          )
+        );
+      }); */
+
       this.setState({
         locationData: locRes.json,
         rawMode: false,
         loadingApi: false
       });
     } else if (radius > 1) {
+      this.setState({ locationData: [] });
+      let auth = await AsyncStorage.getItem('auth');
+      auth = auth ? JSON.parse(auth) : {};
       this.setState({ loadingApi: true });
       const locRes = await getLocationDataRaw(auth.token, {
         lat: center.latitude,
@@ -256,21 +301,26 @@ export default class MapOverlay extends React.Component {
           />
           <Circle
             center={this.state.base}
-            radius={this.state.radius * 1000}
+            radius={this.state.defaultServiceRadius * 1000}
             strokeColor={colors.black}
             strokeWidth={3}
-            // fillColor={colors.colorsecondary24}
+            fillColor={colors.colorsecondary24}
             lineCap="round"
             lineJoin="round"
-            lineDashPattern={[400, 500, 600]}
-            lineDashPhase={100}
+          />
+          <Circle
+            center={this.state.region}
+            strokeColor={colors.transparent}
+            radius={this.state.radius * 1000}
+            fillColor={colors.colorsecondary14}
+            lineCap="round"
+            lineJoin="round"
           />
           {this.state.locationData.map((dt, idx) => (
-            <>
+            <View key={`marker-${idx}`}>
               {this.state.rawMode ? (
                 <Marker
                   coordinate={{ latitude: dt.lat, longitude: dt.lon }}
-                  key={`marker-${idx}`}
                   pinColor={colors.colorprimary0}
                   zIndex={100}
                   ref={(_marker) => {
@@ -291,8 +341,7 @@ export default class MapOverlay extends React.Component {
                         alignItems: 'center',
                         padding: 20,
                         borderColor: colors.colorsecondary10,
-                        borderWidth: 4,
-                        width: 200
+                        borderWidth: 4
                       }}>
                       <Text style={text.appbarText}>
                         {`${dt.name} | ${dt.distance} away`}
@@ -310,9 +359,8 @@ export default class MapOverlay extends React.Component {
                   </MapView.Callout>
                 </Marker>
               ) : (
-                <>
+                <View key={`poly-${idx}`}>
                   <Polygon
-                    key={`poly-${idx}`}
                     coordinates={dt.hex_boundary.map((pt) => ({
                       latitude: pt[0],
                       longitude: pt[1]
@@ -344,14 +392,14 @@ export default class MapOverlay extends React.Component {
                       </Text>
                     </View>
                   </Marker>
-                </>
+                </View>
               )}
-            </>
+            </View>
           ))}
         </MapView>
         <BottomView />
 
-        {!this.state.loadingApi && this.state.rawMode && (
+        {!this.state.loadingApi && this.state.rawMode && this.state.details && (
           <DonorDetails
             visible={this.state.donorDetailsVisible}
             donorId={this.state.details?.donorId}

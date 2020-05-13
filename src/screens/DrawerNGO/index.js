@@ -66,7 +66,7 @@ export default function Drawer(props) {
             }
           }
         ].map((v) => (
-          <DrawerItem navigation={props.navigation} config={v} />
+          <DrawerItem navigation={props.navigation} config={v} key={v.title} />
         ))}
       </View>
     </View>

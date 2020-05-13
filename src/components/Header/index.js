@@ -49,10 +49,16 @@ class Header extends React.Component {
             </TouchableOpacity>
           ) : null}
         </View>
-
-        <Text style={[text.appbarText]}>
-          {this.props.pageName.toUpperCase()}
-        </Text>
+        <View style={{ alignItems: 'center' }}>
+          <Text style={[text.appbarText]}>
+            {this.props.pageName.toUpperCase()}
+          </Text>
+          {this.props.subText ? (
+            <Text style={[text.bodyText]}>
+              {this.props.subText.toUpperCase()}
+            </Text>
+          ) : null}
+        </View>
         {/* <View
           style={{
             padding: 2,
@@ -86,6 +92,7 @@ class Header extends React.Component {
 
 Header.propTypes = {
   pageName: PropTypes.string.isRequired,
+  subText: PropTypes.string,
   drawerMode: PropTypes.bool,
   navigation: PropTypes.shape({
     state: PropTypes.shape({}),
@@ -100,7 +107,8 @@ Header.propTypes = {
 };
 
 Header.defaultProps = {
-  drawerMode: false
+  drawerMode: false,
+  subText: ''
 };
 
 export default Header;

@@ -56,10 +56,11 @@ const style = StyleSheet.create({
     left: 10,
     top: 0,
     bottom: 0,
-    width: 80,
+    width: 50,
     height: 60,
-    display: 'flex',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 
   logoImage: {

@@ -22,7 +22,8 @@ export default function BottomView() {
         height: 180,
         backgroundColor: colors.grey1,
         width,
-        padding: 20
+        padding: 20,
+        paddingTop: 5
       }}>
       <View
         style={{
@@ -52,6 +53,56 @@ export default function BottomView() {
         }}>
         <Text style={text.bodyText}> More donors</Text>
         <Text style={text.bodyText}>Less donors </Text>
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          borderTopWidth: 1,
+          borderColor: colors.white,
+          paddingTop: 6,
+          marginTop: 10,
+          paddingHorizontal: 10
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+          <View
+            style={{
+              width: 20,
+              height: 20,
+              borderRadius: 10,
+              backgroundColor: colors.colorsecondary24,
+              borderWidth: 2,
+              borderColor: colors.black,
+              marginRight: 10
+            }}
+          />
+          <Text style={text.bodyText}>Service Area</Text>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+          <View
+            style={{
+              width: 20,
+              height: 20,
+              borderRadius: 10,
+              backgroundColor: colors.colorsecondary10,
+              borderWidth: 0,
+              borderColor: colors.black,
+              marginRight: 10
+            }}
+          />
+          <Text style={text.bodyText}>NGO location</Text>
+        </View>
       </View>
     </View>
   );

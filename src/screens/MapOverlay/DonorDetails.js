@@ -6,7 +6,8 @@ import {
   Modal,
   TouchableOpacity,
   Platform,
-  ActivityIndicator
+  ActivityIndicator,
+  KeyboardAvoidingView
 } from 'react-native';
 import { Button, TextField, Badge } from 'react-native-ui-lib';
 import PropTypes from 'prop-types';
@@ -160,8 +161,10 @@ export default class DonorDetails extends React.Component {
         hardwareAccelerated={true}
         onRequestClose={() => {
           this.props.dismiss();
-        }}>
-        <View
+        }}
+        >
+        <KeyboardAvoidingView
+          behavior="padding"
           style={[
             ownStyle.centeredView,
             { backgroundColor: 'rgba(0,0,0,0.6)' }
@@ -266,7 +269,7 @@ export default class DonorDetails extends React.Component {
               </View>
             </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
     );
   }
