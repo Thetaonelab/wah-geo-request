@@ -1,6 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 import React from 'react';
 import { Text, View } from 'react-native';
+import PropTypes from 'prop-types';
 import styles from '../../styles/style';
 import colors from '../../styles/color';
 import text from '../../styles/text';
@@ -17,6 +18,9 @@ export default class Feed extends React.Component {
   componentDidMount() {}
 
   render() {
+    // eslint-disable-next-line no-unused-vars
+    const { wahPoints, numDonations } = this.props.navigation.state.params;
+
     return (
       <View
         style={[
@@ -40,7 +44,7 @@ export default class Feed extends React.Component {
                   color: colors.colorprimary0
                 }
               ]}>
-              5000
+              {wahPoints}
             </Text>
             <Text style={[text.bodyText, { letterSpacing: 2 }]}>
               Wah points
@@ -83,3 +87,14 @@ export default class Feed extends React.Component {
     );
   }
 }
+
+Feed.propTypes = {
+  navigation: PropTypes.shape({
+    state: PropTypes.shape({
+      params: PropTypes.shape({
+        wahPoints: PropTypes.number.isRequired,
+        numDonations: PropTypes.number.isRequired
+      }).isRequired
+    }).isRequired
+  }).isRequired
+};

@@ -6,7 +6,10 @@ import {
   View,
   Image,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  RefreshControl,
+  ScrollView,
+  Dimensions
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { Badge } from 'react-native-ui-lib';
@@ -17,6 +20,9 @@ import styles from '../../styles/style';
 import colors from '../../styles/color';
 import text from '../../styles/text';
 import wahIcon from '../../../assets/wah-icon.png';
+import UserContext from '../../contexts/UserContext';
+
+const { /* height, */ width } = Dimensions.get('window');
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -74,6 +80,7 @@ export default class Home extends React.Component {
         address: update.address,
         phone: update.phone,
         notes: update.notes,
+        ngoNotes: update.ngo_notes,
         status: update.status_code,
         statusStr: update.status
       }));
@@ -106,6 +113,7 @@ export default class Home extends React.Component {
         name={upd.name}
         address={upd.address}
         notes={upd.notes}
+        ngoNotes={upd.ngoNotes}
         phoneNumber={upd.phone}
         stateChangedSoReload={this.fetchNGORequests}
         key={`key-up-${Math.random() * 1000}`}
@@ -114,12 +122,22 @@ export default class Home extends React.Component {
   };
 
   render() {
+    const { wahPoints, numDonations } = this.context.donor;
     return (
-      <View
-        style={[
+      <ScrollView
+        contentContainerStyle={[
           styles.parentContainer,
           { padding: 10, justifyContent: 'flex-start' }
-        ]}>
+        ]}
+        refreshControl={(
+          <RefreshControl
+            refreshing={false}
+            onRefresh={() => {
+              this.fetchNGORequests();
+              this.fetchGiveawayList();
+            }}
+          />
+        )}>
         <View
           style={{
             paddingVertical: 15,
@@ -158,7 +176,7 @@ export default class Home extends React.Component {
                 key={`item-big-${idx}-${Math.random()}`}
                 style={{
                   height: 50,
-                  width: '32%',
+                  width: width / 3.5,
                   borderRadius: 3,
                   flexDirection: 'row',
                   backgroundColor: colors.colorsecondary12,
@@ -172,8 +190,10 @@ export default class Home extends React.Component {
                     style={{ resizeMode: 'cover', width: 30, height: 30 }}
                   />
                 </View>
-                <View style={{ flex: 4 }}>
-                  <Text>{d.name}</Text>
+                <View style={{ flex: 4, paddingRight: 5 }}>
+                  <Text style={text.bodyText} numberOfLines={2}>
+                    {d.name}
+                  </Text>
                 </View>
                 <View
                   style={{
@@ -184,7 +204,9 @@ export default class Home extends React.Component {
                     justifyContent: 'center'
                   }}>
                   <Text style={text.appbarText}>{d.qty}</Text>
-                  <Text style={text.bodyText}>{d.unit}</Text>
+                  <Text style={[text.bodyText, { textAlign: 'center' }]}>
+                    {d.unit.replace(/ /g, '').substring(0, 4)}
+                  </Text>
                 </View>
               </View>
             ))}
@@ -225,18 +247,20 @@ export default class Home extends React.Component {
             elevation: 3
           }}
           onPress={() => {
-            this.props.navigation.navigate('feed');
+            this.props.navigation.navigate('feed', { wahPoints, numDonations });
           }}>
-          <Text style={text.appbarText}>5000</Text>
+          <Text style={text.appbarText}>{wahPoints}</Text>
           <Image
             style={{ resizeMode: 'cover', width: 30, height: 30 }}
             source={wahIcon}
           />
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     );
   }
 }
+
+Home.contextType = UserContext;
 
 Home.propTypes = {
   navigation: PropTypes.shape({

@@ -7,7 +7,7 @@ import UserContext from '../../contexts/UserContext';
 import styles from '../../styles/style';
 import colors from '../../styles/color';
 import text from '../../styles/text';
-import DrawerItem from './DrawerItem';
+import DrawerItem from '../../components/DrawerItem';
 
 export default function Drawer(props) {
   const user = useContext(UserContext);
@@ -40,8 +40,8 @@ export default function Drawer(props) {
           padding: 20
         }}>
         {[
-          { title: 'Profile', path: '' },
-          { title: 'About', path: 'about' },
+          { title: 'Profile', path: '', disabled: true },
+          { title: 'About', path: 'about', disabled: true },
           {
             title: 'Share app',
             path: '',

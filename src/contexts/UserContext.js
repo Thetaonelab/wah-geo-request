@@ -15,6 +15,8 @@ export default React.createContext({
     address: '',
     phone: '',
     userId: '',
+    wahPoints: null,
+    numDonations: null,
     userType: TYPE_DONOR
   },
   updateNGOUser: () => {},

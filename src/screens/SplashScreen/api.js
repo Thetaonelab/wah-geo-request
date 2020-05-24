@@ -15,10 +15,18 @@ export const fetchNGODetails = (token) =>
     null
   );
 
-  export const fetchDonorDetails = (token) =>
+export const fetchDonorDetails = (token) =>
   fetchUtil(
     `${API_ROOT}/fetch_individual_details`,
     'GET',
     { ...headers, Authorization: `Bearer ${token}` },
     null
+  );
+
+export const registerPushNotification = (token, body) =>
+  fetchUtil(
+    `${API_ROOT}/register_push_notification`,
+    'POST',
+    { ...headers, Authorization: `Bearer ${token}` },
+    body
   );

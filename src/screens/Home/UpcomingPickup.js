@@ -49,6 +49,7 @@ export default function UpcomingPickup(props) {
       // some error handling will go here
     }
     setRejectLoading(false);
+    props.stateChangedSoReload();
   };
 
   return (
@@ -56,12 +57,13 @@ export default function UpcomingPickup(props) {
       style={{
         alignItems: 'flex-start',
         alignSelf: 'stretch',
-        borderWidth: 1,
+        borderBottomWidth: 0,
         borderStyle: 'dashed',
         padding: 10,
         borderColor: colors.grey1,
         borderRadius: 4,
-        marginBottom: 5
+        marginBottom: 5,
+        backgroundColor: colors.grey3
       }}>
       <Badge label={props.statusStr} labelFormatterLimit={3} />
       <Text
@@ -72,9 +74,9 @@ export default function UpcomingPickup(props) {
         {props.name}
       </Text>
       <Text style={text.bodyText}>{`🌐 ${props.address}`}</Text>
-      {props.notes ? (
+      {props.ngoNotes ? (
         <Text style={[text.bodyText, { fontWeight: '600' }]}>
-          {`✎ ${props.notes}`}
+          {`✎ ${props.ngoNotes}`}
         </Text>
       ) : null}
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
@@ -99,7 +101,12 @@ export default function UpcomingPickup(props) {
         )) */}
       </View>
 
-      <View style={{ flexDirection: 'row', alignSelf: 'flex-end' }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignSelf: 'flex-start',
+          marginTop: 10
+        }}>
         <TouchableOpacity
           style={{
             alignSelf: 'flex-end',
@@ -120,7 +127,7 @@ export default function UpcomingPickup(props) {
 
         {props.status === REQUEST_STATUS.REQUESTED && (
           <>
-            {rejectLoading ? (
+            {acceptLoading ? (
               <ActivityIndicator color={colors.colorsecondary10} size={30} />
             ) : (
               <TouchableOpacity
@@ -129,21 +136,20 @@ export default function UpcomingPickup(props) {
                   borderRadius: 3,
                   borderColor: colors.grey1,
                   borderWidth: 1,
-                  marginRight: 15,
-                  marginLeft: 15
+                  marginLeft: 15,
+                  marginRight: 15
                 }}
-                onPress={reject(props.id)}>
+                onPress={accept(props.id)}>
                 <Text
                   style={[
                     text.primaryText,
-                    { color: colors.grey0, fontWeight: '700' }
+                    { color: colors.colorsecondary20, fontWeight: '700' }
                   ]}>
-                  REJECT
+                  ACCEPT
                 </Text>
               </TouchableOpacity>
             )}
-
-            {acceptLoading ? (
+            {rejectLoading ? (
               <ActivityIndicator color={colors.colorsecondary10} size={30} />
             ) : (
               <TouchableOpacity
@@ -153,13 +159,13 @@ export default function UpcomingPickup(props) {
                   borderColor: colors.grey1,
                   borderWidth: 1
                 }}
-                onPress={accept(props.id)}>
+                onPress={reject(props.id)}>
                 <Text
                   style={[
                     text.primaryText,
-                    { color: colors.colorsecondary20, fontWeight: '700' }
+                    { color: colors.grey0, fontWeight: '700' }
                   ]}>
-                  ACCEPT
+                  REJECT
                 </Text>
               </TouchableOpacity>
             )}
@@ -172,15 +178,17 @@ export default function UpcomingPickup(props) {
 
 UpcomingPickup.propTypes = {
   id: PropTypes.string.isRequired,
-  status: PropTypes.string.isRequired,
+  status: PropTypes.number.isRequired,
   statusStr: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
   phoneNumber: PropTypes.string.isRequired,
   stateChangedSoReload: PropTypes.func.isRequired,
-  notes: PropTypes.string
+  // notes: PropTypes.string,
+  ngoNotes: PropTypes.string
 };
 
 UpcomingPickup.defaultProps = {
-  notes: ''
+  // notes: '',
+  ngoNotes: ''
 };

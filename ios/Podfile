@@ -60,6 +60,7 @@ target 'wah' do
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+  pod 'RNShare', :path => '../node_modules/react-native-share'
 
   pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
 

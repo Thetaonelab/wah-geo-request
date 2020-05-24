@@ -72,12 +72,17 @@ export const fetchUtil = (url, method = 'GET', headers, body, DEBUG = true) =>
         })
     );
 
-export function call(phoneNumber) {
+export function call(nmbr) {
+  const phoneNumber =
+    Platform.OS === 'android' ? `tel:${nmbr}` : `telprompt:${nmbr}`;
   return () => {
     Linking.canOpenURL(phoneNumber)
       .then((supported) => {
         if (!supported) {
-          ToastAndroid.show('Phone number not supported!', ToastAndroid.LONG);
+          ToastAndroid.show(
+            `${phoneNumber} - Phone number not supported!`,
+            ToastAndroid.LONG
+          );
           return false;
         }
         return Linking.openURL(phoneNumber);
@@ -86,12 +91,25 @@ export function call(phoneNumber) {
   };
 }
 
-export const openGps = (lat, lng) => {
-  const scheme = Platform.OS === 'ios' ? 'maps:' : 'geo:';
-  const url = `${scheme}${lat},${lng}`;
-  Linking.openURL(url);
+export const openGps = async (lat, lng) => {
+  const location = `${lat},${lng}`;
+  const url = Platform.select({
+    ios: [`maps:${location}`, `https://www.google.com/maps/@${location},6z`],
+    android: [`geo:${location}?center=${location}&q=${location}&z=16`]
+  });
+  // Linking.openURL(url);
+  try {
+    await Linking.openURL(url[0]);
+  } catch (ee) {
+    try {
+      await Linking.openURL(url[1]);
+    } catch (ef) {
+      console.log(ee);
+    }
+  }
 };
 
-export const getRandomColor = (opacity = 0.3) => `rgba(${parseInt(Math.random() * 1000) % 256},${
+export const getRandomColor = (opacity = 0.3) =>
+  `rgba(${parseInt(Math.random() * 1000) % 256},${
     parseInt(Math.random() * 1000) % 256
   },${parseInt(Math.random() * 1000) % 256},${opacity})`;

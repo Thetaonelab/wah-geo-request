@@ -13,7 +13,11 @@ import {
 import PropTypes from 'prop-types';
 import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-community/async-storage';
-import { fetchNGODetails, fetchDonorDetails } from './api';
+import {
+  fetchNGODetails,
+  fetchDonorDetails,
+  registerPushNotification
+} from './api';
 import colors from '../../styles/color';
 import text from '../../styles/text';
 import styles from '../../styles/style';
@@ -81,6 +85,23 @@ export default class SplashScreen extends React.Component {
     // eslint-disable-next-line no-console
     // console.log('ASYNCSTORAGE SET', auth, fcmToken);
 
+    if (auth.token) {
+      const registerPushNotificationRes = await registerPushNotification(
+        auth.token,
+        {
+          notification_token: fcmToken
+        }
+      );
+      if (registerPushNotificationRes.ok) {
+        // console.log('Token saved successfully!');
+      } else {
+        this.setState({
+          errorMessage: `Error ${registerPushNotificationRes.code}: ${registerPushNotificationRes.json.api_message}`
+        });
+        return;
+      }
+    }
+
     if (auth.token && auth.type === TYPE_NGO) {
       const ngoDetails = await fetchNGODetails(auth.token);
       // console.log(ngoDetails);
@@ -112,6 +133,7 @@ export default class SplashScreen extends React.Component {
       }
     } else if (auth.token && auth.type === TYPE_DONOR) {
       const donorDetails = await fetchDonorDetails(auth.token);
+      console.log({ donorDetails });
       if (donorDetails.ok) {
         const {
           address,
@@ -123,13 +145,17 @@ export default class SplashScreen extends React.Component {
           name,
           phone_number,
           user_id,
-          has_give_away_list
+          has_give_away_list,
+          wah_points,
+          num_donations
         } = donorDetails.json.api_message;
         this.context.updateUser({
           address,
           name,
           phone: phone_number,
-          userId: user_id
+          userId: user_id,
+          wahPoints: wah_points,
+          numDonations: num_donations
         });
         const path = has_give_away_list
           ? 'homeStack'

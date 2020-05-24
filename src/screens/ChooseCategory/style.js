@@ -3,7 +3,7 @@ import colors from '../../styles/color';
 
 export default StyleSheet.create({
   pmButtonContainer: {
-    flex: 2,
+    flex: 3,
     height: 50,
     alignItems: 'center',
     paddingRight: 20,

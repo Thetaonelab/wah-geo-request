@@ -7,7 +7,7 @@ import {
   View,
   Dimensions,
   Modal,
-  TouchableHighlight,
+  TouchableOpacity,
   ActivityIndicator
 } from 'react-native';
 import MapView, {
@@ -55,17 +55,7 @@ export default class MapOverlay extends React.Component {
   }
 
   componentDidMount() {
-    const { base } = this.context.ngo;
-    this.setState({
-      base,
-      region: {
-        ...base,
-        latitudeDelta: 0.8129076855753112,
-        longitudeDelta: 0.5765921249985695
-      },
-      radius: this.pointToMaxRadiusInKM(base),
-      loadingMap: false
-    });
+    this.resetMap();
   }
 
   // TODO: accuracy is low, need to rewrite
@@ -156,9 +146,9 @@ export default class MapOverlay extends React.Component {
         lon: center.longitude,
         radius: radius * 1000
       });
-      // console.log({ ...locRes.json });
+      /* console.log({ ...locRes.json });
 
-      /* locRes.json.forEach((v) => {
+      locRes.json.forEach((v) => {
         console.log(
           this.distance(
             v.center.lat,
@@ -168,12 +158,13 @@ export default class MapOverlay extends React.Component {
           )
         );
       }); */
-
-      this.setState({
-        locationData: locRes.json,
-        rawMode: false,
-        loadingApi: false
-      });
+      if (locRes.ok) {
+        this.setState({
+          locationData: locRes.json,
+          rawMode: false,
+          loadingApi: false
+        });
+      }
     } else if (radius > 1) {
       this.setState({ locationData: [] });
       let auth = await AsyncStorage.getItem('auth');
@@ -185,25 +176,27 @@ export default class MapOverlay extends React.Component {
         radius: radius * 1000
       });
       // console.log({ locRes });
-      const data = locRes.json.api_message?.map((donor) => ({
-        id: donor.donor,
-        name: donor.name,
-        distance: `${(donor.distance / 1000).toFixed(1)}KM`,
-        desc: donor.giveaway_list
-          .map((item) => `${item.name}: ${item.qty}${item.unit}`)
-          .join(', '),
-        status: donor.status_code,
-        statusStr: donor.status,
-        lat: donor.lat,
-        lon: donor.lon,
-        phoneNumber: donor.phone,
-        address: donor.address,
-        notes: donor.notes,
-        ngoNotes: donor.ngo_notes,
-        loading: false
-      }));
-      // console.log(data);
-      this.setState({ locationData: data, rawMode: true, loadingApi: false });
+      if (locRes.ok) {
+        const data = locRes.json.api_message?.map((donor) => ({
+          id: donor.donor,
+          name: donor.name,
+          distance: `${(donor.distance / 1000).toFixed(1)}KM`,
+          desc: donor.giveaway_list
+            .map((item) => `${item.name}: ${item.qty}${item.unit}`)
+            .join(', '),
+          status: donor.status_code,
+          statusStr: donor.status,
+          lat: donor.lat,
+          lon: donor.lon,
+          phoneNumber: donor.phone,
+          address: donor.address,
+          notes: donor.notes,
+          ngoNotes: donor.ngo_notes,
+          loading: false
+        }));
+        // console.log(data);
+        this.setState({ locationData: data, rawMode: true, loadingApi: false });
+      }
     }
   };
 
@@ -274,6 +267,24 @@ export default class MapOverlay extends React.Component {
   };
  */
 
+  resetMap = () => {
+    const { base } = this.context.ngo;
+    const region = {
+      ...base,
+      latitudeDelta: 0.8129076855753112,
+      longitudeDelta: 0.5765921249985695
+    };
+    this.setState({
+      base,
+      region,
+      radius: this.pointToMaxRadiusInKM(base),
+      loadingMap: false
+    });
+    if (this.mapRef) {
+      this.mapRef.animateToRegion(region, 1000);
+    }
+  };
+
   render() {
     if (this.state.loadingMap) {
       return (
@@ -285,7 +296,40 @@ export default class MapOverlay extends React.Component {
 
     return (
       <View style={[styles.parentContainer, { padding: 0 }]}>
-        <MapView
+        <TouchableOpacity
+          style={{
+            width: 30,
+            height: 30,
+            borderRadius: 4,
+            backgroundColor: colors.white,
+            elevation: 4,
+            position: 'absolute',
+            right: 10,
+            top: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderColor: colors.grey0,
+            borderWidth: 1,
+            zIndex: 999
+          }}
+          onPress={this.resetMap}>
+          {/* <Text
+              style={{ fontSize: 14, color: colors.red, textAlign: 'center' }}>
+              ⌖
+            </Text> */}
+          <View
+            style={{
+              width: 14,
+              height: 14,
+              borderRadius: 7,
+              backgroundColor: colors.colorsecondary10
+            }}
+          />
+        </TouchableOpacity>
+        <MapView.Animated
+          ref={(component) => {
+            this.mapRef = component;
+          }}
           customMapStyle={styleJson}
           provider={PROVIDER_GOOGLE}
           style={{ height: height - 80, width }}
@@ -316,6 +360,7 @@ export default class MapOverlay extends React.Component {
             lineCap="round"
             lineJoin="round"
           />
+
           {this.state.locationData.map((dt, idx) => (
             <View key={`marker-${idx}`}>
               {this.state.rawMode ? (
@@ -396,7 +441,7 @@ export default class MapOverlay extends React.Component {
               )}
             </View>
           ))}
-        </MapView>
+        </MapView.Animated>
         <BottomView />
 
         {!this.state.loadingApi && this.state.rawMode && this.state.details && (

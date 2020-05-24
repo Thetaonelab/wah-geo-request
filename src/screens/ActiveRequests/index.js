@@ -57,7 +57,7 @@ export default class ActiveRequests extends React.Component {
             }
             lat={22.3}
             lon={88.3}
-            radius={30000}
+            radius={50000}
           />
         )}
       </View>

@@ -5,7 +5,7 @@ import {
   // Dimensions,
   Modal,
   TouchableOpacity,
-  Platform,
+  /* Platform, */
   ActivityIndicator,
   KeyboardAvoidingView
 } from 'react-native';
@@ -148,10 +148,7 @@ export default class DonorDetails extends React.Component {
   );
 
   render() {
-    const phoneNumber =
-      Platform.OS === 'android'
-        ? `tel:${this.props.phoneNumber}`
-        : `telprompt:${this.props.phoneNumber}`;
+    const { phoneNumber } = this.props;
 
     return (
       <Modal
@@ -161,8 +158,7 @@ export default class DonorDetails extends React.Component {
         hardwareAccelerated={true}
         onRequestClose={() => {
           this.props.dismiss();
-        }}
-        >
+        }}>
         <KeyboardAvoidingView
           behavior="padding"
           style={[
