@@ -296,6 +296,24 @@ export default class MapOverlay extends React.Component {
 
     return (
       <View style={[styles.parentContainer, { padding: 0 }]}>
+        {this.state.loadingApi && (
+          <View
+            style={{
+              backgroundColor: colors.colorgreen1,
+              position: 'absolute',
+              left: 10,
+              top: 10,
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 4,
+              zIndex: 999
+            }}>
+            <Text style={[text.primaryText, { fontStyle: 'italic' }]}>
+              Loading...
+            </Text>
+          </View>
+        )}
+
         <TouchableOpacity
           style={{
             width: 30,

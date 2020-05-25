@@ -5,7 +5,9 @@ import {
   View,
   TouchableOpacity,
   FlatList,
-  ActivityIndicator
+  ActivityIndicator,
+  ScrollView,
+  RefreshControl
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import PropTypes from 'prop-types';
@@ -57,6 +59,7 @@ export default class DonorList extends Component {
   };
 
   loadData = async () => {
+    this.setState({ loading: true });
     const { lat, lon, radius, listDonorsNearby } = this.props;
     let auth = await AsyncStorage.getItem('auth');
     auth = auth ? JSON.parse(auth) : {};
@@ -207,7 +210,19 @@ export default class DonorList extends Component {
         />
       </View>
       <View style={{ flex: 5 }}>
-        <Text style={text.primaryText}>{`${item.name}`}</Text>
+        <Text style={text.primaryText}>
+          {`${item.name}`}{' '}
+          <Text
+            style={[
+              text.bodyText,
+              { fontStyle: 'normal', paddingLeft: 20, color: colors.grey5 }
+            ]}>
+            {`   [ ${item.phoneNumber.substring(
+              0,
+              2
+            )}******${item.phoneNumber.substr(8, 2)} ]`}
+          </Text>
+        </Text>
         <Text
           style={[text.bodyText, { fontStyle: 'italic' }]}
           numberOfLines={1}>
@@ -276,12 +291,21 @@ export default class DonorList extends Component {
 
   render() {
     return (
-      <View
+      <ScrollView
         style={{ height: 600 * 0.8, flex: 1, alignSelf: 'stretch' }}
         contentContainerStyle={{
           marginTop: 20,
           alignItems: 'stretch'
-        }}>
+        }}
+        refreshControl={
+          // eslint-disable-next-line react/jsx-wrap-multilines
+          <RefreshControl
+            refreshing={false}
+            onRefresh={() => {
+              this.loadData();
+            }}
+          />
+        }>
         {this.state.loading ? (
           <ActivityIndicator color={colors.colorsecondary10} size={50} />
         ) : (
@@ -336,7 +360,7 @@ export default class DonorList extends Component {
             markAsCompleted={this.markAsCompleted}
           />
         )}
-      </View>
+      </ScrollView>
     );
   }
 }

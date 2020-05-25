@@ -9,8 +9,9 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView
 } from 'react-native';
-import { Button, TextField, Badge } from 'react-native-ui-lib';
+import { Button, Badge, DateTimePicker } from 'react-native-ui-lib';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 // import styles from '../../styles/style';
 import colors from '../../styles/color';
@@ -26,8 +27,49 @@ export default class DonorDetails extends React.Component {
   }
 
   acceptedView = () => (
-    <View>
-      <TextField
+    <View style={{ alignSelf: 'stretch' }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          marginTop: 15,
+          paddingRight: 15
+        }}>
+        <DateTimePicker
+          containerStyle={{ marginRight: 20, marginBottom: 0 }}
+          placeholder="Select pickup date"
+          onChange={(date) => {
+            this.setState({ pickupDate: moment(date).format('DD MMM, YYYY') });
+          }}
+          dateFormat="DD MMM, YYYY"
+          // value={new Date('October 13, 2014')}
+        />
+        <DateTimePicker
+          containerStyle={{ marginBottom: 0 }}
+          mode="time"
+          placeholder="Select pickup time"
+          timeFormat="hh:mm A"
+          onChange={(time) => {
+            this.setState({ pickupTime: moment(time).format('hh:mm A') });
+          }}
+          // value={new Date('2015-03-25T12:00:00-06:30')}
+        />
+      </View>
+      {this.state.pickupDate && this.state.pickupTime && (
+        <Text
+          style={[text.bodyText, { fontStyle: 'italic', marginBottom: 10 }]}>
+          {`Note for donor: the items will be picked up on ${this.state.pickupDate} at around ${this.state.pickupTime}`}
+        </Text>
+      )}
+      {this.state.errorMessageValidation && (
+        <Text
+          style={[
+            text.bodyText,
+            { fontStyle: 'normal', marginBottom: 10, color: colors.red }
+          ]}>
+          {this.state.errorMessageValidation}
+        </Text>
+      )}
+      {/* <TextField
         placeholder="Enter a Note for the donor"
         hideUnderline={false}
         style={{
@@ -39,7 +81,7 @@ export default class DonorDetails extends React.Component {
           // eslint-disable-next-line react/no-unused-state
           this.setState({ note: val });
         }}
-      />
+      /> */}
       <View
         style={{
           flexDirection: 'row',
@@ -47,7 +89,7 @@ export default class DonorDetails extends React.Component {
           alignSelf: 'stretch'
         }}>
         <Button
-          label="Update note"
+          label="Update Pickup Schedule"
           style={{
             height: 30,
             alignItems: 'center',
@@ -57,10 +99,15 @@ export default class DonorDetails extends React.Component {
           }}
           size="xSmall"
           onPress={() => {
-            this.props.updatePickupSchedule(
-              this.props.donorId,
-              this.state.note
-            );
+            this.setState({ errorMessageValidation: '' });
+            if (!this.state.pickupDate || !this.state.pickupTime) {
+              this.setState({
+                errorMessageValidation: 'Please select pickup date and time!'
+              });
+              return;
+            }
+            const noteText = `The items will be picked up on ${this.state.pickupDate} at around ${this.state.pickupTime}`;
+            this.props.updatePickupSchedule(this.props.donorId, noteText);
           }}
         />
         <Button

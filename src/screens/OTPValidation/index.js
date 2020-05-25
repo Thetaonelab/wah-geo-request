@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-restricted-properties */
 import React from 'react';
-import { Dimensions, Image } from 'react-native';
+import { Dimensions, Image, Keyboard } from 'react-native';
 import { View, TextField, Button } from 'react-native-ui-lib';
 import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -24,6 +24,7 @@ export default class OtpValidation extends React.Component {
   componentDidMount() {}
 
   confirmCode = async () => {
+    Keyboard.dismiss();
     this.setState({ loading: true });
     const { confirmation } = this.props.navigation.state.params;
     const { activateSnackbar } = this.props.navigation.getScreenProps();
@@ -83,6 +84,7 @@ export default class OtpValidation extends React.Component {
             placeholder="e.g. 12345"
             title="6 Digit OTP"
             value={this.state.otp}
+            keyboardType="number-pad"
             onChangeText={(text) => {
               // eslint-disable-next-line react/no-unused-state
               this.setState({ otp: text });
