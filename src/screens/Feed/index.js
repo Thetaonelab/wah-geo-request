@@ -2,6 +2,8 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 import PropTypes from 'prop-types';
+import AsyncStorage from '@react-native-community/async-storage';
+import { fetchImages } from './api';
 import styles from '../../styles/style';
 import colors from '../../styles/color';
 import text from '../../styles/text';
@@ -11,11 +13,18 @@ export default class Feed extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      //  images: ['0B1t0KUoAulNuSjdoXzlKc0dpMTg']
+      images: [],
+      imagesLoading: true
     };
   }
 
-  componentDidMount() {}
+  componentDidMount = async () => {
+    let auth = await AsyncStorage.getItem('auth');
+    auth = auth ? JSON.parse(auth) : {};
+    const imagesRes = await fetchImages(auth.token);
+    // console.log({ imagesRes });
+    this.setState({ images: imagesRes.json.api_message, imagesLoading: false });
+  };
 
   render() {
     // eslint-disable-next-line no-unused-vars
@@ -81,7 +90,10 @@ export default class Feed extends React.Component {
           </View>
         </View>
         <View style={{ width: '100%', flex: 1 }}>
-          <Gallery />
+          <Gallery
+            images={this.state.images}
+            imagesLoading={this.state.imagesLoading}
+          />
         </View>
       </View>
     );

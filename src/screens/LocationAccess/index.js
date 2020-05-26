@@ -6,6 +6,7 @@ import { TextField, Button } from 'react-native-ui-lib';
 import Geolocation from 'react-native-geolocation-service';
 import Geocoder from 'react-native-geocoding';
 import AsyncStorage from '@react-native-community/async-storage';
+import { check, PERMISSIONS, RESULTS, request } from 'react-native-permissions';
 
 import { registerDonor } from './api';
 import styles from '../../styles/style';
@@ -31,11 +32,12 @@ export default class LocationAccess extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
+    await this.requestLocationPermission();
     Geocoder.init(GOOGLE_GEOCODE_KEY, {
       language: 'en'
     });
-  }
+  };
 
   onChangeValidity = (index) => (valid) => {
     this.setState((pst) => {
@@ -118,6 +120,69 @@ export default class LocationAccess extends React.Component {
       } catch (ex) {
         this.setState({ apiErrorMessage: ex.message, loading: false });
       }
+    }
+  };
+
+  requestLocationPermission = async () => {
+    const { activateSnackbar } = this.props.navigation.getScreenProps();
+    try {
+      check(
+        Platform.select({
+          android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+          ios: PERMISSIONS.IOS.LOCATION_ALWAYS
+        })
+      )
+        .then(async (result) => {
+          // console.log(result);
+          switch (result) {
+            case RESULTS.UNAVAILABLE:
+              activateSnackbar(
+                'LOCATION feature is not available (on this device / in this context)',
+                'error'
+              );
+              /* console.warn(
+                'LOCATION feature is not available (on this device / in this context)'
+              ); */
+              break;
+            case RESULTS.DENIED:
+              // eslint-disable-next-line no-case-declarations
+              const resultReq = await request(
+                Platform.select({
+                  android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+                  ios: PERMISSIONS.IOS.LOCATION_ALWAYS
+                })
+              );
+              if (resultReq === RESULTS.GRANTED) {
+                activateSnackbar('LOCATION permission is granted', 'success');
+              } else {
+                activateSnackbar(
+                  'LOCATION permission is denied and not requestable anymore',
+                  'error'
+                );
+              }
+              break;
+            case RESULTS.GRANTED:
+              activateSnackbar('LOCATION permission is granted', 'success');
+              // console.warn('LOCATION permission is granted');
+              break;
+            case RESULTS.BLOCKED:
+              activateSnackbar(
+                'LOCATION permission is denied and not requestable anymore',
+                'error'
+              );
+              /* console.warn(
+                'LOCATION permission is denied and not requestable anymore'
+              ); */
+              break;
+            default:
+              break;
+          }
+        })
+        .catch((error) => {
+          console.error('LOCATION permission error', error);
+        });
+    } catch (err) {
+      console.warn(err);
     }
   };
 
@@ -256,6 +321,7 @@ LocationAccess.propTypes = {
   navigation: PropTypes.shape({
     dispatch: PropTypes.func.isRequired,
     navigate: PropTypes.func.isRequired,
+    getScreenProps: PropTypes.func,
     state: PropTypes.shape({
       params: PropTypes.shape({
         token: PropTypes.string.isRequired,

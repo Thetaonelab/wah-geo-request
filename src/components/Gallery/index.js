@@ -1,8 +1,18 @@
 /* eslint-disable prefer-spread */
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, FlatList, Modal } from 'react-native';
-import FastImage from 'react-native-fast-image';
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  FlatList,
+  Modal,
+  ActivityIndicator
+} from 'react-native';
+import PropTypes from 'prop-types';
+import FastImage from './FastImage';
 import styles from './style';
+import colors from '../../styles/color';
+import text from '../../styles/text';
 
 export default class Gallery extends Component {
   constructor(props) {
@@ -14,14 +24,14 @@ export default class Gallery extends Component {
   }
 
   componentDidMount() {
-    const that = this;
+    /* const that = this;
     const items = Array.apply(null, Array(120)).map((v, i) => ({
       id: i,
       src: `https://unsplash.it/400/400?image=${i + 1}`
     }));
     that.setState({
       dataSource: items
-    });
+    }); */
   }
 
   ShowModalFunction(visible, imageURL) {
@@ -61,9 +71,20 @@ export default class Gallery extends Component {
         </Modal>
       );
     }
-    return (
+    return this.props.imagesLoading ? (
+      <View
+        style={[
+          styles.parentContainer,
+          { padding: 10, justifyContent: 'flex-start', alignItems: 'center' }
+        ]}>
+        <ActivityIndicator color={colors.colorsecondary10} size={30} />
+      </View>
+    ) : (
       <FlatList
-        data={this.state.dataSource}
+        data={this.props.images.map((v, i) => ({
+          id: i,
+          src: v
+        }))}
         renderItem={({ item }) => (
           <View style={{ flex: 1, flexDirection: 'column', margin: 1 }}>
             <TouchableOpacity
@@ -77,6 +98,23 @@ export default class Gallery extends Component {
                 source={{
                   uri: item.src
                 }}
+                imageStyle={styles.image}
+                renderPlaceholder={() => (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}>
+                    <ActivityIndicator
+                      color={colors.colorsecondary22}
+                      size={20}
+                    />
+                    <Text style={[text.bodyText, { fontStyle: 'italic' }]}>
+                      Loading image ...{' '}
+                    </Text>
+                  </View>
+                )}
               />
             </TouchableOpacity>
           </View>
@@ -88,3 +126,8 @@ export default class Gallery extends Component {
     );
   }
 }
+
+Gallery.propTypes = {
+  images: PropTypes.arrayOf(PropTypes.string).isRequired,
+  imagesLoading: PropTypes.bool.isRequired
+};
