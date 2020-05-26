@@ -21,6 +21,8 @@ import DonorDetails from './DonorDetails';
 import { REQUEST_STATUS } from '../../constants';
 
 export default class DonorList extends Component {
+  loadDataAfterModalClose = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -167,6 +169,7 @@ export default class DonorList extends Component {
     details.status = this.getStatusStr('PICKUP_SCHEDULE_UPDATED');
     this.setState({ details: { ...details } });
     activateSnackbar('Pickup schedule updated successfully!', 'success');
+    this.loadDataAfterModalClose = true;
   };
 
   markAsCompleted = async (donor) => {
@@ -185,6 +188,7 @@ export default class DonorList extends Component {
     details.status = 'COMPLETED';
     this.setState({ details: { ...details } });
     activateSnackbar('Request closed successfully', 'success');
+    this.loadDataAfterModalClose = true;
   };
 
   renderItem = ({ item, index }) => (
@@ -286,6 +290,8 @@ export default class DonorList extends Component {
   );
 
   dismissModal = () => {
+    if (this.loadDataAfterModalClose) this.loadData();
+    this.loadDataAfterModalClose = false;
     this.setModalVisible(false);
   };
 

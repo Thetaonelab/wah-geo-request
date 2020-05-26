@@ -43,6 +43,20 @@ export default class Gallery extends Component {
     });
   }
 
+  renderPlaceholder = () => (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}>
+      <ActivityIndicator color={colors.colorsecondary22} size={20} />
+      <Text style={[text.bodyText, { fontStyle: 'italic' }]}>
+        Loading image ...{' '}
+      </Text>
+    </View>
+  );
+
   render() {
     if (this.state.ModalVisibleStatus) {
       return (
@@ -55,9 +69,10 @@ export default class Gallery extends Component {
           }}>
           <View style={styles.modelStyle}>
             <FastImage
-              style={styles.fullImageStyle}
+              imageStyle={styles.fullImageStyle}
               source={{ uri: this.state.imageuri }}
               resizeMode={FastImage.resizeMode.contain}
+              renderPlaceholder={this.renderPlaceholder}
             />
             <TouchableOpacity
               activeOpacity={0.5}
@@ -94,27 +109,11 @@ export default class Gallery extends Component {
                 this.ShowModalFunction(true, item.src);
               }}>
               <FastImage
-                style={styles.image}
                 source={{
                   uri: item.src
                 }}
                 imageStyle={styles.image}
-                renderPlaceholder={() => (
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}>
-                    <ActivityIndicator
-                      color={colors.colorsecondary22}
-                      size={20}
-                    />
-                    <Text style={[text.bodyText, { fontStyle: 'italic' }]}>
-                      Loading image ...{' '}
-                    </Text>
-                  </View>
-                )}
+                renderPlaceholder={this.renderPlaceholder}
               />
             </TouchableOpacity>
           </View>

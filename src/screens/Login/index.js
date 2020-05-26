@@ -16,7 +16,7 @@ export default class Login extends React.Component {
     super(props);
     this.state = {
       name: '',
-      phoneNumber: '9836825741',
+      phoneNumber: '', // '9836825741',
       apiErrorMessage: '',
       validArr: '00'.split('').map(() => false),
       loading: false,

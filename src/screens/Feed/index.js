@@ -58,6 +58,11 @@ export default class Feed extends React.Component {
             <Text style={[text.bodyText, { letterSpacing: 2 }]}>
               Wah points
             </Text>
+            {numDonations ? (
+              <Text style={[text.bodyText, { fontStyle: 'italic' }]}>
+                {`( Based on ${numDonations} donations made by you )`}
+              </Text>
+            ) : null}
           </View>
 
           <View
