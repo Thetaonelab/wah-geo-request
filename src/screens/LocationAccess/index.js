@@ -236,10 +236,11 @@ export default class LocationAccess extends React.Component {
                   onChangeText={(val) => {
                     this.setState({ complexName: val });
                   }}
-                  validate={(val) => val && val.length >= 5}
+                  validate={(val) => val && val.length >= 1}
                   validateOnStart
                   validateOnBlur
-                  errorMessage="At least 5  letters."
+                  validateOnChange
+                  errorMessage="Mandatory"
                   onChangeValidity={this.onChangeValidity(0)}
                 />
               </View>
@@ -251,10 +252,11 @@ export default class LocationAccess extends React.Component {
                   onChangeText={(val) => {
                     this.setState({ doorNo: val });
                   }}
-                  validate={(val) => val && val.length >= 5}
+                  validate={(val) => val && val.length >= 1}
                   validateOnStart
                   validateOnBlur
-                  errorMessage="At least 5  letters."
+                  validateOnChange
+                  errorMessage="Mandatory"
                   onChangeValidity={this.onChangeValidity(1)}
                 />
               </View>
@@ -266,10 +268,11 @@ export default class LocationAccess extends React.Component {
                   onChangeText={(val) => {
                     this.setState({ landmark: val });
                   }}
-                  validate={(val) => val && val.length >= 5}
+                  validate={(val) => val && val.length >= 1}
                   validateOnStart
                   validateOnBlur
-                  errorMessage="At least 5  letters."
+                  validateOnChange
+                  errorMessage="Mandatory"
                   onChangeValidity={this.onChangeValidity(2)}
                 />
               </View>

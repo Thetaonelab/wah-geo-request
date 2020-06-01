@@ -81,6 +81,8 @@ export default class OtpValidation extends React.Component {
             borderRadius: 3
           }}>
           <TextField
+            showCharacterCounter={true}
+            maxLength={6}
             placeholder="e.g. 12345"
             title="6 Digit OTP"
             value={this.state.otp}

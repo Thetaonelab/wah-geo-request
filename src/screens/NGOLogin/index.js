@@ -126,6 +126,7 @@ export default class NGOLogin extends React.Component {
               markRequired
               validateOnStart
               validateOnBlur
+              validateOnChange
               enableErrors
               validate="email"
               errorMessage="Valid email id required"
@@ -144,6 +145,7 @@ export default class NGOLogin extends React.Component {
               markRequired
               validateOnStart
               validateOnBlur
+              validateOnChange
               enableErrors
               validate="required"
               errorMessage="Mandatory field"

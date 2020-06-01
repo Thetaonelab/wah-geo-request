@@ -60,7 +60,9 @@ export default class Feed extends React.Component {
             </Text>
             {numDonations ? (
               <Text style={[text.bodyText, { fontStyle: 'italic' }]}>
-                {`( Based on ${numDonations} donations made by you )`}
+                {`( Based on ${numDonations} ${
+                  numDonations > 1 ? 'donations' : 'donation'
+                } made by you )`}
               </Text>
             ) : null}
           </View>

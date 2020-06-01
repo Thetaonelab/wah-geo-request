@@ -139,7 +139,9 @@ export default class ChooseCategory extends React.Component {
           <Text style={[text.primaryText, { fontSize: 28 }]}>+</Text>
         </TouchableOpacity>
         <View style={ownStyle.unit}>
-          <Text style={text.primaryText}>{item.unit}</Text>
+          <Text style={[text.primaryText, { textAlign: 'center' }]}>
+            {item.unit}
+          </Text>
         </View>
       </View>
     </View>

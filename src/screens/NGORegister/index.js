@@ -139,6 +139,7 @@ export default class NGORegister extends React.Component {
                 validate={(val) => val && val.length > 7}
                 validateOnStart
                 validateOnBlur
+                validateOnChange
                 enableErrors
                 errorMessage="Mandatory >7 letters"
                 onChangeValidity={this.onChangeValidity(0)}
@@ -156,6 +157,7 @@ export default class NGORegister extends React.Component {
                 validate="required"
                 validateOnStart
                 validateOnBlur
+                validateOnChange
                 enableErrors
                 errorMessage="Required field"
                 onChangeValidity={this.onChangeValidity(1)}
@@ -176,6 +178,7 @@ export default class NGORegister extends React.Component {
                 validate="email"
                 validateOnStart
                 validateOnBlur
+                validateOnChange
                 enableErrors
                 errorMessage="Valid email id required"
                 onChangeValidity={this.onChangeValidity(2)}
@@ -191,6 +194,7 @@ export default class NGORegister extends React.Component {
                 validate={(val) => val && val.length === 10}
                 validateOnStart
                 validateOnBlur
+                validateOnChange
                 value={this.state.mobile}
                 onChangeText={(txt) => {
                   this.setState({ mobile: txt });
@@ -215,6 +219,7 @@ export default class NGORegister extends React.Component {
                 validate="required"
                 validateOnStart
                 validateOnBlur
+                validateOnChange
                 markRequired
                 enableErrors
                 errorMessage="Required field"
@@ -233,6 +238,7 @@ export default class NGORegister extends React.Component {
                 validate={(val) => val && val === this.state.password}
                 validateOnStart
                 validateOnBlur
+                validateOnChange
                 enableErrors
                 errorMessage="Must match."
                 onChangeValidity={this.onChangeValidity(5)}
@@ -252,6 +258,7 @@ export default class NGORegister extends React.Component {
                 validate="required"
                 validateOnStart
                 validateOnBlur
+                validateOnChange
                 enableErrors
                 errorMessage="Required field"
                 onChangeValidity={this.onChangeValidity(6)}

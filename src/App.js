@@ -58,23 +58,26 @@ export default class App extends React.Component {
     }
 
     //  setting up current Route
-    this.setState(
-      {
-        currentRoute: this.getRoute(newState)
-      },
-      () => {
-        // eslint-disable-next-line no-console
-        console.log('CURRENT ROUTE::', this.state.currentRoute);
-      }
+
+    this.currentRoute = this.getRoute(newState);
+    this.currentIndex = newState.index;
+    // eslint-disable-next-line no-console
+    console.log(
+      'CURRENT ROUTE / INDEX::',
+      this.currentRoute,
+      this.currentIndex
     );
   };
 
-  getRoute = (prevState) => {
+  getRoute = (prevState, ind = 0) => {
     if (prevState.index !== undefined) {
-      const route = this.getRoute(prevState.routes[prevState.index]);
+      const route = this.getRoute(
+        prevState.routes[prevState.index],
+        prevState.index
+      );
       return route;
     }
-    return prevState.routeName;
+    return [prevState.routeName, ind];
   };
 
   activateSnackbar = (message, type = 'success', duration = 8000) => {
@@ -122,7 +125,9 @@ export default class App extends React.Component {
             screenProps={{
               isStatusBarHidden: this.state.statusBarHidden,
               activateSnackbar: this.activateSnackbar,
-              toggleStatusBarHidden: this.toggleStatusBarHidden
+              toggleStatusBarHidden: this.toggleStatusBarHidden,
+              getCurrentRoute: () => [this.currentRoute, this.currentIndex],
+              isFirstRoute: () => this.currentIndex === 0
             }}
             onNavigationStateChange={this.onNavigate}
           />

@@ -1,12 +1,15 @@
+/* eslint-disable jsx-a11y/accessible-emoji */
 import React from 'react';
 import { View /* , Image */, Text, TouchableOpacity } from 'react-native';
 
 import PropTypes from 'prop-types';
-// import LogoImage from '../../../assets/wah.png';
+import AsyncStorage from '@react-native-community/async-storage';
+import UserContext from '../../contexts/UserContext';
 
 // import colors from '../../styles/color';
 import text from '../../styles/text';
 import styles from './style';
+import AsyncAlert from '../Helpers/AsyncAlert';
 // import wahIcon from '../../../assets/wah-icon.png';
 
 class Header extends React.Component {
@@ -32,23 +35,55 @@ class Header extends React.Component {
     this.props.navigation.goBack();
   };
 
+  logout = async () => {
+    const res = await AsyncAlert.alert(
+      'Confirm logging out ?',
+      'All unsaved data will be wiped.',
+      [{ text: 'OK' }, { text: 'Cancel' }]
+    );
+    if (res === 'Cancel') {
+      return;
+    }
+    this.context.updateUser({
+      address: '',
+      email: '',
+      name: '',
+      phone: '',
+      regNo: '',
+      userId: ''
+    });
+    await AsyncStorage.setItem('auth', '');
+    this.props.navigation.navigate('common');
+  };
+
   render() {
-    const { isFirstRoute } = this.props.navigation.isFirstRouteInParent();
+    const { isFirstRoute } = this.props.navigation.getScreenProps();
+    let conditionalView = null;
+    if (this.props.drawerMode) {
+      conditionalView = (
+        <TouchableOpacity
+          style={styles.menuIconLeft}
+          onPress={this.toogleDrawer}>
+          <Text style={[text.appbarText]}>☰</Text>
+        </TouchableOpacity>
+      );
+    } else if (this.props.giveAwayPageFirstTime) {
+      conditionalView = (
+        <TouchableOpacity style={styles.menuIconLeft} onPress={this.logout}>
+          <Text style={[text.primaryText]}>👋</Text>
+        </TouchableOpacity>
+      );
+    } else if (isFirstRoute) {
+      conditionalView = (
+        <TouchableOpacity style={styles.menuIconLeft} onPress={this.goBack}>
+          <Text style={[text.appbarText]}>←</Text>
+        </TouchableOpacity>
+      );
+    }
+
     return (
       <View style={styles.container}>
-        <View style={styles.leftSide}>
-          {this.props.drawerMode ? (
-            <TouchableOpacity
-              style={styles.menuIconLeft}
-              onPress={this.toogleDrawer}>
-              <Text style={[text.appbarText]}>☰</Text>
-            </TouchableOpacity>
-          ) : !isFirstRoute ? (
-            <TouchableOpacity style={styles.menuIconLeft} onPress={this.goBack}>
-              <Text style={[text.appbarText]}>←</Text>
-            </TouchableOpacity>
-          ) : null}
-        </View>
+        <View style={styles.leftSide}>{conditionalView}</View>
         <View style={{ alignItems: 'center' }}>
           <Text style={[text.appbarText]}>
             {this.props.pageName.toUpperCase()}
@@ -90,10 +125,13 @@ class Header extends React.Component {
   }
 }
 
+Header.contextType = UserContext;
+
 Header.propTypes = {
   pageName: PropTypes.string.isRequired,
   subText: PropTypes.string,
   drawerMode: PropTypes.bool,
+  giveAwayPageFirstTime: PropTypes.bool,
   navigation: PropTypes.shape({
     state: PropTypes.shape({}),
     navigate: PropTypes.func,
@@ -108,6 +146,7 @@ Header.propTypes = {
 
 Header.defaultProps = {
   drawerMode: false,
+  giveAwayPageFirstTime: false,
   subText: ''
 };
 

@@ -58,6 +58,7 @@ export default class Login extends React.Component {
           name,
           phoneNumber
         });
+        this.setState({ loading: false });
       } catch (ex) {
         this.setState({ apiErrorMessage: ex.message, loading: false });
       }
@@ -93,10 +94,11 @@ export default class Login extends React.Component {
           <View style={{ padding: 10 }}>
             <TextField
               placeholder="e.g. Justin Trudo"
-              title="Your name"
+              title="Your full name"
               validate={(val) => val && val.length >= 5}
               validateOnBlur
               validateOnStart
+              validateOnChange
               errorMessage="At least 5  letters."
               onChangeValidity={this.onChangeValidity(0)}
               onChangeText={(txt) => {
@@ -119,6 +121,7 @@ export default class Login extends React.Component {
               validate={(val) => val && val.length === 10}
               validateOnBlur
               validateOnStart
+              validateOnChange
               errorMessage="10 digit Phone no required."
               onChangeValidity={this.onChangeValidity(1)}
             />
