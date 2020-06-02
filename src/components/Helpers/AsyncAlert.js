@@ -4,7 +4,7 @@ export default {
   alert: async (title, message, alertBtnArray) => {
     let newAlertBtnArray = alertBtnArray;
     if (!newAlertBtnArray) {
-      newAlertBtnArray = [{ text: 'OK', onPress: () => {}, style: 'cancel' }];
+      newAlertBtnArray = [{ text: 'OK' }];
     }
     return new Promise((resolve) => {
       Alert.alert(
@@ -21,3 +21,13 @@ export default {
     });
   }
 };
+
+// // ||  Usage:
+// // ||  const res = await AsyncAlert.alert(
+// // ||    'Confirm logging out ?',
+// // ||    'All unsaved data will be wiped.',
+// // ||    [{ text: 'OK' }, { text: 'Cancel' }]
+// // ||  );
+// // ||  if (res === 'Cancel') {
+// // ||    return;
+// // ||  }

@@ -133,7 +133,7 @@ export default class SplashScreen extends React.Component {
       }
     } else if (auth.token && auth.type === TYPE_DONOR) {
       const donorDetails = await fetchDonorDetails(auth.token);
-      console.log({ donorDetails });
+      // console.log({ donorDetails });
       if (donorDetails.ok) {
         const {
           address,

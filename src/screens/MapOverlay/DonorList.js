@@ -281,7 +281,7 @@ export default class DonorList extends Component {
           <Text style={[text.bodyText, { fontWeight: '700' }]}>
             {item.statusStr}
           </Text>
-          <Text style={[text.bodyText, { opacity: 0.4 }]}>
+          <Text style={[text.bodyText, { opacity: 0.4, textAlign: 'right' }]}>
             {item.lastUpdated}
           </Text>
         </View>

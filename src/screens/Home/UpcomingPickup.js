@@ -4,6 +4,7 @@ import { Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Badge } from 'react-native-ui-lib';
 import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-community/async-storage';
+import AsyncAlert from '../../components/Helpers/AsyncAlert';
 import { call } from '../../util';
 import { acceptNGORequest, rejectNGORequest } from './api';
 import colors from '../../styles/color';
@@ -17,6 +18,14 @@ export default function UpcomingPickup(props) {
   const [rejectLoading, setRejectLoading] = useState(false);
 
   const accept = (ngoId) => async () => {
+    const res = await AsyncAlert.alert(
+      'Confirm accepting request ?',
+      'The NGO will be notified about this activity and will be able to call you in your registered mobile number.',
+      [{ text: 'OK' }, { text: 'Cancel' }]
+    );
+    if (res === 'Cancel') {
+      return;
+    }
     setAcceptLoading(true);
     let auth = await AsyncStorage.getItem('auth');
     auth = auth ? JSON.parse(auth) : {};
@@ -35,6 +44,14 @@ export default function UpcomingPickup(props) {
   };
 
   const reject = (ngoId) => async () => {
+    const res = await AsyncAlert.alert(
+      'Confirm rejecting request ?',
+      'The NGO will not be able to collect the givaways listed by you.',
+      [{ text: 'OK' }, { text: 'Cancel' }]
+    );
+    if (res === 'Cancel') {
+      return;
+    }
     setRejectLoading(true);
     let auth = await AsyncStorage.getItem('auth');
     auth = auth ? JSON.parse(auth) : {};
@@ -124,6 +141,30 @@ export default function UpcomingPickup(props) {
             CALL
           </Text>
         </TouchableOpacity>
+
+        {props.status === REQUEST_STATUS.REJECTED &&
+          (acceptLoading ? (
+            <ActivityIndicator color={colors.colorsecondary10} size={30} />
+          ) : (
+            <TouchableOpacity
+              style={{
+                padding: 7,
+                borderRadius: 3,
+                borderColor: colors.grey1,
+                borderWidth: 1,
+                marginLeft: 15,
+                marginRight: 15
+              }}
+              onPress={accept(props.id)}>
+              <Text
+                style={[
+                  text.primaryText,
+                  { color: colors.colorsecondary20, fontWeight: '700' }
+                ]}>
+                Re-ACCEPT
+              </Text>
+            </TouchableOpacity>
+          ))}
 
         {props.status === REQUEST_STATUS.REQUESTED && (
           <>

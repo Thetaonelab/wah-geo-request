@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable jsx-a11y/accessible-emoji */
 /* eslint-disable react/no-array-index-key */
 import React from 'react';
@@ -15,7 +16,7 @@ import PropTypes from 'prop-types';
 import { Badge } from 'react-native-ui-lib';
 import AsyncStorage from '@react-native-community/async-storage';
 import UpcomingPickup from './UpcomingPickup';
-import { fetchGiveawayList, fetchNGORequests } from './api';
+import { fetchGiveawayList, fetchNGORequests, fetchDonorDetails } from './api';
 import styles from '../../styles/style';
 import colors from '../../styles/color';
 import text from '../../styles/text';
@@ -48,6 +49,20 @@ export default class Home extends React.Component {
   componentWillUnmount() {
     this.unsubscribeFocus.remove();
   }
+
+  fetchDonorDetails = async () => {
+    let auth = await AsyncStorage.getItem('auth');
+    auth = auth ? JSON.parse(auth) : {};
+    const donorDetails = await fetchDonorDetails(auth.token);
+    // console.log({ donorDetails });
+    if (donorDetails.ok) {
+      const { wah_points, num_donations } = donorDetails.json.api_message;
+      this.context.updateUser({
+        wahPoints: wah_points,
+        numDonations: num_donations
+      });
+    }
+  };
 
   fetchGiveawayList = async () => {
     this.setState({ giveawayListLoading: true, data: [] });
@@ -106,18 +121,20 @@ export default class Home extends React.Component {
       );
     }
     return this.state.updates.map((upd) => (
-      <UpcomingPickup
-        id={upd.id}
-        status={upd.status}
-        statusStr={upd.statusStr}
-        name={upd.name}
-        address={upd.address}
-        notes={upd.notes}
-        ngoNotes={upd.ngoNotes}
-        phoneNumber={upd.phone}
-        stateChangedSoReload={this.fetchNGORequests}
-        key={`key-up-${Math.random() * 1000}`}
-      />
+      <>
+        <UpcomingPickup
+          id={upd.id}
+          status={upd.status}
+          statusStr={upd.statusStr}
+          name={upd.name}
+          address={upd.address}
+          notes={upd.notes}
+          ngoNotes={upd.ngoNotes}
+          phoneNumber={upd.phone}
+          stateChangedSoReload={this.fetchNGORequests}
+          key={`key-up-${Math.random() * 1000}`}
+        />
+      </>
     ));
   };
 
@@ -129,15 +146,17 @@ export default class Home extends React.Component {
           styles.parentContainer,
           { padding: 10, justifyContent: 'flex-start' }
         ]}
-        refreshControl={(
+        refreshControl={
+          // eslint-disable-next-line react/jsx-wrap-multilines
           <RefreshControl
             refreshing={false}
             onRefresh={() => {
               this.fetchNGORequests();
               this.fetchGiveawayList();
+              this.fetchDonorDetails();
             }}
           />
-        )}>
+        }>
         <View
           style={{
             paddingVertical: 15,
@@ -222,13 +241,15 @@ export default class Home extends React.Component {
           }}>
           <Text
             style={[text.primaryText, { fontWeight: '700', letterSpacing: 1 }]}>
-            Updates
+            {`Updates (${this.state.updates?.length})`}
           </Text>
         </View>
         {this.state.ngoRequestLoading ? (
           <ActivityIndicator color={colors.colorsecondary10} size={30} />
         ) : (
-          <View style={{ alignSelf: 'stretch' }}>{this.renderUpdates()}</View>
+          <ScrollView style={{ alignSelf: 'stretch' }}>
+            {this.renderUpdates()}
+          </ScrollView>
         )}
 
         <TouchableOpacity

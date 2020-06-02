@@ -38,3 +38,11 @@ export const rejectNGORequest = (token, body) =>
     { ...headers, Authorization: `Bearer ${token}` },
     body
   );
+
+export const fetchDonorDetails = (token) =>
+  fetchUtil(
+    `${API_ROOT}/fetch_individual_details`,
+    'GET',
+    { ...headers, Authorization: `Bearer ${token}` },
+    null
+  );
