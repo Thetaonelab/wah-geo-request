@@ -91,13 +91,13 @@ export default class Login extends React.Component {
               marginBottom: 40
             }}
           />
-          <View style={{ padding: 10 }}>
+          <View style={{ padding: 10, paddingBottom: 5 }}>
             <TextField
               placeholder="e.g. Justin Trudo"
               title="Your full name"
               validate={(val) => val && val.length >= 5}
               validateOnBlur
-              validateOnStart
+              // validateOnStart
               validateOnChange
               errorMessage="At least 5  letters."
               onChangeValidity={this.onChangeValidity(0)}
@@ -107,7 +107,7 @@ export default class Login extends React.Component {
               value={this.state.name}
             />
           </View>
-          <View style={{ padding: 10 }}>
+          <View style={{ padding: 10, paddingTop: 0 }}>
             <TextField
               placeholder="e.g. 9988998899"
               title="Phone number"
@@ -120,7 +120,7 @@ export default class Login extends React.Component {
               markRequired
               validate={(val) => val && val.length === 10}
               validateOnBlur
-              validateOnStart
+              // validateOnStart
               validateOnChange
               errorMessage="10 digit Phone no required."
               onChangeValidity={this.onChangeValidity(1)}
