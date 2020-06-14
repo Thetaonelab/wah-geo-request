@@ -1,6 +1,12 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useState } from 'react';
-import { Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  ActivityIndicator,
+  Dimensions
+} from 'react-native';
 import { Badge } from 'react-native-ui-lib';
 import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -11,6 +17,7 @@ import colors from '../../styles/color';
 import text from '../../styles/text';
 import { REQUEST_STATUS } from '../../constants';
 // import items from './data';
+const { /* height, */ width } = Dimensions.get('window');
 
 export default function UpcomingPickup(props) {
   // eslint-disable-next-line no-unused-vars
@@ -73,31 +80,37 @@ export default function UpcomingPickup(props) {
     <View
       style={{
         alignItems: 'flex-start',
-        alignSelf: 'stretch',
         borderBottomWidth: 0,
         borderStyle: 'dashed',
         padding: 10,
         borderColor: colors.grey1,
         borderRadius: 4,
         marginBottom: 5,
-        backgroundColor: colors.grey3
+        backgroundColor: colors.grey3,
+        width: width * 0.8,
+        marginRight: 15,
+        height: 170,
+        justifyContent: 'space-between'
       }}>
-      <Badge label={props.statusStr} labelFormatterLimit={3} />
-      <Text
-        style={[
-          text.primaryText,
-          { color: colors.black, marginTop: 5, fontWeight: '700' }
-        ]}>
-        {props.name}
-      </Text>
-      <Text style={text.bodyText}>{`🌐 ${props.address}`}</Text>
-      {props.ngoNotes ? (
-        <Text style={[text.bodyText, { fontWeight: '600' }]}>
-          {`✎ ${props.ngoNotes}`}
+      <View>
+        <Badge label={props.statusStr} labelFormatterLimit={3} />
+        <Text
+          style={[
+            text.primaryText,
+            { color: colors.black, marginTop: 5, fontWeight: '700' }
+          ]}>
+          {props.name}
         </Text>
-      ) : null}
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
-        {/* items[0].data.map((d, idx) => (
+        <Text
+          style={text.bodyText}
+          numberOfLines={3}>{`🌐 ${props.address}`}</Text>
+        {props.ngoNotes ? (
+          <Text style={[text.bodyText, { fontWeight: '600' }]}>
+            {`✎ ${props.ngoNotes}`}
+          </Text>
+        ) : null}
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
+          {/* items[0].data.map((d, idx) => (
           <View
             key={`item-small-${idx}`}
             style={{
@@ -116,8 +129,8 @@ export default function UpcomingPickup(props) {
             </View>
           </View>
         )) */}
+        </View>
       </View>
-
       <View
         style={{
           flexDirection: 'row',

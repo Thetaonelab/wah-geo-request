@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { Badge } from 'react-native-ui-lib';
+import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-community/async-storage';
 import UpcomingPickup from './UpcomingPickup';
 import { fetchGiveawayList, fetchNGORequests, fetchDonorDetails } from './api';
@@ -37,6 +38,7 @@ export default class Home extends React.Component {
   }
 
   async componentDidMount() {
+    this.getNotification();
     this.unsubscribeFocus = this.props.navigation.addListener(
       'didFocus',
       () => {
@@ -49,6 +51,13 @@ export default class Home extends React.Component {
   componentWillUnmount() {
     this.unsubscribeFocus.remove();
   }
+
+  getNotification = () => {
+    messaging().onMessage(() => {
+      this.fetchNGORequests();
+      this.fetchDonorDetails();
+    });
+  };
 
   fetchDonorDetails = async () => {
     let auth = await AsyncStorage.getItem('auth');
@@ -107,7 +116,11 @@ export default class Home extends React.Component {
   renderUpdates = () => {
     if (this.state.updates?.length === 0) {
       return (
-        <View style={{ alignSelf: 'stretch', alignItems: 'flex-start' }}>
+        <View
+          style={{
+            alignSelf: 'stretch',
+            alignItems: 'flex-start'
+          }}>
           {/* <Text style={text.appbarText}>ⓘ</Text> */}
           <Text
             style={[
@@ -144,7 +157,7 @@ export default class Home extends React.Component {
       <ScrollView
         contentContainerStyle={[
           styles.parentContainer,
-          { padding: 10, justifyContent: 'flex-start' }
+          { padding: 5, justifyContent: 'flex-start' }
         ]}
         refreshControl={
           // eslint-disable-next-line react/jsx-wrap-multilines
@@ -166,7 +179,7 @@ export default class Home extends React.Component {
           }}>
           <Text
             style={[text.primaryText, { fontWeight: '700', letterSpacing: 1 }]}>
-            My Giveaway List
+            {`My Giveaway List (${this.state.data?.length})`}
           </Text>
 
           {!this.state.giveawayListLoading && (
@@ -184,22 +197,27 @@ export default class Home extends React.Component {
         {this.state.giveawayListLoading ? (
           <ActivityIndicator color={colors.colorsecondary10} size={30} />
         ) : (
-          <View
-            style={{
-              flexDirection: 'row',
+          <ScrollView
+            style={{ height: 0 }}
+            contentContainerStyle={{
+              flexDirection: 'column',
               flexWrap: 'wrap',
-              alignSelf: 'stretch'
-            }}>
+              alignSelf: 'stretch',
+              height: 120
+            }}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            >
             {this.state.data.map((d, idx) => (
               <View
                 key={`item-big-${idx}-${Math.random()}`}
                 style={{
                   height: 50,
-                  width: width / 3.5,
+                  width: 120,
                   borderRadius: 3,
                   flexDirection: 'row',
                   backgroundColor: colors.colorsecondary12,
-                  marginRight: 7,
+                  marginRight: 10,
                   marginBottom: 7,
                   alignItems: 'center'
                 }}>
@@ -216,7 +234,7 @@ export default class Home extends React.Component {
                 </View>
                 <View
                   style={{
-                    flex: 2,
+                    flex: 3,
                     backgroundColor: colors.grey1,
                     alignItems: 'center',
                     alignSelf: 'stretch',
@@ -229,7 +247,7 @@ export default class Home extends React.Component {
                 </View>
               </View>
             ))}
-          </View>
+          </ScrollView>
         )}
 
         <View
@@ -247,7 +265,14 @@ export default class Home extends React.Component {
         {this.state.ngoRequestLoading ? (
           <ActivityIndicator color={colors.colorsecondary10} size={30} />
         ) : (
-          <ScrollView style={{ alignSelf: 'stretch' }}>
+          <ScrollView
+            style={{
+              alignSelf: 'stretch',
+              padding: 10
+            }}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            pagingEnabled={true}>
             {this.renderUpdates()}
           </ScrollView>
         )}

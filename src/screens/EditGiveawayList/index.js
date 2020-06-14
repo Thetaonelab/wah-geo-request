@@ -87,28 +87,31 @@ export default class EditGiveawayList extends React.Component {
       }}>
       <View
         style={{
-          flex: 1,
           justifyContent: 'center',
           flexDirection: 'row',
-          alignItems: 'stretch',
-          height: 50
+          alignItems: 'stretch'
         }}>
         <Image
-          source={{ uri: item.icon }}
+          source={{
+            uri: `https://picsum.photos/seed/${item.id}/40/40` /* item.icon */
+          }}
           style={{
             resizeMode: 'cover',
             height: 40,
-            width: 40
+            width: 40,
+            borderRadius: 3
           }}
         />
       </View>
-      <View style={{ flex: 4, justifyContent: 'center', paddingLeft: 10 }}>
-        <Text style={text.primaryText}>{item.name}</Text>
+      <View style={{ flex: 3, justifyContent: 'center', paddingLeft: 10 }}>
+        <Text style={text.secondaryText} numberOfLines={2}>
+          {item.name}
+        </Text>
         {/* <Text style={text.bodyText}>{'5 subcategories'}</Text> */}
       </View>
       <View style={ownStyle.pmButtonContainer}>
         <TouchableOpacity
-          style={ownStyle.pmButton}
+          style={[ownStyle.pmButton, ownStyle.pmButtonMinus]}
           onPress={() => {
             this.setState((ps) => {
               if (ps[`item-id-${item.id}`] > 0) {
@@ -120,7 +123,7 @@ export default class EditGiveawayList extends React.Component {
               return {};
             });
           }}>
-          <Text style={[text.primaryText, { fontSize: 25 }]}>—</Text>
+          <Text style={[text.primaryText, { fontSize: 20 }]}>—</Text>
         </TouchableOpacity>
         <View style={ownStyle.pmValue}>
           <Text style={text.primaryText}>
@@ -128,7 +131,7 @@ export default class EditGiveawayList extends React.Component {
           </Text>
         </View>
         <TouchableOpacity
-          style={ownStyle.pmButton}
+          style={[ownStyle.pmButton, ownStyle.pmButtonPlus]}
           onPress={() => {
             this.setState((ps) => {
               if (ps[`item-id-${item.id}`] < 10) {
@@ -140,10 +143,10 @@ export default class EditGiveawayList extends React.Component {
               return {};
             });
           }}>
-          <Text style={[text.primaryText, { fontSize: 28 }]}>+</Text>
+          <Text style={[text.primaryText, { fontSize: 23 }]}>+</Text>
         </TouchableOpacity>
         <View style={ownStyle.unit}>
-          <Text style={text.primaryText}>{item.unit}</Text>
+          <Text style={[text.bodyText]}>{item.unit}</Text>
         </View>
       </View>
     </View>
@@ -167,14 +170,16 @@ export default class EditGiveawayList extends React.Component {
                     justifyContent: 'center',
                     height: 40
                   }}>
-                  <Text style={text.appbarText}>{section.title}</Text>
+                  <Text style={text.appbarText}>{`♥ ${section.title}`}</Text>
                 </View>
               )}
               style={{
                 flex: 1,
                 alignSelf: 'stretch',
-                width: Dimensions.get('window').width
+                width: Dimensions.get('window').width,
+                marginBottom: 0
               }}
+              contentContainerStyle={{ paddingBottom: 62 }}
               keyExtractor={(i) =>
                 `key-${i.name.replace(/ /g, '-') + Math.random()}`
               }

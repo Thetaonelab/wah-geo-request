@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 import React from 'react';
-import { View /* , Image */, Text, TouchableOpacity } from 'react-native';
+import { View, Image, Text, TouchableOpacity } from 'react-native';
 
 import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -10,7 +10,8 @@ import UserContext from '../../contexts/UserContext';
 import text from '../../styles/text';
 import styles from './style';
 import AsyncAlert from '../Helpers/AsyncAlert';
-// import wahIcon from '../../../assets/wah-icon.png';
+import logoutIcon from '../../../assets/logout.png';
+import menuIcon from '../../../assets/menu.png';
 
 class Header extends React.Component {
   constructor(props) {
@@ -59,7 +60,7 @@ class Header extends React.Component {
   render() {
     const { isFirstRoute } = this.props.navigation.getScreenProps();
     let conditionalView = null;
-    if (this.props.drawerMode) {
+    /* if (this.props.drawerMode) {
       conditionalView = (
         <TouchableOpacity
           style={styles.menuIconLeft}
@@ -67,16 +68,26 @@ class Header extends React.Component {
           <Text style={[text.appbarText]}>☰</Text>
         </TouchableOpacity>
       );
-    } else if (this.props.giveAwayPageFirstTime) {
+    } else  */
+    if (this.props.giveAwayPageFirstTime) {
       conditionalView = (
         <TouchableOpacity style={styles.menuIconLeft} onPress={this.logout}>
-          <Text style={[text.primaryText]}>👋</Text>
+          {/* <Text style={[text.primaryText]}>👋</Text> */}
+          <Image
+            source={logoutIcon}
+            style={{
+              resizeMode: 'cover',
+              height: 26,
+              width: 26,
+              alignSelf: 'center'
+            }}
+          />
         </TouchableOpacity>
       );
-    } else if (isFirstRoute) {
+    } else if (!this.props.drawerMode && isFirstRoute) {
       conditionalView = (
         <TouchableOpacity style={styles.menuIconLeft} onPress={this.goBack}>
-          <Text style={[text.appbarText]}>←</Text>
+          <Text style={[text.primaryText]}>{'< Back'}</Text>
         </TouchableOpacity>
       );
     }
@@ -104,22 +115,22 @@ class Header extends React.Component {
           />
         </View> */}
 
-        {/* <View style={styles.menuIconBox}>
+        <View style={styles.menuIconBox}>
           <TouchableOpacity
             style={styles.menuIconLeft}
             onPress={this.toogleDrawer}>
-            <Text style={[text.bodyText]}>
-              🔔
-              <Text
-                style={[
-                  text.bodyText,
-                  { color: colors.black }
-                ]}>
-                - 4
-              </Text>
-            </Text>
+            {/* <Text style={[text.appbarText, { opacity: 1 }]}>☰</Text> */}
+            <Image
+              source={menuIcon}
+              style={{
+                resizeMode: 'cover',
+                height: 20,
+                width: 20,
+                alignSelf: 'center'
+              }}
+            />
           </TouchableOpacity>
-        </View> */}
+        </View>
       </View>
     );
   }
@@ -145,7 +156,7 @@ Header.propTypes = {
 };
 
 Header.defaultProps = {
-  drawerMode: false,
+  drawerMode: true,
   giveAwayPageFirstTime: false,
   subText: ''
 };

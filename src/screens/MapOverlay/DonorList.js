@@ -162,14 +162,22 @@ export default class DonorList extends Component {
         ngo_notes: scheduleNote
       }
     );
-    // console.log({ updatePickupScheduleRes });
+    console.log({ updatePickupScheduleRes });
     details.loading = false;
-    details.ngoNotes = scheduleNote;
-    details.statusCode = REQUEST_STATUS.PICKUP_SCHEDULE_UPDATED;
-    details.status = this.getStatusStr('PICKUP_SCHEDULE_UPDATED');
-    this.setState({ details: { ...details } });
-    activateSnackbar('Pickup schedule updated successfully!', 'success');
-    this.loadDataAfterModalClose = true;
+    if (updatePickupScheduleRes.ok || updatePickupScheduleRes.code === 422) {
+      details.ngoNotes = scheduleNote;
+      details.statusCode = REQUEST_STATUS.PICKUP_SCHEDULE_UPDATED;
+      details.status = this.getStatusStr('PICKUP_SCHEDULE_UPDATED');
+      this.setState({ details: { ...details } });
+      activateSnackbar('Pickup schedule updated successfully!', 'success');
+      this.loadDataAfterModalClose = true;
+
+      if (updatePickupScheduleRes.code === 422) {
+        activateSnackbar(updatePickupScheduleRes.json.api_message, 'error');
+      }
+    } else {
+      activateSnackbar(updatePickupScheduleRes.json.api_message, 'error');
+    }
   };
 
   markAsCompleted = async (donor) => {

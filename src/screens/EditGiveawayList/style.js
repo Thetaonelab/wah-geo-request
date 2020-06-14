@@ -3,30 +3,38 @@ import colors from '../../styles/color';
 
 export default StyleSheet.create({
   pmButtonContainer: {
-    flex: 2,
     height: 50,
     alignItems: 'center',
-    paddingRight: 20,
     justifyContent: 'center',
     flexDirection: 'row'
   },
   pmButton: {
     height: 40,
-    width: 40,
+    width: 25,
     backgroundColor: colors.grey1,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 3
   },
+  pmButtonPlus: {
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0
+  },
+  pmButtonMinus: {
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0
+  },
   unit: {
     height: 40,
     width: 40,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'flex-start',
+    textAlign: 'center',
+    paddingLeft: 5
   },
   pmValue: {
     height: 40,
-    width: 50,
+    width: 30,
     backgroundColor: colors.white,
     justifyContent: 'center',
     alignItems: 'center'

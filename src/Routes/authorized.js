@@ -16,7 +16,7 @@ const authorized = createDrawerNavigator(
   {
     drawerWidth: screenWidth * 0.6,
     initialRouteName: 'homeStack',
-    drawerPosition: 'left',
+    drawerPosition: 'right',
     useNativeAnimations: true,
     drawerLockMode: 'unlocked',
     drawerBackgroundColor: colors.colorsecondary20,

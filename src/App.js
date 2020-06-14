@@ -12,7 +12,7 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       drawerStatus: false,
-      statusBarHidden: true,
+      statusBarHidden: false,
       userDetails: {
         name: '',
         address: '',

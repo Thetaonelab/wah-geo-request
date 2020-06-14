@@ -1,11 +1,11 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import colors from '../../styles/color';
 
 const style = StyleSheet.create({
   container: {
     display: 'flex',
     width: '100%',
-    height: 60,
+    height: Platform.OS === 'android' ? 56 : 50,
     backgroundColor: colors.colorsecondary22,
     padding: 5,
     flexDirection: 'row',
@@ -18,8 +18,7 @@ const style = StyleSheet.create({
     right: 10,
     top: 0,
     bottom: 0,
-    width: 80,
-    height: 60,
+    width: 60,
     display: 'flex',
     flexDirection: 'row'
   },
@@ -56,8 +55,7 @@ const style = StyleSheet.create({
     left: 10,
     top: 0,
     bottom: 0,
-    width: 50,
-    height: 60,
+    width: 60,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'
