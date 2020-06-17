@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 import React from 'react';
-import { View, Image, Text, TouchableOpacity } from 'react-native';
+import { View, Image, Text, TouchableOpacity, Platform } from 'react-native';
 
 import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -58,7 +58,12 @@ class Header extends React.Component {
   };
 
   render() {
-    const { isFirstRoute } = this.props.navigation.getScreenProps();
+    const {
+      isFirstRoute,
+      toggleStatusBarHidden
+    } = this.props.navigation.getScreenProps();
+    toggleStatusBarHidden(false);
+
     let conditionalView = null;
     /* if (this.props.drawerMode) {
       conditionalView = (
@@ -93,19 +98,20 @@ class Header extends React.Component {
     }
 
     return (
-      <View style={styles.container}>
-        <View style={styles.leftSide}>{conditionalView}</View>
-        <View style={{ alignItems: 'center' }}>
-          <Text style={[text.appbarText]}>
-            {this.props.pageName.toUpperCase()}
-          </Text>
-          {this.props.subText ? (
-            <Text style={[text.bodyText]}>
-              {this.props.subText.toUpperCase()}
+      <View style={styles.iosContainer}>
+        <View style={styles.container}>
+          <View style={styles.leftSide}>{conditionalView}</View>
+          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={[text.appbarText]}>
+              {this.props.pageName.toUpperCase()}
             </Text>
-          ) : null}
-        </View>
-        {/* <View
+            {this.props.subText ? (
+              <Text style={[text.bodyText]}>
+                {this.props.subText.toUpperCase()}
+              </Text>
+            ) : null}
+          </View>
+          {/* <View
           style={{
             padding: 2,
           }}>
@@ -115,21 +121,22 @@ class Header extends React.Component {
           />
         </View> */}
 
-        <View style={styles.menuIconBox}>
-          <TouchableOpacity
-            style={styles.menuIconLeft}
-            onPress={this.toogleDrawer}>
-            {/* <Text style={[text.appbarText, { opacity: 1 }]}>☰</Text> */}
-            <Image
-              source={menuIcon}
-              style={{
-                resizeMode: 'cover',
-                height: 20,
-                width: 20,
-                alignSelf: 'center'
-              }}
-            />
-          </TouchableOpacity>
+          <View style={styles.menuIconBox}>
+            <TouchableOpacity
+              style={styles.menuIconRight}
+              onPress={this.toogleDrawer}>
+              {/* <Text style={[text.appbarText, { opacity: 1 }]}>☰</Text> */}
+              <Image
+                source={menuIcon}
+                style={{
+                  resizeMode: 'cover',
+                  height: 20,
+                  width: 20,
+                  alignSelf: 'center'
+                }}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );

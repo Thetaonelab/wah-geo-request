@@ -66,7 +66,13 @@ export default class EditGiveawayList extends React.Component {
     auth = auth ? JSON.parse(auth) : {};
     // const saveGiveawayListRes =
     await saveGiveawayList(auth.token, saveList);
-    this.props.navigation.goBack();
+
+    const { routeName } = this.props.navigation.state;
+    if (routeName === 'chooseCategory') {
+      this.props.navigation.navigate('authorized');
+    } else {
+      this.props.navigation.goBack();
+    }
   };
 
   renderItem = ({ item }) => (
@@ -203,6 +209,9 @@ EditGiveawayList.propTypes = {
   navigation: PropTypes.shape({
     dispatch: PropTypes.func.isRequired,
     navigate: PropTypes.func.isRequired,
-    goBack: PropTypes.func.isRequired
+    goBack: PropTypes.func.isRequired,
+    state: PropTypes.shape({
+      routeName: PropTypes.string
+    })
   }).isRequired
 };

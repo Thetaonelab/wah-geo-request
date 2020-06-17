@@ -3,7 +3,7 @@ import React from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
 
 import Header from '../components/Header';
-import ChooseCategory from '../screens/ChooseCategory';
+import ChooseCategory from '../screens/EditGiveawayList';
 
 const header = (
   navigation,

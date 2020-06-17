@@ -12,7 +12,7 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       drawerStatus: false,
-      statusBarHidden: false,
+      statusBarHidden: true,
       userDetails: {
         name: '',
         address: '',
@@ -104,16 +104,20 @@ export default class App extends React.Component {
     });
   };
 
-  toggleStatusBarHidden = () => {
-    this.setState((prevState) => ({
-      statusBarHidden: !prevState.statusBarHidden
+  toggleStatusBarHidden = (sbh) => {
+    if (this.state.statusBarHidden === sbh) return;
+    this.setState(() => ({
+      statusBarHidden: sbh
     }));
   };
 
   render() {
     return (
       <>
-        <StatusBar hidden={this.state.statusBarHidden} />
+        <StatusBar
+          hidden={this.state.statusBarHidden}
+          backgroundColor={colors.colorsecondary21}
+        />
         <UserContext.Provider
           value={{
             donor: { ...this.state.userDetails },

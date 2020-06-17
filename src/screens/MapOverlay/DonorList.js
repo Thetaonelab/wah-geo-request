@@ -162,7 +162,7 @@ export default class DonorList extends Component {
         ngo_notes: scheduleNote
       }
     );
-    console.log({ updatePickupScheduleRes });
+    // console.log({ updatePickupScheduleRes });
     details.loading = false;
     if (updatePickupScheduleRes.ok || updatePickupScheduleRes.code === 422) {
       details.ngoNotes = scheduleNote;
@@ -232,7 +232,7 @@ export default class DonorList extends Component {
             {`   [ ${item.phoneNumber.substring(
               0,
               2
-            )}******${item.phoneNumber.substr(8, 2)} ]`}
+            )}***${item.phoneNumber.substr(8, 2)} ]`}
           </Text>
         </Text>
         <Text
@@ -308,7 +308,7 @@ export default class DonorList extends Component {
       <ScrollView
         style={{ height: 600 * 0.8, flex: 1, alignSelf: 'stretch' }}
         contentContainerStyle={{
-          marginTop: 20,
+          // marginTop: 20,
           alignItems: 'stretch'
         }}
         refreshControl={

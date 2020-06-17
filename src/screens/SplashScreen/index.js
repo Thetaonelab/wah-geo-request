@@ -220,18 +220,44 @@ export default class SplashScreen extends React.Component {
                 ]}>
                 {this.state.errorMessage}
               </Text>
-              <TouchableOpacity
+              <View
                 style={{
-                  alignItems: 'center',
+                  flexDirection: 'row',
                   justifyContent: 'center',
-                  height: 40
-                }}
-                onPress={this.doInit}>
-                <Text
-                  style={[text.primaryText, { color: colors.colorprimary0 }]}>
-                  RETRY
-                </Text>
-              </TouchableOpacity>
+                  alignItems: 'center',
+                  flex: 1
+                }}>
+                <TouchableOpacity
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: 40
+                  }}
+                  onPress={this.doInit}>
+                  <Text
+                    style={[text.primaryText, { color: colors.colorprimary0 }]}>
+                    RETRY
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginLeft: 30
+                  }}
+                  onPress={async () => {
+                    await AsyncStorage.setItem('auth', '');
+                    this.props.navigation.navigate('common');
+                  }}>
+                  <Text
+                    style={[
+                      text.primaryText,
+                      { color: colors.colorsecondary20 }
+                    ]}>
+                    LOGIN AGAIN
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           ) : (
             <ActivityIndicator color={colors.colorsecondary10} size={50} />

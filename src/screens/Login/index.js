@@ -88,12 +88,12 @@ export default class Login extends React.Component {
               height: 70,
               width: 140,
               alignSelf: 'center',
-              marginBottom: 40
+              marginBottom: 10
             }}
           />
           <View style={{ padding: 10, paddingBottom: 5 }}>
             <TextField
-              placeholder="e.g. Justin Trudo"
+              placeholder="e.g. Barrak Obam"
               title="Your full name"
               validate={(val) => val && val.length >= 5}
               validateOnBlur

@@ -16,9 +16,11 @@ const authorized = createDrawerNavigator(
   {
     drawerWidth: screenWidth * 0.6,
     initialRouteName: 'homeStackNGO',
-    drawerPosition: 'left',
+    drawerPosition: 'right',
     useNativeAnimations: true,
-    drawerLockMode: 'unlocked',
+    drawerLockMode: 'locked-closed',
+    statusBarAnimation: 'slide',
+    hideStatusBar: true,
     drawerBackgroundColor: colors.colorsecondary20,
     contentComponent: (props) => <DrawerNGO {...props} />
   }

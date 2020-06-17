@@ -19,7 +19,7 @@ export default function BottomView() {
   return (
     <View
       style={{
-        height: 180,
+        height: 200,
         backgroundColor: colors.grey1,
         width,
         padding: 20,

@@ -24,7 +24,7 @@ import text from '../../styles/text';
 import wahIcon from '../../../assets/wah-icon.png';
 import UserContext from '../../contexts/UserContext';
 
-const { /* height, */ width } = Dimensions.get('window');
+const { height /* , width */ } = Dimensions.get('window');
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -125,7 +125,7 @@ export default class Home extends React.Component {
           <Text
             style={[
               text.bodyText,
-              { fontStyle: 'italic', textAlign: 'left', width: '80%' }
+              { fontStyle: 'italic', textAlign: 'left', width: '60%' }
             ]}>
             No update to display. You will see requests from NGOs for picking up
             your giveaway items.
@@ -134,20 +134,18 @@ export default class Home extends React.Component {
       );
     }
     return this.state.updates.map((upd) => (
-      <>
-        <UpcomingPickup
-          id={upd.id}
-          status={upd.status}
-          statusStr={upd.statusStr}
-          name={upd.name}
-          address={upd.address}
-          notes={upd.notes}
-          ngoNotes={upd.ngoNotes}
-          phoneNumber={upd.phone}
-          stateChangedSoReload={this.fetchNGORequests}
-          key={`key-up-${Math.random() * 1000}`}
-        />
-      </>
+      <UpcomingPickup
+        id={upd.id}
+        status={upd.status}
+        statusStr={upd.statusStr}
+        name={upd.name}
+        address={upd.address}
+        notes={upd.notes}
+        ngoNotes={upd.ngoNotes}
+        phoneNumber={upd.phone}
+        stateChangedSoReload={this.fetchNGORequests}
+        key={`key-up-${Math.random() * 1000}`}
+      />
     ));
   };
 
@@ -194,62 +192,69 @@ export default class Home extends React.Component {
             />
           )}
         </View>
-        {this.state.giveawayListLoading ? (
-          <ActivityIndicator color={colors.colorsecondary10} size={30} />
-        ) : (
-          <ScrollView
-            style={{ height: 0 }}
-            contentContainerStyle={{
-              flexDirection: 'column',
-              flexWrap: 'wrap',
-              alignSelf: 'stretch',
-              height: 120
-            }}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            >
-            {this.state.data.map((d, idx) => (
-              <View
-                key={`item-big-${idx}-${Math.random()}`}
-                style={{
-                  height: 50,
-                  width: 120,
-                  borderRadius: 3,
-                  flexDirection: 'row',
-                  backgroundColor: colors.colorsecondary12,
-                  marginRight: 10,
-                  marginBottom: 7,
-                  alignItems: 'center'
-                }}>
-                <View style={{ flex: 2 }}>
-                  <Image
-                    source={{ uri: d.icon }}
-                    style={{ resizeMode: 'cover', width: 30, height: 30 }}
-                  />
-                </View>
-                <View style={{ flex: 4, paddingRight: 5 }}>
-                  <Text style={text.bodyText} numberOfLines={2}>
-                    {d.name}
-                  </Text>
-                </View>
+        <View
+          style={{
+            height: height * 0.2,
+            alignItems: 'center',
+            alignSelf: 'stretch'
+          }}>
+          {this.state.giveawayListLoading ? (
+            <ActivityIndicator color={colors.colorsecondary10} size={30} />
+          ) : (
+            <ScrollView
+              style={{
+                height: 0,
+                alignSelf: 'flex-start'
+              }}
+              contentContainerStyle={{
+                flexDirection: 'column',
+                flexWrap: 'wrap',
+                alignSelf: 'stretch'
+              }}
+              horizontal
+              showsHorizontalScrollIndicator={false}>
+              {this.state.data.map((d, idx) => (
                 <View
+                  key={`item-big-${idx}-${Math.random()}`}
                   style={{
-                    flex: 3,
-                    backgroundColor: colors.grey1,
-                    alignItems: 'center',
-                    alignSelf: 'stretch',
-                    justifyContent: 'center'
+                    height: 50,
+                    width: 120,
+                    borderRadius: 3,
+                    flexDirection: 'row',
+                    backgroundColor: colors.colorsecondary12,
+                    marginRight: 10,
+                    marginBottom: 7,
+                    alignItems: 'center'
                   }}>
-                  <Text style={text.appbarText}>{d.qty}</Text>
-                  <Text style={[text.bodyText, { textAlign: 'center' }]}>
-                    {d.unit.replace(/ /g, '').substring(0, 4)}
-                  </Text>
+                  <View style={{ flex: 2 }}>
+                    <Image
+                      source={{ uri: d.icon }}
+                      style={{ resizeMode: 'cover', width: 30, height: 30 }}
+                    />
+                  </View>
+                  <View style={{ flex: 4, paddingRight: 5 }}>
+                    <Text style={text.bodyText} numberOfLines={2}>
+                      {d.name}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      flex: 3,
+                      backgroundColor: colors.grey1,
+                      alignItems: 'center',
+                      alignSelf: 'stretch',
+                      justifyContent: 'center'
+                    }}>
+                    <Text style={text.appbarText}>{d.qty}</Text>
+                    <Text style={[text.bodyText, { textAlign: 'center' }]}>
+                      {d.unit.replace(/ /g, '').substring(0, 4)}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-            ))}
-          </ScrollView>
-        )}
-
+              ))}
+            </ScrollView>
+          )}
+        </View>
         <View
           style={{
             marginTop: 20,

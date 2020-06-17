@@ -28,7 +28,7 @@ export default class ActiveRequests extends React.Component {
 
   render() {
     return (
-      <View style={[styles.parentContainer]}>
+      <View style={[styles.parentContainer, { padding: 5 }]}>
         {this.state.loading ? (
           <ActivityIndicator color={colors.colorsecondary10} size={50} />
         ) : this.state.errorMessage ? (

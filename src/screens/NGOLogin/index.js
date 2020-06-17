@@ -6,6 +6,7 @@ import { View, TextField, Button } from 'react-native-ui-lib';
 import { StackActions, NavigationActions } from 'react-navigation';
 import AsyncStorage from '@react-native-community/async-storage';
 import PropTypes from 'prop-types';
+import { email as emainSend } from '../../util';
 import { loginNGO } from './api';
 import { TYPE_NGO } from '../../constants';
 import styles from '../../styles/style';
@@ -112,7 +113,7 @@ export default class NGOLogin extends React.Component {
               height: 70,
               width: 140,
               alignSelf: 'center',
-              marginBottom: 40
+              marginBottom: 10
             }}
           />
           <View style={{ padding: 10 }}>
@@ -184,7 +185,9 @@ export default class NGOLogin extends React.Component {
             Forgot password ?
           </Text>
           <TouchableOpacity
-            onPress={alert}
+            onPress={() => {
+              emainSend('tamal@thetaonelab.com');
+            }}
             style={{ padding: 10, paddingLeft: 0 }}>
             <Text
               style={[

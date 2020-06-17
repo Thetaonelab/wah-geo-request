@@ -91,6 +91,24 @@ export function call(nmbr) {
   };
 }
 
+export function email(id) {
+  const emailSchemeStr = `mailto:${id}?subject=[WAH NGO] Forgot Password`;
+  return () => {
+    Linking.canOpenURL(emailSchemeStr)
+      .then((supported) => {
+        if (!supported) {
+          ToastAndroid.show(
+            `${emailSchemeStr} - Phone number not supported!`,
+            ToastAndroid.LONG
+          );
+          return false;
+        }
+        return Linking.openURL(emailSchemeStr);
+      })
+      .catch((err) => console.warn(err));
+  };
+}
+
 export const openGps = async (lat, lng) => {
   const location = `${lat},${lng}`;
   const url = Platform.select({

@@ -2,11 +2,15 @@ import { StyleSheet, Platform } from 'react-native';
 import colors from '../../styles/color';
 
 const style = StyleSheet.create({
+  iosContainer: {
+    backgroundColor: colors.colorsecondary20,
+    paddingTop: Platform.OS === 'ios' ? 22 : 0
+  },
   container: {
     display: 'flex',
     width: '100%',
     height: Platform.OS === 'android' ? 56 : 50,
-    backgroundColor: colors.colorsecondary22,
+    backgroundColor: colors.colorsecondary20,
     padding: 5,
     flexDirection: 'row',
     justifyContent: 'center',
@@ -18,7 +22,7 @@ const style = StyleSheet.create({
     right: 10,
     top: 0,
     bottom: 0,
-    width: 60,
+    width: 30,
     display: 'flex',
     flexDirection: 'row'
   },
@@ -27,7 +31,7 @@ const style = StyleSheet.create({
     flex: 1,
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center'
   },
 
@@ -57,7 +61,7 @@ const style = StyleSheet.create({
     bottom: 0,
     width: 60,
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center'
   },
 
